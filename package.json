@@ -1,0 +1,24 @@
+{
+  "name": "marketmind-microservices",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "",
+    "prepare": "husky"
+  },
+  "type": "module",
+  "keywords": [
+    "marketmind",
+    "microservices",
+    "backend"
+  ],
+  "author": "Shubhajit Paul",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.3"
+  }
+}
