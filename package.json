@@ -4,12 +4,15 @@
   "main": "index.js",
   "scripts": {
     "prepare": "husky",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format:check": "prettier . --check",
+    "format:fix": "prettier . --fix"
   },
   "lint-staged": {
     "*.js": [
-      "npm run lint:fix"
+      "npm run lint:fix",
+      "npm run format:fix"
     ]
   },
   "type": "module",
@@ -26,8 +29,10 @@
     "@commitlint/config-conventional": "^20.0.0",
     "@eslint/js": "^9.37.0",
     "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
     "globals": "^16.4.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.2.3"
+    "lint-staged": "^16.2.3",
+    "prettier": "3.6.2"
   }
 }
