@@ -1,7 +1,8 @@
 let a = 10;
 
-console.log(a);
+if (a) a++;
+else 
+	--a;
 
-if (a) {
-	a++;
-}
+
+console.log(a);
