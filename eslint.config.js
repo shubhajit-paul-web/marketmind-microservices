@@ -24,7 +24,6 @@ export default defineConfig([
             "no-empty-function": "warn",
             "consistent-return": "warn",
             eqeqeq: "error",
-            curly: ["warn", "multi"],
             quotes: [
                 "error",
                 "double",

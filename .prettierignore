@@ -11,6 +11,9 @@ coverage
 .env
 .env.*
 
+# Logs
+*.log
+
 # OS / Editor files
 .vscode
 
