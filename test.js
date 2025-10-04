@@ -4,5 +4,3 @@ if (a) a++;
 else 
 	--a;
 
-
-console.log(a);
