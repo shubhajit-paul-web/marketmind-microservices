@@ -66,7 +66,7 @@ const logger = createLogger({
 if (config.NODE_ENV !== "production") {
     logger.add(
         new transports.Console({
-            format: format.combine(format.colorize({ all: true }), format.simple()),
+            format: format.combine(format.colorize({ all: true })),
         })
     );
 }

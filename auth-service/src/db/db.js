@@ -19,7 +19,8 @@ async function connectDB() {
                 message: error.message,
             },
         });
-        process.exit(1);
+
+        setTimeout(() => process.exit(1), 500);
     }
 }
 

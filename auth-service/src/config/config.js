@@ -3,6 +3,7 @@ import "dotenv/config";
 const _config = {
     PORT: process.env.PORT || 8000,
     NODE_ENV: process.env.NODE_ENV || "development",
+    SERVER_URL: process.env.SERVER_URL,
     CORS_ORIGIN: process.env.CORS_ORIGIN,
     MONGODB_URI: process.env.MONGODB_URI || "mongodb://localhost:27017",
     JWT: {
