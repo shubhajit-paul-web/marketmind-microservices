@@ -19,6 +19,5 @@ export default {
                 "revert",
             ],
         ],
-        "subject-case": [2, "always", "lower-case"],
     },
 };
