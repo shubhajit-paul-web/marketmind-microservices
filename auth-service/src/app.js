@@ -3,6 +3,9 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import config from "./config/config.js";
 import errorHandler from "./middlewares/error.middleware.js";
+import { StatusCodes } from "http-status-codes";
+import responseMessage from "./constants/responseMessage.js";
+import ApiError from "./utils/ApiError.js";
 
 const app = express();
 
@@ -21,7 +24,19 @@ app.use(
     })
 );
 
-// Global error handler (Middleware)
+// 404 handler
+app.use((req, res, next) => {
+    next(
+        new ApiError(
+            StatusCodes.NOT_FOUND,
+            responseMessage.NOT_FOUND(req.originalUrl),
+            "NOT_FOUND",
+            true
+        )
+    );
+});
+
+// Global error handler
 app.use(errorHandler);
 
 export default app;
