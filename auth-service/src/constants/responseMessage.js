@@ -1,4 +1,4 @@
-// Most common response messages (object)
+// Response messages for standardized API responses
 export default {
     SUCCESS: "Operation successful",
     CREATED: (entity = "Resource") => `${entity} created successfully`,
