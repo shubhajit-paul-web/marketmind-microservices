@@ -20,3 +20,6 @@ coverage
 # Git
 .git
 .gitignore
+
+# Readme
+*.md

@@ -6,10 +6,12 @@ import errorHandler from "./middlewares/error.middleware.js";
 import { StatusCodes } from "http-status-codes";
 import responseMessage from "./constants/responseMessage.js";
 import ApiError from "./utils/ApiError.js";
+import helmet from "helmet";
 
 const app = express();
 
 // Middlewares
+app.use(helmet());
 app.use(
     express.json({
         limit: "20kb",
