@@ -36,6 +36,7 @@
         "prettier": "3.6.2"
     },
     "dependencies": {
+        "colorette": "^2.0.20",
         "http-status-codes": "^2.3.0"
     }
 }

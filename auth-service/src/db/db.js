@@ -13,6 +13,8 @@ async function connectDB() {
                 host: connectionInstance.connection.host,
             },
         });
+
+        return true;
     } catch (error) {
         logger.error("MongoDB connection error", {
             meta: {
@@ -21,6 +23,7 @@ async function connectDB() {
         });
 
         setTimeout(() => process.exit(1), 500);
+        return false;
     }
 }
 

@@ -53,7 +53,9 @@ function gracefulShutdown(server, signal) {
 (async () => {
     try {
         // Connect to DB
-        await connectDB();
+        const isConnected = await connectDB();
+
+        if (!isConnected) return;
 
         // Start the server
         const server = app.listen(config.PORT, () => {
