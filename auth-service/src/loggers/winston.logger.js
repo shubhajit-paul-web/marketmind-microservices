@@ -39,11 +39,16 @@ function colorizeLevel(level) {
     }
 }
 
-// Custom log format with meta
+const filterOnly = (level) => format((info) => (info.level === level ? info : false))();
+
+// Custom file log format with meta for info, warn, error
 const fileLogFormat = format.printf(({ timestamp, level, message, meta }) => {
     const metaString = meta ? JSON.stringify(meta) : "";
     return `[${timestamp}] ${level.toUpperCase()}: ${message} ${metaString}`;
 });
+
+// Custom file log format for http
+const HTTPLogFormat = format.printf(({ message }) => message);
 
 // Console log format with meta
 const consoleLogFormat = format.printf(({ timestamp, level, message, meta }) => {
@@ -60,21 +65,42 @@ const logger = createLogger({
         new transports.File({
             filename: path.join(logDir, "info.log"),
             level: "info",
-            format: fileLogFormat,
+            format: format.combine(filterOnly("info"), fileLogFormat),
         }),
 
         // Error log file
         new transports.File({
             filename: path.join(logDir, "error.log"),
             level: "error",
-            format: fileLogFormat,
+            format: format.combine(filterOnly("error", fileLogFormat)),
+        }),
+
+        // Warn log file
+        new transports.File({
+            filename: path.join(logDir, "warn.log"),
+            level: "warn",
+            format: format.combine(filterOnly("warn"), fileLogFormat),
+        }),
+
+        // Debug log file
+        new transports.File({
+            filename: path.join(logDir, "debug.log"),
+            level: "debug",
+            format: format.combine(filterOnly("debug", fileLogFormat)),
+        }),
+
+        // HTTP log file
+        new transports.File({
+            filename: path.join(logDir, "http.log"),
+            level: "http",
+            format: format.combine(filterOnly("http"), HTTPLogFormat),
         }),
     ],
     // Don't exit on uncaught exceptions
     exitOnError: false,
 });
 
-if (config.NODE_ENV !== "production") {
+if (config.NODE_ENV === "development") {
     logger.add(
         new transports.Console({
             format: format.combine(consoleLogFormat),
