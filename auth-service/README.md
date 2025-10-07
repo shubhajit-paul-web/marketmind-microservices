@@ -4,18 +4,20 @@ The Auth Service is a microservice of the MarketMind eCommerce platform that han
 
 ## Overview
 
-- This service handles:
+This service handles:
 - User authentication (login, signup, logout, update account, change or forgot password, token refresh, get users, etc.)
 - Role-based access control (RBAC)
 - Application and system health monitoring
 
 _The service is designed to operate as a stand-alone microservice within a distributed system._
 
-<br>
+<br><br>
 
 ## ⚙️ API Reference
 
 > All endpoints follow the platform’s authentication and access rules.
+
+<br>
 
 ## Health check
 
@@ -53,6 +55,8 @@ Used by internal monitoring tools, deployment pipelines, and load balancers to v
 <details>
   <summary><b>Response Details</b></summary>
 
+<br>
+
 | Field                               | Type            | Description                                                          |
 | ----------------------------------- | --------------- | -------------------------------------------------------------------- |
 | `application.environment`           | `string`        | The current runtime environment (e.g., DEVELOPMENT, PRODUCTION).     |
@@ -70,7 +74,9 @@ Used by internal monitoring tools, deployment pipelines, and load balancers to v
 <details>
     <summary><b>Usage</b></summary>
 
-- You can use this endpoint to:
+<br>
+
+You can use this endpoint to:
 - Monitor app uptime and memory usage
 - Integrate with health monitoring tools (e.g., Grafana, Prometheus, Datadog)
 - Implement load balancer health checks
@@ -80,6 +86,8 @@ Used by internal monitoring tools, deployment pipelines, and load balancers to v
 
 <details>
     <summary><b>Expected HTTP Status Codes</b></summary>
+
+<br>
 
 | Status Code                 | Meaning                                                    |
 | --------------------------- | ---------------------------------------------------------- |
