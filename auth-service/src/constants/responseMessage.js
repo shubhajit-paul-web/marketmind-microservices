@@ -15,4 +15,5 @@ export default {
     INVALID_TOKEN: "Invalid authentication token",
     PASSWORD_UPDATED: "Password updated successfully",
     NOT_FOUND: (entity = "Resource") => `${entity} not found`,
+    INVALID: (entity = "Resource") => `Invalid ${entity}`,
 };

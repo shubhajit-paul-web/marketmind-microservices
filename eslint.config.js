@@ -22,7 +22,6 @@ export default defineConfig([
             "no-undef": "error",
             "no-unexpected-multiline": "error",
             "no-empty-function": "warn",
-            "consistent-return": "warn",
             eqeqeq: "error",
             quotes: [
                 "error",
