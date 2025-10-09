@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import config from "../config/config.js";
 import ApiError from "../utils/ApiError.js";
 import { StatusCodes } from "http-status-codes";
-import responseMessage from "../constants/responseMessage.js";
 
 // Address Schema
 const addressSchema = new Schema(
@@ -121,7 +120,7 @@ const userSchema = new Schema(
     { timestamps: true }
 );
 
-// Normalize and validate phone number before saving (only if modified)
+// Normalize and validate phone number before saving (only if it was modified)
 userSchema.pre("save", async function (next) {
     if (!this.isModified("phoneNumber")) return next();
 
@@ -132,10 +131,9 @@ userSchema.pre("save", async function (next) {
     if (!/^\+?[1-9]\d{6,14}$/.test(this.phoneNumber)) {
         throw new ApiError(
             StatusCodes.BAD_REQUEST,
-            responseMessage.INVALID("phone number format"),
-            "INVALID_PHONE_NUMBER",
-            true,
-            "Invalid phone number format. Use E.164 format (e.g., +191555526731)"
+            "Phone number format is invalid (example: +191555526731)",
+            "INVALID_PHONE_NUMBER_FORMAT",
+            true
         );
     }
 
@@ -146,8 +144,18 @@ userSchema.pre("save", async function (next) {
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
 
-    this.password = await bcrypt.hash(this.password, 10);
-    next();
+    try {
+        this.password = await bcrypt.hash(this.password, 10);
+        next();
+    } catch (error) {
+        throw new ApiError(
+            StatusCodes.INTERNAL_SERVER_ERROR,
+            "Unable to process password at the moment. Please try again.",
+            "PASSWORD_HASHING_FAILED",
+            true,
+            error.message
+        );
+    }
 });
 
 // Generate access token (JWT Token)
