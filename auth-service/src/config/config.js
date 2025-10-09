@@ -14,4 +14,12 @@ const _config = {
     },
 };
 
-export default Object.freeze(_config);
+let config;
+
+if (_config.NODE_ENV === "test") {
+    config = _config; // Don't freeze in testing mode
+} else {
+    config = Object.freeze(_config);
+}
+
+export default config;

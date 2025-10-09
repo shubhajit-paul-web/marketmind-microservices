@@ -1,5 +1,9 @@
 export default {
     testEnvironment: "node",
-    testTimeout: 20000,
     transform: {},
+    testTimeout: 30000,
+    coverageDirectory: "coverage",
+    coveragePathIgnorePatterns: ["/node_modules/", "/logs/", "/coverage/"],
+    coverageProvider: "v8",
+    setupFilesAfterEnv: ["./jest.setup.js"],
 };

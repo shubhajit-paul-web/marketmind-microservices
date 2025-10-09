@@ -18,7 +18,7 @@ function getLevel() {
     switch (ENV) {
         case "production":
             return "info";
-        case "testing":
+        case "test":
             return "warn";
         default:
             return "debug";
