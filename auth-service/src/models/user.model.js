@@ -69,6 +69,7 @@ const userSchema = new Schema(
             trim: true,
             minLength: 5,
             maxLength: 20,
+            lowercase: true,
             unique: true,
             immutable: true,
             index: true,
