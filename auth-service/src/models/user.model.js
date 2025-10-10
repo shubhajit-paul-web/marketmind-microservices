@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import config from "../config/config.js";
 import ApiError from "../utils/ApiError.js";
 import { StatusCodes } from "http-status-codes";
+import { COUNTRIES } from "../constants/constants.js";
 
 // Address Schema
 const addressSchema = new Schema(
@@ -32,16 +33,7 @@ const addressSchema = new Schema(
         },
         country: {
             type: String,
-            enum: [
-                "india",
-                "united states",
-                "china",
-                "japan",
-                "canada",
-                "russia",
-                "spain",
-                "singapore",
-            ],
+            enum: COUNTRIES,
             default: "india",
         },
         landmark: {
@@ -119,26 +111,6 @@ const userSchema = new Schema(
     },
     { timestamps: true }
 );
-
-// Normalize and validate phone number before saving (only if it was modified)
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("phoneNumber")) return next();
-
-    // Remove spaces, dashes, parentheses, and dots from phone number
-    this.phoneNumber = String(this.phoneNumber).replace(/[\s\-().]/g, "");
-
-    // Validate E.164-like format: optional +, starts 1–9, 7–15 digits total
-    if (!/^\+?[1-9]\d{6,14}$/.test(this.phoneNumber)) {
-        throw new ApiError(
-            StatusCodes.BAD_REQUEST,
-            "Phone number format is invalid (example: +191555526731)",
-            "INVALID_PHONE_NUMBER_FORMAT",
-            true
-        );
-    }
-
-    next();
-});
 
 // Hash the password before saving (only if it was modified)
 userSchema.pre("save", async function (next) {
