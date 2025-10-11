@@ -72,7 +72,7 @@ const logger = createLogger({
         new transports.File({
             filename: path.join(logDir, "error.log"),
             level: "error",
-            format: format.combine(filterOnly("error", fileLogFormat)),
+            format: format.combine(filterOnly("error"), fileLogFormat),
         }),
 
         // Warn log file
@@ -86,7 +86,7 @@ const logger = createLogger({
         new transports.File({
             filename: path.join(logDir, "debug.log"),
             level: "debug",
-            format: format.combine(filterOnly("debug", fileLogFormat)),
+            format: format.combine(filterOnly("debug"), fileLogFormat),
         }),
 
         // HTTP log file
@@ -100,7 +100,7 @@ const logger = createLogger({
     exitOnError: false,
 });
 
-if (config.NODE_ENV === "development") {
+if (config.NODE_ENV !== "production") {
     logger.add(
         new transports.Console({
             format: format.combine(consoleLogFormat),

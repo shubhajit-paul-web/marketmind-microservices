@@ -1,5 +1,6 @@
 import { body } from "express-validator";
 import { COUNTRIES, NAME_REGEX, ADDRESS_TYPES, USER_ROLE_TYPES } from "../constants/constants.js";
+import respondWithValidationErrors from "../middlewares/validator.middleware.js";
 
 // Capitalize a string
 function capitalize(value = "") {
@@ -8,14 +9,14 @@ function capitalize(value = "") {
     return value[0].toUpperCase() + value.slice(1).toLowerCase();
 }
 
-// Simple cleaner for strings
+// Simple cleaner for strings (remove whitespaces)
 function cleanString(value = "") {
     if (typeof value !== "string") return value;
     return value.replace(/\s+/g, " ").trim();
 }
 
-// Validation: Register validator
-export const requestValidator = [
+// Validation: Register user validator
+export const registerUserValidator = [
     body("username")
         .notEmpty()
         .withMessage("Username is required")
@@ -151,4 +152,7 @@ export const requestValidator = [
         .isBoolean()
         .withMessage("isDefault must be boolean")
         .toBoolean(),
+
+    // Middleware to handle validation errors and send formatted response
+    respondWithValidationErrors,
 ];

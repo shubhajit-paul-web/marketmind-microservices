@@ -16,7 +16,6 @@ async function respondWithValidationErrors(req, res, next) {
         const customizedErrors = errors.array().map((err) => ({
             path: err.path,
             message: err.msg,
-            location: err.location,
         }));
 
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -29,7 +28,7 @@ async function respondWithValidationErrors(req, res, next) {
     }
 
     // No validation errors, continue
-    return next();
+    next();
 }
 
 export default respondWithValidationErrors;

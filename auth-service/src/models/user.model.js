@@ -132,9 +132,17 @@ userSchema.pre("save", async function (next) {
 
 // Generate access token (JWT Token)
 userSchema.methods.generateAccessToken = async function () {
-    return jwt.sign({ _id: this._id }, config.JWT.ACCESS_TOKEN_SECRET, {
-        expiresIn: config.JWT.ACCESS_TOKEN_EXPIRATION,
-    });
+    return jwt.sign(
+        {
+            _id: this._id,
+            username: this.username,
+            role: this.role,
+        },
+        config.JWT.ACCESS_TOKEN_SECRET,
+        {
+            expiresIn: config.JWT.ACCESS_TOKEN_EXPIRATION,
+        }
+    );
 };
 
 // Generate refresh token (JWT Token)

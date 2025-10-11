@@ -2,6 +2,7 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import config from "./src/config/config.js";
+import logger from "./src/loggers/winston.logger.js";
 
 let mongoServer;
 
@@ -13,6 +14,8 @@ beforeAll(async () => {
     config.MONGODB_URI = uri; // Override DB_URL in your config for tests
 
     await mongoose.connect(uri);
+
+    logger.warn("🟢 MongoDB connected successfully");
 });
 
 // Disconnect and stop the in-memory MongoDB after all tests
