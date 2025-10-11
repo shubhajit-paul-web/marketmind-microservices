@@ -40,12 +40,6 @@ export const registerUserValidator = [
         .customSanitizer((value) => String(value).replace(/[\s\-().]/g, ""))
         .custom((value) => /^\+?[1-9]\d{6,14}$/.test(value))
         .withMessage("Phone number format is invalid (example: +191555526731)"),
-    body("profilePicture")
-        .notEmpty()
-        .withMessage("Profile picture is required")
-        .trim()
-        .isURL()
-        .withMessage("Invalid profile picture URL format"),
     body("fullName.firstName")
         .notEmpty()
         .withMessage("First name is required")

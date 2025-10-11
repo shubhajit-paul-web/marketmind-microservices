@@ -2,6 +2,8 @@
 import request from "supertest";
 import app from "../app.js";
 import responseMessage from "../constants/responseMessage.js";
+import { StatusCodes } from "http-status-codes";
+import errorCodes from "../constants/errorCodes.js";
 
 // Testing Register API
 describe("POST /api/v1/auth/register", () => {
@@ -49,10 +51,10 @@ describe("POST /api/v1/auth/register", () => {
 
         const res = await request(app).post("/api/v1/auth/register").send(payload);
 
-        expect(res.statusCode).toBe(409);
+        expect(res.statusCode).toBe(StatusCodes.BAD_REQUEST);
         expect(res.body.success).toBe(false);
-        expect(res.body.statusCode).toBe(409);
-        expect(res.body.errorCode).toBe("DUPLICATE_USERNAME_EMAIL");
+        expect(res.body.statusCode).toBe(StatusCodes.BAD_REQUEST);
+        expect(res.body.errorCode).toBe(errorCodes.USERNAME_ALREADY_EXISTS);
         expect(res.body.message).toBe(responseMessage.DUPLICATE_USERNAME_EMAIL);
     });
 

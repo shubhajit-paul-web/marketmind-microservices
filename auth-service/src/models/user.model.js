@@ -124,8 +124,9 @@ userSchema.pre("save", async function (next) {
             StatusCodes.INTERNAL_SERVER_ERROR,
             "Unable to process password at the moment. Please try again.",
             "PASSWORD_HASHING_FAILED",
-            true,
-            error.message
+            false,
+            error.message,
+            error.stack
         );
     }
 });

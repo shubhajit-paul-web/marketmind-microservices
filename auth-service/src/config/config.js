@@ -12,6 +12,11 @@ const _config = {
         REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
         REFRESH_TOKEN_EXPIRATION: process.env.REFRESH_TOKEN_EXPIRATION,
     },
+    IMAGEKIT: {
+        PRIVATE_KEY: process.env.IMAGEKIT_PRIVATE_KEY,
+        PUBLIC_KEY: process.env.IMAGEKIT_PUBLIC_KEY,
+        URL_ENDPOINT: process.env.IMAGEKIT_URL_ENDPOINT,
+    },
 };
 
 let config;

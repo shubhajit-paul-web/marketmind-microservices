@@ -18,7 +18,7 @@ class ApiError extends Error {
         statusCode = 500,
         message = "Something went wrong",
         errorCode = "UNKNOWN",
-        isOperational = false,
+        isOperational = true,
         details = null,
         stack
     ) {
