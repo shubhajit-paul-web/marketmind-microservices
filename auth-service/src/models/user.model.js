@@ -112,6 +112,16 @@ const userSchema = new Schema(
     { timestamps: true }
 );
 
+// Remove sensitive fields when converting to JSON
+userSchema.set("toJSON", {
+    transform: (doc, ret) => {
+        delete ret.password;
+        delete ret.refreshToken;
+        delete ret.__v;
+        return ret;
+    },
+});
+
 // Hash the password before saving (only if it was modified)
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();

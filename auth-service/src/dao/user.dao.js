@@ -18,12 +18,22 @@ class UserDAO {
      * Checks if a user exists by username or email
      * @param {string} username - Username to check
      * @param {string} email - Email to check
+     * @param {string} phoneNumber - Phone number to check
      * @returns {Promise<Object|null>} Object with "_id" if user exists, null otherwise
      */
-    async isUserExists(username, email) {
+    async isUserExists(username, email, phoneNumber) {
         return await User.exists({
-            $or: [{ username }, { email }],
+            $or: [{ username }, { email }, { phoneNumber }],
         });
+    }
+
+    /**
+     * Finds a user by their ID
+     * @param {string} id - User ID to search for
+     * @returns {Promise<Object|null>} User document or null if not found
+     */
+    async findUserById(id) {
+        return await User.findById(id);
     }
 }
 

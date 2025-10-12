@@ -6,7 +6,7 @@ export default {
     UNAUTHORIZED: "Unauthorized access",
     FORBIDDEN: "Access forbidden",
     VALIDATION_ERROR: "Validation failed",
-    DUPLICATE_USERNAME_EMAIL: "Username or email already exists",
+    USER_ALREADY_EXISTS: "User already exists",
     MISSING_REQUIRED_FIELDS: "Missing required fields",
     REGISTERED_SUCCESS: "User registered successfully",
     LOGIN_SUCCESS: "Logged in successfully",

@@ -1,4 +1,6 @@
-import "dotenv/config";
+import DotenvFlow from "dotenv-flow";
+
+DotenvFlow.config({ path: "./" });
 
 const _config = {
     PORT: process.env.PORT || 8000,

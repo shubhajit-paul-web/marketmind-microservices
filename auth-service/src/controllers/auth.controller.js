@@ -3,6 +3,7 @@ import AuthService from "../services/auth.service.js";
 import asyncHandler from "../utils/AsyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import responseMessage from "../constants/responseMessage.js";
+import { cookieOptions } from "../constants/constants.js";
 
 /**
  * Authentication Controller.
@@ -20,11 +21,18 @@ class AuthController {
             profilePicture: req.file,
         });
 
-        const accessToken = await createdUser.generateAccessToken();
-        const refreshToken = await createdUser.generateRefreshToken();
+        const { accessToken, refreshToken } = await AuthService.generateAccessAndRefreshToken(
+            createdUser?._id
+        );
 
-        res.cookie("accessToken", accessToken);
-        res.cookie("refreshToken", refreshToken);
+        res.cookie("accessToken", accessToken, {
+            ...cookieOptions,
+            maxAge: 1 * 60 * 60 * 1000, // 1h
+        });
+        res.cookie("refreshToken", refreshToken, {
+            ...cookieOptions,
+            maxAge: 365 * 24 * 60 * 60 * 1000, // 1y
+        });
 
         return res
             .status(StatusCodes.CREATED)

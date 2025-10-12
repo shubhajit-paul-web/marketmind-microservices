@@ -14,7 +14,8 @@
     "lint-staged": {
         "*.js": [
             "npm run lint:fix",
-            "npm run format:fix"
+            "npm run format:fix",
+            "npm test"
         ]
     },
     "type": "module",

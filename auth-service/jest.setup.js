@@ -15,7 +15,7 @@ beforeAll(async () => {
 
     await mongoose.connect(uri);
 
-    logger.warn("🟢 MongoDB connected successfully");
+    logger.debug("🟢 MongoDB connected successfully");
 });
 
 // Disconnect and stop the in-memory MongoDB after all tests

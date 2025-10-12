@@ -1,4 +1,10 @@
+import config from "../config/config.js";
+
 export const DB_NAME = "marketmind-ai";
+export const cookieOptions = {
+    httpOnly: true,
+    secure: config.NODE_ENV === "production",
+};
 export const COUNTRIES = [
     "india",
     "united states",

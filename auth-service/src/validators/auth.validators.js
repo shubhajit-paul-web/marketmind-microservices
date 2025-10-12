@@ -6,7 +6,7 @@ import respondWithValidationErrors from "../middlewares/validator.middleware.js"
 function capitalize(value = "") {
     if (typeof value !== "string") return false;
 
-    return value[0].toUpperCase() + value.slice(1).toLowerCase();
+    return value[0]?.toUpperCase() + value?.slice(1)?.toLowerCase();
 }
 
 // Simple cleaner for strings (remove whitespaces)
@@ -40,7 +40,7 @@ export const registerUserValidator = [
         .customSanitizer((value) => String(value).replace(/[\s\-().]/g, ""))
         .custom((value) => /^\+?[1-9]\d{6,14}$/.test(value))
         .withMessage("Phone number format is invalid (example: +191555526731)"),
-    body("fullName.firstName")
+    body("firstName")
         .notEmpty()
         .withMessage("First name is required")
         .trim()
@@ -49,7 +49,7 @@ export const registerUserValidator = [
         .matches(NAME_REGEX)
         .withMessage("First name must contain only letters")
         .customSanitizer(capitalize),
-    body("fullName.lastName")
+    body("lastName")
         .notEmpty()
         .withMessage("Last name is required")
         .trim()

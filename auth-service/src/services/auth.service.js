@@ -16,12 +16,16 @@ class AuthService {
      * @returns {Promise<Object>} Created user object
      */
     async registerUser(userData) {
-        const isUserAlreadyExists = await UserDAO.isUserExists(userData.username, userData.email);
+        const isUserAlreadyExists = await UserDAO.isUserExists(
+            userData.username,
+            userData.email,
+            userData.phoneNumber
+        );
 
         if (isUserAlreadyExists) {
             throw new ApiError(
-                StatusCodes.BAD_REQUEST,
-                responseMessage.DUPLICATE_USERNAME_EMAIL,
+                StatusCodes.CONFLICT,
+                responseMessage.USER_ALREADY_EXISTS,
                 errorCodes.USER_ALREADY_EXISTS
             );
         }
@@ -40,10 +44,39 @@ class AuthService {
 
         const createdUser = await UserDAO.createUser({
             ...userData,
-            profilePicture: uploadedProfilePicture.url,
+            fullName: {
+                firstName: userData?.firstName,
+                lastName: userData?.lastName,
+            },
+            profilePicture: uploadedProfilePicture?.url,
         });
 
         return createdUser;
+    }
+
+    /**
+     * Generates JWT access and refresh tokens for a user
+     * @param {string} id - User ID (ObjectId)
+     * @returns {Promise<Object>} Object containing accessToken and refreshToken
+     */
+    async generateAccessAndRefreshToken(id) {
+        const user = await UserDAO.findUserById(id);
+
+        if (!user) {
+            throw new ApiError(
+                StatusCodes.NOT_FOUND,
+                "User not found or invalid user id",
+                errorCodes.USER_NOT_FOUND
+            );
+        }
+
+        const accessToken = await user.generateAccessToken();
+        const refreshToken = await user.generateRefreshToken();
+
+        user.refreshToken = refreshToken;
+        await user.save({ validateBeforeSave: false });
+
+        return { accessToken, refreshToken };
     }
 }
 

@@ -1,4 +1,4 @@
-import ImageKit from "@imagekit/nodejs";
+import ImageKit, { toFile } from "@imagekit/nodejs";
 import config from "../config/config.js";
 import ApiError from "../utils/ApiError.js";
 import { StatusCodes } from "http-status-codes";
@@ -31,9 +31,9 @@ export async function uploadFile(file) {
 
     try {
         const uploadedFile = await client.files.upload({
-            file: file.buffer,
+            file: await toFile(Buffer.from(file.buffer), "profile-picture"),
             fileName: uuidv4(),
-            folder: "/marketmind/profilePictures",
+            folder: "marketmind/profile-pictures",
         });
 
         return uploadedFile;
