@@ -4,7 +4,7 @@ import cors from "cors";
 import config from "./config/config.js";
 import errorHandler from "./middlewares/error.middleware.js";
 import { StatusCodes } from "http-status-codes";
-import responseMessage from "./constants/responseMessage.js";
+import responseMessages from "./constants/responseMessages.js";
 import ApiError from "./utils/ApiError.js";
 import helmet from "helmet";
 import morganLogger from "./loggers/morgan.logger.js";
@@ -43,7 +43,7 @@ app.use((req, res, next) => {
     next(
         new ApiError(
             StatusCodes.NOT_FOUND,
-            responseMessage.NOT_FOUND(req.originalUrl),
+            responseMessages.NOT_FOUND(req.originalUrl),
             "NOT_FOUND",
             true
         )

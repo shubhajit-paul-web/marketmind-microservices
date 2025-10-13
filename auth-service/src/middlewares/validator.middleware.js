@@ -1,7 +1,7 @@
 import { validationResult } from "express-validator";
 import StatusCodes from "http-status-codes";
 import errorCodes from "../constants/errorCodes.js";
-import responseMessage from "../constants/responseMessage.js";
+import responseMessages from "../constants/responseMessages.js";
 
 /**
  * Validates incoming request data using express-validator results.
@@ -25,7 +25,7 @@ async function respondWithValidationErrors(req, res, next) {
             statusCode: StatusCodes.BAD_REQUEST,
             errorCode: errorCodes.MISSING_REQUIRED_FIELDS,
             isOperational: true,
-            message: responseMessage.MISSING_REQUIRED_FIELDS,
+            message: responseMessages.MISSING_REQUIRED_FIELDS,
             errors: customizedErrors,
         });
     }

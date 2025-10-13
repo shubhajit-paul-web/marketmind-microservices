@@ -5,6 +5,7 @@ import config from "../config/config.js";
 import ApiError from "../utils/ApiError.js";
 import { StatusCodes } from "http-status-codes";
 import { COUNTRIES } from "../constants/constants.js";
+import errorCodes from "../constants/errorCodes.js";
 
 // Address Schema
 const addressSchema = new Schema(
@@ -140,6 +141,22 @@ userSchema.pre("save", async function (next) {
         );
     }
 });
+
+// Verify user password by comparing plain text with hashed password
+userSchema.methods.isPasswordCorrect = async function (plainTextPassword) {
+    try {
+        return await bcrypt.compare(plainTextPassword, this.password);
+    } catch (error) {
+        throw new ApiError(
+            StatusCodes.INTERNAL_SERVER_ERROR,
+            "Unable to verify password at the moment. Please try again.",
+            errorCodes.INTERNAL_SERVER_ERROR,
+            false,
+            error.message,
+            error.stack
+        );
+    }
+};
 
 // Generate access token (JWT Token)
 userSchema.methods.generateAccessToken = async function () {

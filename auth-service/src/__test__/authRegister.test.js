@@ -1,8 +1,7 @@
 /* eslint-disable no-undef */
 import request from "supertest";
 import app from "../app.js";
-import responseMessage from "../constants/responseMessage.js";
-import { StatusCodes } from "http-status-codes";
+import responseMessages from "../constants/responseMessages.js";
 import errorCodes from "../constants/errorCodes.js";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -40,7 +39,7 @@ describe("POST /api/v1/auth/register", () => {
         expect(res.statusCode).toBe(201);
         expect(res.body.success).toBe(true);
         expect(res.body.statusCode).toBe(201);
-        expect(res.body.message).toBe(responseMessage.REGISTERED_SUCCESS);
+        expect(res.body.message).toBe(responseMessages.REGISTERED_SUCCESS);
         expect(res.body.data).toBeDefined();
         expect(res.body.data.username).toBe(payload.username);
         expect(res.body.data.email).toBe(payload.email);
@@ -78,11 +77,11 @@ describe("POST /api/v1/auth/register", () => {
             .field("password", payload.password)
             .attach("profilePicture", payload.profilePicture);
 
-        expect(res.statusCode).toBe(StatusCodes.CONFLICT);
+        expect(res.statusCode).toBe(409);
         expect(res.body.success).toBe(false);
-        expect(res.body.statusCode).toBe(StatusCodes.CONFLICT);
+        expect(res.body.statusCode).toBe(409);
         expect(res.body.errorCode).toBe(errorCodes.USER_ALREADY_EXISTS);
-        expect(res.body.message).toBe(responseMessage.USER_ALREADY_EXISTS);
+        expect(res.body.message).toBe(responseMessages.USER_ALREADY_EXISTS);
     });
 
     // Test Case 3: Missing required fields
@@ -94,11 +93,11 @@ describe("POST /api/v1/auth/register", () => {
             .post("/api/v1/auth/register")
             .field("username", payload.username);
 
-        expect(res.statusCode).toBe(StatusCodes.BAD_REQUEST);
+        expect(res.statusCode).toBe(400);
         expect(res.body.success).toBe(false);
-        expect(res.body.statusCode).toBe(StatusCodes.BAD_REQUEST);
+        expect(res.body.statusCode).toBe(400);
         expect(res.body.errorCode).toBe(errorCodes.MISSING_REQUIRED_FIELDS);
         expect(res.body.isOperational).toBe(true);
-        expect(res.body.message).toBe(responseMessage.MISSING_REQUIRED_FIELDS);
+        expect(res.body.message).toBe(responseMessages.MISSING_REQUIRED_FIELDS);
     });
 });

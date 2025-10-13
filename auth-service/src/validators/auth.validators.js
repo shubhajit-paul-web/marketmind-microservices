@@ -1,19 +1,8 @@
 import { body } from "express-validator";
 import { COUNTRIES, NAME_REGEX, ADDRESS_TYPES, USER_ROLE_TYPES } from "../constants/constants.js";
 import respondWithValidationErrors from "../middlewares/validator.middleware.js";
-
-// Capitalize a string
-function capitalize(value = "") {
-    if (typeof value !== "string") return false;
-
-    return value[0]?.toUpperCase() + value?.slice(1)?.toLowerCase();
-}
-
-// Simple cleaner for strings (remove whitespaces)
-function cleanString(value = "") {
-    if (typeof value !== "string") return value;
-    return value.replace(/\s+/g, " ").trim();
-}
+import cleanString from "../utils/cleanString.js";
+import capitalize from "../utils/capitalize.js";
 
 // Validation: Register user validator
 export const registerUserValidator = [

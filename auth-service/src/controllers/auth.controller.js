@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import AuthService from "../services/auth.service.js";
 import asyncHandler from "../utils/AsyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
-import responseMessage from "../constants/responseMessage.js";
+import responseMessages from "../constants/responseMessages.js";
 import { cookieOptions } from "../constants/constants.js";
 
 /**
@@ -36,7 +36,7 @@ class AuthController {
 
         return res
             .status(StatusCodes.CREATED)
-            .json(ApiResponse.created(responseMessage.REGISTERED_SUCCESS, createdUser));
+            .json(ApiResponse.created(responseMessages.REGISTERED_SUCCESS, createdUser));
     });
 }
 

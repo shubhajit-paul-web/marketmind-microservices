@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import responseMessage from "../constants/responseMessage.js";
+import responseMessages from "../constants/responseMessages.js";
 
 // eslint-disable-next-line no-unused-vars
 export default function errorHandler(err, req, res, next) {
@@ -10,6 +10,6 @@ export default function errorHandler(err, req, res, next) {
         statusCode,
         errorCode: err?.errorCode ?? "UNKNOWN",
         isOperational: err?.isOperational ?? false,
-        message: err?.message ?? responseMessage.SOMETHING_WENT_WRONG,
+        message: err?.message ?? responseMessages.SOMETHING_WENT_WRONG,
     });
 }

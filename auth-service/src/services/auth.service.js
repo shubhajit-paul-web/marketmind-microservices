@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import UserDAO from "../dao/user.dao.js";
 import ApiError from "../utils/ApiError.js";
-import responseMessage from "../constants/responseMessage.js";
+import responseMessages from "../constants/responseMessages.js";
 import errorCodes from "../constants/errorCodes.js";
 import { uploadFile } from "./storage.service.js";
 
@@ -25,7 +25,7 @@ class AuthService {
         if (isUserAlreadyExists) {
             throw new ApiError(
                 StatusCodes.CONFLICT,
-                responseMessage.USER_ALREADY_EXISTS,
+                responseMessages.USER_ALREADY_EXISTS,
                 errorCodes.USER_ALREADY_EXISTS
             );
         }

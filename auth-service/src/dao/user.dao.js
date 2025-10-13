@@ -35,6 +35,18 @@ class UserDAO {
     async findUserById(id) {
         return await User.findById(id);
     }
+
+    /**
+     * Finds a user by username, email, or phone number
+     * @param {string} identifier - Username, email, or phone number to search for
+     * @param {string} select - Fields to include or exclude in the result (optional)
+     * @returns {Promise<Object|null>} User document or null if not found
+     */
+    async findUserByIdentifier(identifier, select = "") {
+        return await User.findOne({
+            $or: [{ username: identifier }, { email: identifier }, { phoneNumber: identifier }],
+        }).select(select);
+    }
 }
 
 export default new UserDAO();
