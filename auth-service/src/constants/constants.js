@@ -1,10 +1,6 @@
-import config from "../config/config.js";
-
 export const DB_NAME = "marketmind-ai";
-export const cookieOptions = {
-    httpOnly: true,
-    secure: config.NODE_ENV === "production",
-};
+export const ACCESS_TOKEN_COOKIE_EXP = 1 * 60 * 60 * 1000; // 1h
+export const REFRESH_TOKEN_COOKIE_EXP = 365 * 24 * 60 * 60 * 1000; // 1y
 export const COUNTRIES = [
     "india",
     "united states",

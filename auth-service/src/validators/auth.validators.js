@@ -4,7 +4,7 @@ import respondWithValidationErrors from "../middlewares/validator.middleware.js"
 import cleanString from "../utils/cleanString.js";
 import capitalize from "../utils/capitalize.js";
 
-// Validation: Register user validator
+// Register user validator
 export const registerUserValidator = [
     body("username")
         .notEmpty()
@@ -135,6 +135,21 @@ export const registerUserValidator = [
         .isBoolean()
         .withMessage("isDefault must be boolean")
         .toBoolean(),
+
+    // Middleware to handle validation errors and send formatted response
+    respondWithValidationErrors,
+];
+
+// Login user validator
+export const loginUserValidator = [
+    body("identifier").notEmpty().withMessage("Identifier is required").isString(),
+    body("password")
+        .notEmpty()
+        .withMessage("Password is required")
+        .isStrongPassword({ minSymbols: 0 })
+        .withMessage(
+            "Weak password: must be at least 8 chars, include uppercase, lowercase & number"
+        ),
 
     // Middleware to handle validation errors and send formatted response
     respondWithValidationErrors,

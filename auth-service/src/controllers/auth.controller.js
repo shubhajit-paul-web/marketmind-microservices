@@ -3,7 +3,8 @@ import AuthService from "../services/auth.service.js";
 import asyncHandler from "../utils/AsyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import responseMessages from "../constants/responseMessages.js";
-import { cookieOptions } from "../constants/constants.js";
+import setCookieOptions from "../utils/setCookieOptions.js";
+import { ACCESS_TOKEN_COOKIE_EXP, REFRESH_TOKEN_COOKIE_EXP } from "../constants/constants.js";
 
 /**
  * Authentication Controller.
@@ -25,18 +26,32 @@ class AuthController {
             createdUser?._id
         );
 
-        res.cookie("accessToken", accessToken, {
-            ...cookieOptions,
-            maxAge: 1 * 60 * 60 * 1000, // 1h
-        });
-        res.cookie("refreshToken", refreshToken, {
-            ...cookieOptions,
-            maxAge: 365 * 24 * 60 * 60 * 1000, // 1y
-        });
+        res.cookie("accessToken", accessToken, setCookieOptions(ACCESS_TOKEN_COOKIE_EXP));
+        res.cookie("refreshToken", refreshToken, setCookieOptions(REFRESH_TOKEN_COOKIE_EXP));
 
         return res
             .status(StatusCodes.CREATED)
             .json(ApiResponse.created(responseMessages.REGISTERED_SUCCESS, createdUser));
+    });
+
+    /**
+     * Authenticate user
+     * @route POST /api/v1/auth/login
+     * @access Public
+     */
+    login = asyncHandler(async (req, res) => {
+        const user = await AuthService.loginUser(req.body?.identifier, req.body?.password);
+
+        const { accessToken, refreshToken } = await AuthService.generateAccessAndRefreshToken(
+            user?._id
+        );
+
+        res.cookie("accessToken", accessToken, setCookieOptions(ACCESS_TOKEN_COOKIE_EXP));
+        res.cookie("refreshToken", refreshToken, setCookieOptions(REFRESH_TOKEN_COOKIE_EXP));
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.LOGIN_SUCCESS, user));
     });
 }
 

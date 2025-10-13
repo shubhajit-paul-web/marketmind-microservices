@@ -7,6 +7,8 @@ export default {
     FORBIDDEN: "Access forbidden",
     VALIDATION_ERROR: "Validation failed",
     USER_ALREADY_EXISTS: "User already exists",
+    USER_NOT_FOUND: "User not found",
+    INVALID_CREDENTIALS: "Invalid credentials",
     MISSING_REQUIRED_FIELDS: "Missing required fields",
     REGISTERED_SUCCESS: "User registered successfully",
     LOGIN_SUCCESS: "Logged in successfully",

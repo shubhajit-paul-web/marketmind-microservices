@@ -3,51 +3,29 @@ import request from "supertest";
 import app from "../app.js";
 import responseMessages from "../constants/responseMessages.js";
 import errorCodes from "../constants/errorCodes.js";
-import path from "path";
-import { fileURLToPath } from "url";
+import registerUser from "./test-utils/registerUser.js";
+import registerUserPayload from "./test-utils/registerUserPayload.js";
 
 // Testing Register API
 describe("POST /api/v1/auth/register", () => {
-    const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-    // Dummy user data for registration (Payload)
-    const payload = {
-        username: "shubhajit123",
-        email: "shubhajit@example.com",
-        phoneNumber: "(+91) 8645789512",
-        firstName: "Shubhajit",
-        lastName: "Paul",
-        password: "WAab123##**",
-        profilePicture: path.resolve(__dirname, "test-files/profile-img.jpeg"),
-    };
-
     // Test Case 1: Successful registration
     // Given a valid user payload
     // When POST /api/v1/auth/register is called
     // Then respond 201 and return the user without the password field
     it("should creates a user and returns 201 with user (no password)", async () => {
-        const res = await request(app)
-            .post("/api/v1/auth/register")
-            .field("username", payload.username)
-            .field("email", payload.email)
-            .field("phoneNumber", payload.phoneNumber)
-            .field("firstName", payload.firstName)
-            .field("lastName", payload.lastName)
-            .field("password", payload.password)
-            .attach("profilePicture", payload.profilePicture);
+        const res = await registerUser();
 
-        expect(res.statusCode).toBe(201);
         expect(res.body.success).toBe(true);
         expect(res.body.statusCode).toBe(201);
         expect(res.body.message).toBe(responseMessages.REGISTERED_SUCCESS);
         expect(res.body.data).toBeDefined();
-        expect(res.body.data.username).toBe(payload.username);
-        expect(res.body.data.email).toBe(payload.email);
+        expect(res.body.data.username).toBe(registerUserPayload.username);
+        expect(res.body.data.email).toBe(registerUserPayload.email);
         expect(res.body.data.phoneNumber).toBe("+918645789512");
         expect(res.body.data.profilePicture).toBeDefined();
         expect(res.body.data.fullName).toBeDefined();
-        expect(res.body.data.fullName.firstName).toBe(payload.firstName);
-        expect(res.body.data.fullName.lastName).toBe(payload.lastName);
+        expect(res.body.data.fullName.firstName).toBe(registerUserPayload.firstName);
+        expect(res.body.data.fullName.lastName).toBe(registerUserPayload.lastName);
         expect(res.body.data.password).toBeUndefined();
     });
 
@@ -56,32 +34,15 @@ describe("POST /api/v1/auth/register", () => {
     // When attempting to register again with the same username/email
     // Then respond 409 with errorCode DUPLICATE_USERNAME_EMAIL and proper message
     it("rejects duplicate username/email with 409", async () => {
-        await request(app)
-            .post("/api/v1/auth/register")
-            .field("username", payload.username)
-            .field("email", payload.email)
-            .field("phoneNumber", payload.phoneNumber)
-            .field("firstName", payload.firstName)
-            .field("lastName", payload.lastName)
-            .field("password", payload.password)
-            .attach("profilePicture", payload.profilePicture)
-            .expect(201);
+        await registerUser();
 
-        const res = await request(app)
-            .post("/api/v1/auth/register")
-            .field("username", payload.username)
-            .field("email", payload.email)
-            .field("phoneNumber", payload.phoneNumber)
-            .field("firstName", payload.firstName)
-            .field("lastName", payload.lastName)
-            .field("password", payload.password)
-            .attach("profilePicture", payload.profilePicture);
+        const res = await registerUser(409);
 
-        expect(res.statusCode).toBe(409);
         expect(res.body.success).toBe(false);
         expect(res.body.statusCode).toBe(409);
         expect(res.body.errorCode).toBe(errorCodes.USER_ALREADY_EXISTS);
         expect(res.body.message).toBe(responseMessages.USER_ALREADY_EXISTS);
+        expect(res.body.isOperational).toBe(true);
     });
 
     // Test Case 3: Missing required fields
@@ -91,7 +52,7 @@ describe("POST /api/v1/auth/register", () => {
     it("validates missing fields with 400", async () => {
         const res = await request(app)
             .post("/api/v1/auth/register")
-            .field("username", payload.username);
+            .field("username", registerUserPayload.username);
 
         expect(res.statusCode).toBe(400);
         expect(res.body.success).toBe(false);

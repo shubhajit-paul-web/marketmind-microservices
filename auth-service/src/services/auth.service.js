@@ -55,6 +55,36 @@ class AuthService {
     }
 
     /**
+     * Authenticates a user with identifier and password
+     * @param {string} identifier - Username, email, or phone number
+     * @param {string} password - User's password
+     * @returns {Promise<Object>} Authenticated user object
+     */
+    async loginUser(identifier, password) {
+        const user = await UserDAO.findUserByIdentifier(identifier, "+password");
+
+        if (!user) {
+            throw new ApiError(
+                StatusCodes.NOT_FOUND,
+                responseMessages.USER_NOT_FOUND,
+                errorCodes.USER_NOT_FOUND
+            );
+        }
+
+        const isPasswordCorrect = await user.isPasswordCorrect(password);
+
+        if (!isPasswordCorrect) {
+            throw new ApiError(
+                StatusCodes.UNAUTHORIZED,
+                responseMessages.INVALID_CREDENTIALS,
+                errorCodes.INVALID_CREDENTIALS
+            );
+        }
+
+        return user;
+    }
+
+    /**
      * Generates JWT access and refresh tokens for a user
      * @param {string} id - User ID (ObjectId)
      * @returns {Promise<Object>} Object containing accessToken and refreshToken
