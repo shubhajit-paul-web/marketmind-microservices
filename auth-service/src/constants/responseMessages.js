@@ -16,6 +16,7 @@ export default {
     TOKEN_EXPIRED: "Token expired, please login again",
     INVALID_TOKEN: "Invalid authentication token",
     MISSING_ACCESS_TOKEN: "Access token not found, please login again",
+    TOKEN_BLACKLISTED: "Token has been invalidated, please login again",
     PASSWORD_UPDATED: "Password updated successfully",
     CREATED: (entity = "Resource") => `${entity} created successfully`,
     UPDATED: (entity = "Resource") => `${entity} updated successfully`,

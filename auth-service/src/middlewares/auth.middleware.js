@@ -5,6 +5,7 @@ import errorCodes from "../constants/errorCodes.js";
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
 import UserDAO from "../dao/user.dao.js";
+import redis from "../db/redis.js";
 
 /**
  * Verifies user authentication via access token
@@ -18,6 +19,16 @@ async function authUser(req, res, next) {
             StatusCodes.UNAUTHORIZED,
             responseMessages.MISSING_ACCESS_TOKEN,
             errorCodes.MISSING_TOKEN
+        );
+    }
+
+    const isBlacklisted = await redis.get(`blacklist:${accessToken}`);
+
+    if (isBlacklisted) {
+        throw new ApiError(
+            StatusCodes.UNAUTHORIZED,
+            responseMessages.TOKEN_BLACKLISTED,
+            errorCodes.BLACKLISTED_TOKEN
         );
     }
 

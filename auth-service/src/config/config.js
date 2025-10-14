@@ -19,6 +19,11 @@ const _config = {
         PUBLIC_KEY: process.env.IMAGEKIT_PUBLIC_KEY,
         URL_ENDPOINT: process.env.IMAGEKIT_URL_ENDPOINT,
     },
+    REDIS: {
+        PORT: process.env.REDIS_PORT,
+        HOST: process.env.REDIS_HOST,
+        PASSWORD: process.env.REDIS_PASSWORD,
+    },
 };
 
 let config;

@@ -4,6 +4,7 @@ import ApiError from "../utils/ApiError.js";
 import responseMessages from "../constants/responseMessages.js";
 import errorCodes from "../constants/errorCodes.js";
 import { uploadFile } from "./storage.service.js";
+import redis from "../db/redis.js";
 
 /**
  * Authentication Service
@@ -89,8 +90,12 @@ class AuthService {
      * @param {string} id - User ID whose refresh token should be removed
      * @returns {Promise<Object|null>} Updated user document or null if not found
      */
-    async logoutUser(id) {
-        return await UserDAO.removeRefreshToken(id);
+    async logoutUser(id, accessToken) {
+        if (accessToken) {
+            await redis.set(`blacklist:${accessToken}`, "true", "EX", 60 * 60);
+        }
+
+        await UserDAO.removeRefreshToken(id);
     }
 
     /**

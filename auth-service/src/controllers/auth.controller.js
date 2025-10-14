@@ -60,7 +60,7 @@ class AuthController {
      * @access Private
      */
     logout = asyncHandler(async (req, res) => {
-        await AuthService.logoutUser(req.user?._id);
+        await AuthService.logoutUser(req.user?._id, req?.cookies?.accessToken);
 
         res.clearCookie("accessToken");
         res.clearCookie("refreshToken");

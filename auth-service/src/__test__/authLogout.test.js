@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 import request from "supertest";
 import registerUser from "./test-utils/registerUser.js";
-import registerUserPayload from "./test-utils/registerUserPayload.js";
 import app from "../app.js";
 import hasCookies from "./test-utils/hasCookies.js";
 import responseMessages from "../constants/responseMessages.js";
@@ -15,16 +14,9 @@ import responseMessages from "../constants/responseMessages.js";
  */
 describe("POST /api/v1/auth/logout", () => {
     it("should successfully logout user and clear authentication cookies", async () => {
-        await registerUser();
-        const loginRes = await request(app)
-            .post("/api/v1/auth/login")
-            .send({
-                identifier: registerUserPayload.username,
-                password: registerUserPayload.password,
-            })
-            .expect(200);
+        const registerRes = await registerUser();
 
-        const loginCookies = loginRes.headers["set-cookie"];
+        const loginCookies = registerRes.headers["set-cookie"];
 
         const res = await request(app).post("/api/v1/auth/logout").set("Cookie", loginCookies);
 
