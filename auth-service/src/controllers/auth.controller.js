@@ -53,6 +53,22 @@ class AuthController {
             .status(StatusCodes.OK)
             .json(ApiResponse.success(responseMessages.LOGIN_SUCCESS, user));
     });
+
+    /**
+     * Logout user
+     * @route POST /api/v1/auth/logout
+     * @access Private
+     */
+    logout = asyncHandler(async (req, res) => {
+        await AuthService.logoutUser(req.user?._id);
+
+        res.clearCookie("accessToken");
+        res.clearCookie("refreshToken");
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.LOGOUT_SUCCESS));
+    });
 }
 
 export default new AuthController();

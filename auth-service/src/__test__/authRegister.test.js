@@ -5,6 +5,7 @@ import responseMessages from "../constants/responseMessages.js";
 import errorCodes from "../constants/errorCodes.js";
 import registerUser from "./test-utils/registerUser.js";
 import registerUserPayload from "./test-utils/registerUserPayload.js";
+import hasCookies from "./test-utils/hasCookies.js";
 
 // Testing Register API
 describe("POST /api/v1/auth/register", () => {
@@ -14,6 +15,8 @@ describe("POST /api/v1/auth/register", () => {
     // Then respond 201 and return the user without the password field
     it("should creates a user and returns 201 with user (no password)", async () => {
         const res = await registerUser();
+
+        const cookies = hasCookies(res);
 
         expect(res.body.success).toBe(true);
         expect(res.body.statusCode).toBe(201);
@@ -27,6 +30,9 @@ describe("POST /api/v1/auth/register", () => {
         expect(res.body.data.fullName.firstName).toBe(registerUserPayload.firstName);
         expect(res.body.data.fullName.lastName).toBe(registerUserPayload.lastName);
         expect(res.body.data.password).toBeUndefined();
+        expect(cookies).toBeDefined();
+        expect(cookies.accessToken).toBe(true);
+        expect(cookies.refreshToken).toBe(true);
     });
 
     // Test Case 2: Duplicate username/email

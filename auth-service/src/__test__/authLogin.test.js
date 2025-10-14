@@ -5,6 +5,7 @@ import responseMessages from "../constants/responseMessages.js";
 import errorCodes from "../constants/errorCodes.js";
 import registerUser from "./test-utils/registerUser.js";
 import registerUserPayload from "./test-utils/registerUserPayload.js";
+import hasCookies from "./test-utils/hasCookies.js";
 
 describe("POST /api/v1/auth/login", () => {
     // Test Case 1: Successful login
@@ -21,6 +22,8 @@ describe("POST /api/v1/auth/login", () => {
             password: registerUserPayload.password,
         });
 
+        const cookies = hasCookies(res);
+
         expect(res.statusCode).toBe(200);
         expect(res.body.success).toBe(true);
         expect(res.body.statusCode).toBe(200);
@@ -35,6 +38,9 @@ describe("POST /api/v1/auth/login", () => {
         expect(res.body.data.profilePicture).toBeDefined();
         expect(res.body.data.addresses).toBeDefined();
         expect(res.body.data.password).toBeUndefined();
+        expect(cookies).toBeDefined();
+        expect(cookies.accessToken).toBe(true);
+        expect(cookies.refreshToken).toBe(true);
     });
 
     // Test Case 2: Login attempt with non-existent username

@@ -85,6 +85,15 @@ class AuthService {
     }
 
     /**
+     * Logs out a user by removing their refresh token
+     * @param {string} id - User ID whose refresh token should be removed
+     * @returns {Promise<Object|null>} Updated user document or null if not found
+     */
+    async logoutUser(id) {
+        return await UserDAO.removeRefreshToken(id);
+    }
+
+    /**
      * Generates JWT access and refresh tokens for a user
      * @param {string} id - User ID (ObjectId)
      * @returns {Promise<Object>} Object containing accessToken and refreshToken

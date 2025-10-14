@@ -47,6 +47,21 @@ class UserDAO {
             $or: [{ username: identifier }, { email: identifier }, { phoneNumber: identifier }],
         }).select(select);
     }
+
+    /**
+     * Removes the refresh token from a user's document
+     * @param {string} id - User ID whose refresh token should be removed
+     * @returns {Promise<Object|null>} Updated user document or null if not found
+     */
+    async removeRefreshToken(id) {
+        return await User.findByIdAndUpdate(
+            id,
+            {
+                $unset: { refreshToken: 0 },
+            },
+            { new: true, runValidators: false }
+        );
+    }
 }
 
 export default new UserDAO();

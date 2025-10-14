@@ -5,6 +5,7 @@ The Auth Service is a microservice of the MarketMind eCommerce platform that han
 ## Overview
 
 This service handles:
+
 - User authentication (login, signup, logout, update account, change or forgot password, token refresh, get users, etc.)
 - Role-based access control (RBAC)
 - Application and system health monitoring
@@ -77,6 +78,7 @@ Used by internal monitoring tools, deployment pipelines, and load balancers to v
 <br>
 
 You can use this endpoint to:
+
 - Monitor app uptime and memory usage
 - Integrate with health monitoring tools (e.g., Grafana, Prometheus, Datadog)
 - Implement load balancer health checks
@@ -133,6 +135,7 @@ Enables new users to create an account on the MarketMind platform. Upon successf
 ```
 
 **File Upload (Required):**
+
 - Field name: `profilePicture`
 - Accepted formats: Images (e.g., JPEG, PNG)
 
@@ -179,25 +182,25 @@ Enables new users to create an account on the MarketMind platform. Upon successf
 
 <br>
 
-| Field                       | Type      | Required | Description                                                                                    |
-| --------------------------- | --------- | -------- | ---------------------------------------------------------------------------------------------- |
-| `username`                  | `string`  | Yes      | Unique username (5-20 characters, letters, numbers, and underscores only).                     |
-| `email`                     | `string`  | Yes      | Valid email address.                                                                           |
-| `phoneNumber`               | `string`  | Yes      | Valid phone number in international format (e.g., +919876543210).                              |
-| `firstName`                 | `string`  | Yes      | User's first name (2-30 characters, letters only).                                             |
-| `lastName`                  | `string`  | Yes      | User's last name (2-30 characters, letters only).                                              |
-| `password`                  | `string`  | Yes      | Strong password (min 8 chars, uppercase, lowercase, and number required).                      |
-| `role`                      | `string`  | No       | User role: `user` or `seller`. Default: `user`.                                                |
-| `profilePicture`            | `file`    | Yes      | Profile picture image file.                                                                    |
-| `address`                   | `object`  | No       | Optional address object containing location details.                                           |
-| `address.street`            | `string`  | Yes*     | Street address (2-100 characters). *Required if address object is provided.                    |
-| `address.city`              | `string`  | Yes*     | City name (2-50 characters). *Required if address object is provided.                          |
-| `address.state`             | `string`  | Yes*     | State/province name (2-50 characters). *Required if address object is provided.                |
-| `address.zip`               | `string`  | Yes*     | ZIP/postal code (exactly 7 characters). *Required if address object is provided.               |
-| `address.country`           | `string`  | No       | Country name. Allowed values: `india`, `united states`, `china`, `japan`, `canada`, `russia`, `spain`, `singapore`. Default: `india`. |
-| `address.landmark`          | `string`  | No       | Nearby landmark (2-100 characters).                                                            |
-| `address.typeOfAddress`     | `string`  | No       | Address type: `home` or `work`. Default: `home`.                                               |
-| `address.isDefault`         | `boolean` | No       | Whether this is the default address. Default: `false`.                                         |
+| Field                   | Type      | Required | Description                                                                                                                           |
+| ----------------------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `username`              | `string`  | Yes      | Unique username (5-20 characters, letters, numbers, and underscores only).                                                            |
+| `email`                 | `string`  | Yes      | Valid email address.                                                                                                                  |
+| `phoneNumber`           | `string`  | Yes      | Valid phone number in international format (e.g., +919876543210).                                                                     |
+| `firstName`             | `string`  | Yes      | User's first name (2-30 characters, letters only).                                                                                    |
+| `lastName`              | `string`  | Yes      | User's last name (2-30 characters, letters only).                                                                                     |
+| `password`              | `string`  | Yes      | Strong password (min 8 chars, uppercase, lowercase, and number required).                                                             |
+| `role`                  | `string`  | No       | User role: `user` or `seller`. Default: `user`.                                                                                       |
+| `profilePicture`        | `file`    | Yes      | Profile picture image file.                                                                                                           |
+| `address`               | `object`  | No       | Optional address object containing location details.                                                                                  |
+| `address.street`        | `string`  | Yes\*    | Street address (2-100 characters). \*Required if address object is provided.                                                          |
+| `address.city`          | `string`  | Yes\*    | City name (2-50 characters). \*Required if address object is provided.                                                                |
+| `address.state`         | `string`  | Yes\*    | State/province name (2-50 characters). \*Required if address object is provided.                                                      |
+| `address.zip`           | `string`  | Yes\*    | ZIP/postal code (exactly 7 characters). \*Required if address object is provided.                                                     |
+| `address.country`       | `string`  | No       | Country name. Allowed values: `india`, `united states`, `china`, `japan`, `canada`, `russia`, `spain`, `singapore`. Default: `india`. |
+| `address.landmark`      | `string`  | No       | Nearby landmark (2-100 characters).                                                                                                   |
+| `address.typeOfAddress` | `string`  | No       | Address type: `home` or `work`. Default: `home`.                                                                                      |
+| `address.isDefault`     | `boolean` | No       | Whether this is the default address. Default: `false`.                                                                                |
 
 </details>
 
@@ -206,23 +209,23 @@ Enables new users to create an account on the MarketMind platform. Upon successf
 
 <br>
 
-| Field                  | Type      | Description                                                  |
-| ---------------------- | --------- | ------------------------------------------------------------ |
-| `success`              | `boolean` | Indicates if the registration was successful.                |
-| `statusCode`           | `number`  | HTTP status code (201 for successful creation).              |
-| `message`              | `string`  | Success message.                                             |
-| `data._id`             | `string`  | Unique user identifier.                                      |
-| `data.username`        | `string`  | Registered username.                                         |
-| `data.email`           | `string`  | Registered email address.                                    |
-| `data.phoneNumber`     | `string`  | Registered phone number.                                     |
-| `data.fullName`        | `object`  | Object containing user's full name.                          |
-| `data.fullName.firstName` | `string` | User's first name.                                        |
-| `data.fullName.lastName`  | `string` | User's last name.                                         |
-| `data.role`            | `string`  | Assigned user role.                                          |
-| `data.profilePicture`  | `string`  | URL to the uploaded profile picture.                         |
-| `data.addresses`       | `array`   | Array of address objects (if provided during registration).  |
-| `data.createdAt`       | `string`  | ISO 8601 timestamp of account creation.                      |
-| `data.updatedAt`       | `string`  | ISO 8601 timestamp of last account update.                   |
+| Field                     | Type      | Description                                                 |
+| ------------------------- | --------- | ----------------------------------------------------------- |
+| `success`                 | `boolean` | Indicates if the registration was successful.               |
+| `statusCode`              | `number`  | HTTP status code (201 for successful creation).             |
+| `message`                 | `string`  | Success message.                                            |
+| `data._id`                | `string`  | Unique user identifier.                                     |
+| `data.username`           | `string`  | Registered username.                                        |
+| `data.email`              | `string`  | Registered email address.                                   |
+| `data.phoneNumber`        | `string`  | Registered phone number.                                    |
+| `data.fullName`           | `object`  | Object containing user's full name.                         |
+| `data.fullName.firstName` | `string`  | User's first name.                                          |
+| `data.fullName.lastName`  | `string`  | User's last name.                                           |
+| `data.role`               | `string`  | Assigned user role.                                         |
+| `data.profilePicture`     | `string`  | URL to the uploaded profile picture.                        |
+| `data.addresses`          | `array`   | Array of address objects (if provided during registration). |
+| `data.createdAt`          | `string`  | ISO 8601 timestamp of account creation.                     |
+| `data.updatedAt`          | `string`  | ISO 8601 timestamp of last account update.                  |
 
 **Note:** Authentication tokens (`accessToken` and `refreshToken`) are automatically set as HTTP-only cookies and not included in the response body.
 
@@ -269,19 +272,19 @@ curl -X POST http://localhost:8000/api/v1/auth/register \
 
 ```javascript
 const formData = new FormData();
-formData.append('username', 'johndoe123');
-formData.append('email', 'john.doe@example.com');
-formData.append('phoneNumber', '+919876543210');
-formData.append('firstName', 'John');
-formData.append('lastName', 'Doe');
-formData.append('password', 'SecurePass123');
-formData.append('role', 'user');
-formData.append('profilePicture', fileInput.files[0]);
+formData.append("username", "johndoe123");
+formData.append("email", "john.doe@example.com");
+formData.append("phoneNumber", "+919876543210");
+formData.append("firstName", "John");
+formData.append("lastName", "Doe");
+formData.append("password", "SecurePass123");
+formData.append("role", "user");
+formData.append("profilePicture", fileInput.files[0]);
 
-const response = await fetch('http://localhost:8000/api/v1/auth/register', {
-    method: 'POST',
+const response = await fetch("http://localhost:8000/api/v1/auth/register", {
+    method: "POST",
     body: formData,
-    credentials: 'include' // Important for receiving cookies
+    credentials: "include", // Important for receiving cookies
 });
 
 const data = await response.json();
@@ -294,12 +297,12 @@ const data = await response.json();
 
 <br>
 
-| Status Code                 | Meaning                                                                          |
-| --------------------------- | -------------------------------------------------------------------------------- |
-| `201 Created`               | User registered successfully. Authentication tokens set in cookies.              |
-| `400 Bad Request`           | Validation error (invalid input format, missing required fields, etc.).          |
-| `409 Conflict`              | User with the provided username, email, or phone number already exists.          |
-| `500 Internal Server Error` | Server error occurred during registration process.                               |
+| Status Code                 | Meaning                                                                 |
+| --------------------------- | ----------------------------------------------------------------------- |
+| `201 Created`               | User registered successfully. Authentication tokens set in cookies.     |
+| `400 Bad Request`           | Validation error (invalid input format, missing required fields, etc.). |
+| `409 Conflict`              | User with the provided username, email, or phone number already exists. |
+| `500 Internal Server Error` | Server error occurred during registration process.                      |
 
 </details>
 
@@ -404,10 +407,10 @@ Enables registered users to log in to the MarketMind platform using their creden
 
 <br>
 
-| Field        | Type     | Required | Description                                                                                |
-| ------------ | -------- | -------- | ------------------------------------------------------------------------------------------ |
-| `identifier` | `string` | Yes      | User identifier - can be username, email, or phone number.                                 |
-| `password`   | `string` | Yes      | User's password (min 8 chars, uppercase, lowercase, and number required).                  |
+| Field        | Type     | Required | Description                                                               |
+| ------------ | -------- | -------- | ------------------------------------------------------------------------- |
+| `identifier` | `string` | Yes      | User identifier - can be username, email, or phone number.                |
+| `password`   | `string` | Yes      | User's password (min 8 chars, uppercase, lowercase, and number required). |
 
 </details>
 
@@ -416,23 +419,23 @@ Enables registered users to log in to the MarketMind platform using their creden
 
 <br>
 
-| Field                  | Type      | Description                                                  |
-| ---------------------- | --------- | ------------------------------------------------------------ |
-| `success`              | `boolean` | Indicates if the login was successful.                       |
-| `statusCode`           | `number`  | HTTP status code (200 for successful login).                 |
-| `message`              | `string`  | Success message.                                             |
-| `data._id`             | `string`  | Unique user identifier.                                      |
-| `data.username`        | `string`  | User's username.                                             |
-| `data.email`           | `string`  | User's email address.                                        |
-| `data.phoneNumber`     | `string`  | User's phone number.                                         |
-| `data.fullName`        | `object`  | Object containing user's full name.                          |
-| `data.fullName.firstName` | `string` | User's first name.                                        |
-| `data.fullName.lastName`  | `string` | User's last name.                                         |
-| `data.role`            | `string`  | User's role (user or seller).                                |
-| `data.profilePicture`  | `string`  | URL to the user's profile picture.                           |
-| `data.addresses`       | `array`   | Array of user's saved address objects.                       |
-| `data.createdAt`       | `string`  | ISO 8601 timestamp of account creation.                      |
-| `data.updatedAt`       | `string`  | ISO 8601 timestamp of last account update.                   |
+| Field                     | Type      | Description                                  |
+| ------------------------- | --------- | -------------------------------------------- |
+| `success`                 | `boolean` | Indicates if the login was successful.       |
+| `statusCode`              | `number`  | HTTP status code (200 for successful login). |
+| `message`                 | `string`  | Success message.                             |
+| `data._id`                | `string`  | Unique user identifier.                      |
+| `data.username`           | `string`  | User's username.                             |
+| `data.email`              | `string`  | User's email address.                        |
+| `data.phoneNumber`        | `string`  | User's phone number.                         |
+| `data.fullName`           | `object`  | Object containing user's full name.          |
+| `data.fullName.firstName` | `string`  | User's first name.                           |
+| `data.fullName.lastName`  | `string`  | User's last name.                            |
+| `data.role`               | `string`  | User's role (user or seller).                |
+| `data.profilePicture`     | `string`  | URL to the user's profile picture.           |
+| `data.addresses`          | `array`   | Array of user's saved address objects.       |
+| `data.createdAt`          | `string`  | ISO 8601 timestamp of account creation.      |
+| `data.updatedAt`          | `string`  | ISO 8601 timestamp of last account update.   |
 
 **Note:** Authentication tokens (`accessToken` and `refreshToken`) are automatically set as HTTP-only cookies and not included in the response body.
 
@@ -444,9 +447,9 @@ Enables registered users to log in to the MarketMind platform using their creden
 <br>
 
 - **Identifier:** Required field. Can be any of the following:
-  - Username (case-insensitive)
-  - Email address
-  - Phone number in international format
+    - Username (case-insensitive)
+    - Email address
+    - Phone number in international format
 - **Password:** Must meet strong password requirements (minimum 8 characters with at least one uppercase letter, one lowercase letter, and one number).
 
 </details>
@@ -470,16 +473,16 @@ curl -X POST http://localhost:8000/api/v1/auth/login \
 **Example using JavaScript (fetch):**
 
 ```javascript
-const response = await fetch('http://localhost:8000/api/v1/auth/login', {
-    method: 'POST',
+const response = await fetch("http://localhost:8000/api/v1/auth/login", {
+    method: "POST",
     headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
     },
     body: JSON.stringify({
-        identifier: 'johndoe123',
-        password: 'SecurePass123'
+        identifier: "johndoe123",
+        password: "SecurePass123",
     }),
-    credentials: 'include' // Important for receiving cookies
+    credentials: "include", // Important for receiving cookies
 });
 
 const data = await response.json();
@@ -488,6 +491,7 @@ const data = await response.json();
 **Alternative identifiers:**
 
 You can use any of these as the identifier:
+
 ```javascript
 // Using email
 { "identifier": "john.doe@example.com", "password": "SecurePass123" }
@@ -506,13 +510,13 @@ You can use any of these as the identifier:
 
 <br>
 
-| Status Code                 | Meaning                                                                          |
-| --------------------------- | -------------------------------------------------------------------------------- |
-| `200 OK`                    | User authenticated successfully. Authentication tokens set in cookies.           |
-| `400 Bad Request`           | Validation error (missing identifier or password, weak password format).         |
-| `401 Unauthorized`          | Invalid credentials (incorrect password).                                        |
-| `404 Not Found`             | User with the provided identifier does not exist.                                |
-| `500 Internal Server Error` | Server error occurred during login process.                                      |
+| Status Code                 | Meaning                                                                  |
+| --------------------------- | ------------------------------------------------------------------------ |
+| `200 OK`                    | User authenticated successfully. Authentication tokens set in cookies.   |
+| `400 Bad Request`           | Validation error (missing identifier or password, weak password format). |
+| `401 Unauthorized`          | Invalid credentials (incorrect password).                                |
+| `404 Not Found`             | User with the provided identifier does not exist.                        |
+| `500 Internal Server Error` | Server error occurred during login process.                              |
 
 </details>
 
@@ -560,6 +564,121 @@ You can use any of these as the identifier:
     "statusCode": 404,
     "message": "User not found",
     "errorCode": "USER_NOT_FOUND"
+}
+```
+
+</details>
+
+<br>
+
+## Logout User
+
+**Description:** <br>
+Logout an authenticated user and invalidate their refresh token.
+
+**Purpose:**<br>
+Enables authenticated users to securely log out from the MarketMind platform. Upon successful logout, the user's refresh token is invalidated in the database, and both authentication tokens (access and refresh tokens) are cleared from cookies.
+
+**Endpoint:** `POST /api/v1/auth/logout`
+
+**Authentication:** Required (User must be logged in)
+
+**Request Headers:**
+
+- Cookies: `accessToken` and `refreshToken` (automatically sent by browser)
+
+**Request Body:** None
+
+**Response Example (200 OK):**
+
+```json
+{
+    "success": true,
+    "statusCode": 200,
+    "message": "Logged out successfully"
+}
+```
+
+<br>
+<details>
+  <summary><b>Response Details</b></summary>
+
+<br>
+
+| Field        | Type      | Description                                   |
+| ------------ | --------- | --------------------------------------------- |
+| `success`    | `boolean` | Indicates if the logout was successful.       |
+| `statusCode` | `number`  | HTTP status code (200 for successful logout). |
+| `message`    | `string`  | Success message confirming logout.            |
+
+**Note:** Both authentication tokens (`accessToken` and `refreshToken`) are cleared from HTTP-only cookies upon successful logout.
+
+</details>
+
+<details>
+    <summary><b>Usage</b></summary>
+
+<br>
+
+**Example using cURL:**
+
+```bash
+curl -X POST http://localhost:8000/api/v1/auth/logout \
+  -H "Cookie: accessToken=<your_access_token>; refreshToken=<your_refresh_token>"
+```
+
+**Example using JavaScript (fetch):**
+
+```javascript
+const response = await fetch("http://localhost:8000/api/v1/auth/logout", {
+    method: "POST",
+    credentials: "include", // Important for sending cookies
+});
+
+const data = await response.json();
+```
+
+**Note:** When using the browser's fetch API with `credentials: 'include'`, cookies are automatically sent with the request. No need to manually set them.
+
+</details>
+
+<details>
+    <summary><b>Expected HTTP Status Codes</b></summary>
+
+<br>
+
+| Status Code                 | Meaning                                                                   |
+| --------------------------- | ------------------------------------------------------------------------- |
+| `200 OK`                    | User logged out successfully. Authentication tokens cleared from cookies. |
+| `401 Unauthorized`          | User is not authenticated or access token is invalid/expired.             |
+| `500 Internal Server Error` | Server error occurred during logout process.                              |
+
+</details>
+
+<details>
+    <summary><b>Error Response Examples</b></summary>
+
+<br>
+
+**Unauthorized (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Unauthorized request",
+    "errorCode": "UNAUTHORIZED"
+}
+```
+
+**Invalid Token (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Invalid access token",
+    "errorCode": "INVALID_TOKEN"
 }
 ```
 

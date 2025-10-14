@@ -2,6 +2,7 @@ import { Router } from "express";
 import { registerUserValidator, loginUserValidator } from "../validators/auth.validators.js";
 import upload from "../middlewares/multer.middleware.js";
 import AuthController from "../controllers/auth.controller.js";
+import authUser from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -15,5 +16,8 @@ router.post(
 
 // POST /api/v1/auth/login
 router.post("/login", loginUserValidator, AuthController.login);
+
+// POST /api/v1/auth/logout
+router.post("/logout", authUser, AuthController.logout);
 
 export default router;
