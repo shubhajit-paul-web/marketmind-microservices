@@ -200,3 +200,45 @@ describe("DELETE /api/v1/users/me/addresses/:id", () => {
         expect(res.body.message).toBe(responseMessages.NOT_FOUND("Address"));
     });
 });
+
+describe("PATCH /api/v1/users/me/addresses/:id", () => {
+    // Test Case 1: Updating a user address by address ID
+    // Given a registered user with an existing address
+    // When PATCH /api/v1/users/me/addresses/:id is called with updated address details (city and type)
+    // Then respond 200 with the updated address and verify the changes
+    it("should successfully update a user address by address ID", async () => {
+        const registerUserResponse = await registerUser();
+        const cookies = registerUserResponse.headers["set-cookie"];
+
+        const updatedUser = await request(app)
+            .post("/api/v1/users/me/addresses")
+            .send(dummyAddress)
+            .set("Cookie", cookies)
+            .expect(201);
+
+        const addressId = updatedUser.body?.data?.addresses[0]?._id;
+
+        const res = await request(app)
+            .patch(`/api/v1/users/me/addresses/${addressId}`)
+            .send({
+                city: "Bhopal",
+                typeOfAddress: "work",
+            })
+            .set("Cookie", cookies);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.success).toBe(true);
+        expect(res.body.statusCode).toBe(200);
+        expect(res.body.message).toBe(responseMessages.UPDATED("User address"));
+        expect(res.body.data).toBeDefined();
+        expect(res.body.data.street).toBe(dummyAddress.street);
+        expect(res.body.data.city).toBe("Bhopal"); // updated
+        expect(res.body.data.state).toBe(dummyAddress.state);
+        expect(res.body.data.zip).toBe(dummyAddress.zip);
+        expect(res.body.data.country).toBe(dummyAddress.country);
+        expect(res.body.data.landmark).toBe(dummyAddress.landmark);
+        expect(res.body.data.typeOfAddress).toBe("work"); // updated
+        expect(res.body.data.isDefault).toBe(dummyAddress.isDefault);
+        expect(res.body.data._id).toBeDefined();
+    });
+});

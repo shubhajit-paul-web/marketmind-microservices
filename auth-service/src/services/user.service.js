@@ -59,6 +59,31 @@ class UserService {
 
         return await UserDAO.deleteUserAddress(userId, addressId);
     }
+
+    /**
+     * Updates a specific address in the user's address list
+     * @param {string} userId - The ID of the user whose address is to be updated
+     * @param {string} addressId - The ID of the address to be updated
+     * @param {Array<Object>} addresses - The array of addresses associated with the user
+     * @param {Object} addressDataToUpdate - The new data to update the address with
+     * @returns {Promise<Object>} The updated address after the modification
+     */
+    async updateUserAddress(userId, addressId, addresses, addressDataToUpdate) {
+        const hasAddress = addresses?.find((address) => address?._id?.toString() === addressId);
+
+        if (!hasAddress) {
+            throw new ApiError(
+                StatusCodes.NOT_FOUND,
+                responseMessages.NOT_FOUND("Address"),
+                errorCodes.ADDRESS_NOT_FOUND
+            );
+        }
+
+        const updatedUser = await UserDAO.updateUserAddress(userId, addressId, addressDataToUpdate);
+
+        // Returning updated address
+        return updatedUser.addresses?.find((address) => address?._id?.toString() === addressId);
+    }
 }
 
 export default new UserService();

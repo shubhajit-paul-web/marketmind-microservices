@@ -98,6 +98,22 @@ class UserDAO {
             { new: true }
         );
     }
+
+    /**
+     * Updates a specific address in the user's address list
+     * @param {string} userId - The ID of the user whose address is to be updated
+     * @param {string} addressId - The ID of the address to be updated
+     * @param {Object} addressDataToUpdate - The new data to update the address with
+     * @returns {Promise<Object>} The updated user document after the address is modified
+     */
+    async updateUserAddress(userId, addressId, addressDataToUpdate) {
+        const user = await User.findById(userId);
+        const address = user?.addresses?.id(addressId);
+
+        Object.assign(address, addressDataToUpdate);
+
+        return await user.save();
+    }
 }
 
 export default new UserDAO();

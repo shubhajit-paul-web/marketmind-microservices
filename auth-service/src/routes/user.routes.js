@@ -17,4 +17,7 @@ router.get("/me/addresses/:id", authUser, UserController.getUserAddress);
 // DELETE /api/v1/users/me/addresses/:id
 router.delete("/me/addresses/:id", authUser, UserController.deleteUserAddress);
 
+// PATCH /api/v1/users/me/addresses/:id
+router.patch("/me/addresses/:id", authUser, UserController.updateUserAddress);
+
 export default router;
