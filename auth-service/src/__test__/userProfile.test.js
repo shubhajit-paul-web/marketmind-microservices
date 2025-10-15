@@ -1,0 +1,35 @@
+/* eslint-disable no-undef */
+import request from "supertest";
+import app from "../app.js";
+import registerUser from "./test-utils/registerUser.js";
+import responseMessages from "../constants/responseMessages.js";
+import registerUserPayload from "./test-utils/registerUserPayload.js";
+
+describe("GET /api/v1/users/me", () => {
+    // Test Case 1: Successful retrieval of user profile
+    // Given an authenticated user with valid access token
+    // When GET /api/v1/users/me is called with valid cookies
+    // Then respond 200 and return the user profile data without the password field
+    it("should successfully retrieve user profile with valid authentication and return 200 with user data", async () => {
+        const registerUserResponse = await registerUser();
+
+        const registerUserCookies = registerUserResponse.headers["set-cookie"];
+
+        const res = await request(app).get("/api/v1/users/me").set("Cookie", registerUserCookies);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.success).toBe(true);
+        expect(res.body.statusCode).toBe(200);
+        expect(res.body.message).toBe(responseMessages.PROFILE_FETCHED_SUCCESS);
+        expect(res.body.data).toBeDefined();
+        expect(res.body.data.username).toBe(registerUserPayload.username);
+        expect(res.body.data.email).toBe(registerUserPayload.email);
+        expect(res.body.data.phoneNumber).toBe("+918645789512");
+        expect(res.body.data.fullName).toBeDefined();
+        expect(res.body.data.fullName.firstName).toBe(registerUserPayload.firstName);
+        expect(res.body.data.fullName.lastName).toBe(registerUserPayload.lastName);
+        expect(res.body.data.profilePicture).toBeDefined();
+        expect(res.body.data.addresses).toBeDefined();
+        expect(res.body.data.password).toBeUndefined();
+    });
+});

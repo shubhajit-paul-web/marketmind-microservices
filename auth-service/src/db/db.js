@@ -22,7 +22,7 @@ async function connectDB() {
             },
         });
 
-        setTimeout(() => process.exit(1), 500);
+        setTimeout(() => process.exit(1), 500).unref();
         return false;
     }
 }

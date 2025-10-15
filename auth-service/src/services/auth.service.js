@@ -95,7 +95,7 @@ class AuthService {
             await redis.set(`blacklist:${accessToken}`, "true", "EX", 60 * 60);
         }
 
-        await UserDAO.removeRefreshToken(id);
+        return await UserDAO.removeRefreshToken(id);
     }
 
     /**

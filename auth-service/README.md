@@ -683,3 +683,190 @@ const data = await response.json();
 ```
 
 </details>
+
+<br>
+
+## Get Current User Profile
+
+**Description:** <br>
+Retrieve the profile information of the currently authenticated user.
+
+**Purpose:**<br>
+Enables authenticated users to view their own profile information, including personal details, addresses, and account metadata. This endpoint is commonly used to display user information in the UI or verify the current session.
+
+**Endpoint:** `GET /api/v1/users/me`
+
+**Authentication:** Required (User must be logged in)
+
+**Request Headers:**
+
+- Cookies: `accessToken` (automatically sent by browser)
+
+**Request Body:** None
+
+**Response Example (200 OK):**
+
+```json
+{
+    "success": true,
+    "statusCode": 200,
+    "message": "User profile fetched successfully",
+    "data": {
+        "_id": "60d5ec49f1b2c8b1f8e4e1a1",
+        "username": "johndoe123",
+        "email": "john.doe@example.com",
+        "phoneNumber": "+919876543210",
+        "fullName": {
+            "firstName": "John",
+            "lastName": "Doe"
+        },
+        "role": "user",
+        "profilePicture": "https://example.com/uploads/profile-123.jpg",
+        "addresses": [
+            {
+                "_id": "60d5ec49f1b2c8b1f8e4e1a2",
+                "street": "123 Main Street",
+                "city": "Mumbai",
+                "state": "Maharashtra",
+                "zip": "4000001",
+                "country": "india",
+                "landmark": "Near Central Park",
+                "typeOfAddress": "home",
+                "isDefault": true,
+                "createdAt": "2025-01-15T10:30:00.000Z",
+                "updatedAt": "2025-01-15T10:30:00.000Z"
+            }
+        ],
+        "createdAt": "2025-01-15T10:30:00.000Z",
+        "updatedAt": "2025-01-15T10:30:00.000Z"
+    }
+}
+```
+
+<br>
+<details>
+  <summary><b>Response Details</b></summary>
+
+<br>
+
+| Field                             | Type      | Description                                                   |
+| --------------------------------- | --------- | ------------------------------------------------------------- |
+| `success`                         | `boolean` | Indicates if the request was successful.                      |
+| `statusCode`                      | `number`  | HTTP status code (200 for successful retrieval).              |
+| `message`                         | `string`  | Success message.                                              |
+| `data._id`                        | `string`  | Unique user identifier.                                       |
+| `data.username`                   | `string`  | User's username.                                              |
+| `data.email`                      | `string`  | User's email address.                                         |
+| `data.phoneNumber`                | `string`  | User's phone number.                                          |
+| `data.fullName`                   | `object`  | Object containing user's full name.                           |
+| `data.fullName.firstName`         | `string`  | User's first name.                                            |
+| `data.fullName.lastName`          | `string`  | User's last name.                                             |
+| `data.role`                       | `string`  | User's role (user or seller).                                 |
+| `data.profilePicture`             | `string`  | URL to the user's profile picture.                            |
+| `data.addresses`                  | `array`   | Array of user's saved address objects.                        |
+| `data.addresses[]._id`            | `string`  | Unique identifier for the address.                            |
+| `data.addresses[].street`         | `string`  | Street address.                                               |
+| `data.addresses[].city`           | `string`  | City name.                                                    |
+| `data.addresses[].state`          | `string`  | State/province name.                                          |
+| `data.addresses[].zip`            | `string`  | ZIP/postal code.                                              |
+| `data.addresses[].country`        | `string`  | Country name.                                                 |
+| `data.addresses[].landmark`       | `string`  | Nearby landmark (optional).                                   |
+| `data.addresses[].typeOfAddress`  | `string`  | Address type (home or work).                                  |
+| `data.addresses[].isDefault`      | `boolean` | Whether this is the default address.                          |
+| `data.addresses[].createdAt`      | `string`  | ISO 8601 timestamp of address creation.                       |
+| `data.addresses[].updatedAt`      | `string`  | ISO 8601 timestamp of last address update.                    |
+| `data.createdAt`                  | `string`  | ISO 8601 timestamp of account creation.                       |
+| `data.updatedAt`                  | `string`  | ISO 8601 timestamp of last account update.                    |
+
+**Note:** Sensitive fields like `password` and `refreshToken` are automatically excluded from the response.
+
+</details>
+
+<details>
+    <summary><b>Usage</b></summary>
+
+<br>
+
+**Example using cURL:**
+
+```bash
+curl -X GET http://localhost:8000/api/v1/users/me \
+  -H "Cookie: accessToken=<your_access_token>"
+```
+
+**Example using JavaScript (fetch):**
+
+```javascript
+const response = await fetch("http://localhost:8000/api/v1/users/me", {
+    method: "GET",
+    credentials: "include", // Important for sending cookies
+});
+
+const data = await response.json();
+console.log(data.data); // User profile data
+```
+
+**Example using Axios:**
+
+```javascript
+const response = await axios.get("http://localhost:8000/api/v1/users/me", {
+    withCredentials: true, // Important for sending cookies
+});
+
+console.log(response.data.data); // User profile data
+```
+
+</details>
+
+<details>
+    <summary><b>Expected HTTP Status Codes</b></summary>
+
+<br>
+
+| Status Code                 | Meaning                                                       |
+| --------------------------- | ------------------------------------------------------------- |
+| `200 OK`                    | User profile retrieved successfully.                          |
+| `401 Unauthorized`          | User is not authenticated or access token is invalid/expired. |
+| `500 Internal Server Error` | Server error occurred while fetching the profile.             |
+
+</details>
+
+<details>
+    <summary><b>Error Response Examples</b></summary>
+
+<br>
+
+**Unauthorized (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Unauthorized request",
+    "errorCode": "UNAUTHORIZED"
+}
+```
+
+**Invalid Token (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Invalid access token",
+    "errorCode": "INVALID_TOKEN"
+}
+```
+
+**Expired Token (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Access token has expired",
+    "errorCode": "TOKEN_EXPIRED"
+}
+```
+
+</details>

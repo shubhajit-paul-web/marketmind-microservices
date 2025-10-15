@@ -33,10 +33,12 @@ app.use(
 // Routes import
 import healthCheckRoutes from "./routes/healthcheck.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.routes.js";
 
 // Routes declaration
 app.use("/api/v1/health", healthCheckRoutes);
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/users", userRoutes);
 
 // 404 handler
 app.use((req, res, next) => {

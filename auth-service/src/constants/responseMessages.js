@@ -13,6 +13,7 @@ export default {
     REGISTERED_SUCCESS: "User registered successfully",
     LOGIN_SUCCESS: "Logged in successfully",
     LOGOUT_SUCCESS: "Logged out successfully",
+    PROFILE_FETCHED_SUCCESS: "User profile fetched successfully",
     TOKEN_EXPIRED: "Token expired, please login again",
     INVALID_TOKEN: "Invalid authentication token",
     MISSING_ACCESS_TOKEN: "Access token not found, please login again",
