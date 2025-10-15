@@ -20,6 +20,7 @@ export default {
     MISSING_ACCESS_TOKEN: "Access token not found, please login again",
     TOKEN_BLACKLISTED: "Token has been invalidated, please login again",
     PASSWORD_UPDATED: "Password updated successfully",
+    FETCHED: (entity = "Resource") => `${entity} fetched successfully`,
     CREATED: (entity = "Resource") => `${entity} created successfully`,
     UPDATED: (entity = "Resource") => `${entity} updated successfully`,
     DELETED: (entity = "Resource") => `${entity} deleted successfully`,

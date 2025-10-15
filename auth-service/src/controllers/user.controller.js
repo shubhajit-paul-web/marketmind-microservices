@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import asyncHandler from "../utils/AsyncHandler.js";
-import ApiResponse from "../utils/ApiResponse";
+import ApiResponse from "../utils/ApiResponse.js";
 import responseMessages from "../constants/responseMessages.js";
 import UserService from "../services/user.service.js";
 
@@ -31,6 +31,19 @@ class UserController {
         return res
             .status(StatusCodes.CREATED)
             .json(ApiResponse.created(responseMessages.ADDRESS_ADDED_SUCCESS, updatedUser));
+    });
+
+    /**
+     * Get a specific address from user's address list
+     * @route GET /api/v1/users/me/addresses/:id
+     * @access Private
+     */
+    getUserAddress = asyncHandler(async (req, res) => {
+        const address = await UserService.getUserAddress(req.user?.addresses, req.params?.id);
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.FETCHED("User address"), address));
     });
 }
 

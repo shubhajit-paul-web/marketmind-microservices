@@ -1,6 +1,6 @@
 import { body } from "express-validator";
-import cleanString from "../utils/cleanString";
-import { ADDRESS_TYPES, COUNTRIES } from "../constants/constants";
+import cleanString from "../utils/cleanString.js";
+import { ADDRESS_TYPES, COUNTRIES } from "../constants/constants.js";
 import respondWithValidationErrors from "../middlewares/validator.middleware.js";
 
 // Add user address validator

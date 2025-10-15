@@ -110,4 +110,40 @@ describe("POST /api/v1/users/me/addresses", () => {
         expect(res.body.success).toBe(false);
         expect(res.body.errorCode).toBe(errorCodes.MISSING_REQUIRED_FIELDS);
     });
+
+    // Test Case 4: Fetching a specific user address by ID
+    // Given a registered user with a created address
+    // When GET /api/v1/users/me/addresses/:id is called with a valid address ID
+    // Then respond 200 with the address details
+    it("should fetch a specific user address successfully", async () => {
+        const registerUserResponse = await registerUser();
+        const cookies = registerUserResponse.headers["set-cookie"];
+
+        const createdAddressResponse = await request(app)
+            .post("/api/v1/users/me/addresses")
+            .send(dummyAddress)
+            .set("Cookie", cookies)
+            .expect(201);
+
+        const addressId = createdAddressResponse.body?.data?.addresses[0]?._id;
+
+        const res = await request(app)
+            .get(`/api/v1/users/me/addresses/${addressId}`)
+            .set("Cookie", cookies);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.success).toBe(true);
+        expect(res.body.statusCode).toBe(200);
+        expect(res.body.message).toBe(responseMessages.FETCHED("User address"));
+        expect(res.body.data).toBeDefined();
+        expect(res.body.data.street).toBe(dummyAddress.street);
+        expect(res.body.data.city).toBe(dummyAddress.city);
+        expect(res.body.data.state).toBe(dummyAddress.state);
+        expect(res.body.data.zip).toBe(dummyAddress.zip);
+        expect(res.body.data.country).toBe(dummyAddress.country);
+        expect(res.body.data.landmark).toBe(dummyAddress.landmark);
+        expect(res.body.data.typeOfAddress).toBe(dummyAddress.typeOfAddress);
+        expect(res.body.data.isDefault).toBe(dummyAddress.isDefault);
+        expect(res.body.data._id).toBeDefined();
+    });
 });

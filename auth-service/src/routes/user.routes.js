@@ -11,4 +11,7 @@ router.get("/me", authUser, UserController.getCurrentUserProfile);
 // POST /api/v1/users/me/addresses
 router.post("/me/addresses", authUser, addUserAddressValidator, UserController.addUserAddress);
 
+// GET /api/v1/users/me/addresses/:id
+router.get("/me/addresses/:id", authUser, UserController.getUserAddress);
+
 export default router;
