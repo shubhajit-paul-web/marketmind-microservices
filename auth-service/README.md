@@ -870,3 +870,313 @@ console.log(response.data.data); // User profile data
 ```
 
 </details>
+
+<br>
+
+## Add User Address
+
+**Description:** <br>
+Add a new address to the authenticated user's profile.
+
+**Purpose:**<br>
+Enables authenticated users to add additional addresses to their account. Users can add multiple addresses (e.g., home, work) and mark one as default. This is useful for managing shipping addresses in an eCommerce platform.
+
+**Endpoint:** `POST /api/v1/users/me/addresses`
+
+**Authentication:** Required (User must be logged in)
+
+**Request Headers:**
+
+- Cookies: `accessToken` (automatically sent by browser)
+- Content-Type: `application/json`
+
+**Request Body (application/json):**
+
+```json
+{
+    "street": "456 Park Avenue",
+    "city": "Delhi",
+    "state": "Delhi",
+    "zip": "1100001",
+    "country": "india",
+    "landmark": "Near Metro Station",
+    "typeOfAddress": "work",
+    "isDefault": false
+}
+```
+
+**Response Example (201 Created):**
+
+```json
+{
+    "success": true,
+    "statusCode": 201,
+    "message": "Address added successfully",
+    "data": {
+        "_id": "60d5ec49f1b2c8b1f8e4e1a1",
+        "username": "johndoe123",
+        "email": "john.doe@example.com",
+        "phoneNumber": "+919876543210",
+        "fullName": {
+            "firstName": "John",
+            "lastName": "Doe"
+        },
+        "role": "user",
+        "profilePicture": "https://example.com/uploads/profile-123.jpg",
+        "addresses": [
+            {
+                "_id": "60d5ec49f1b2c8b1f8e4e1a2",
+                "street": "123 Main Street",
+                "city": "Mumbai",
+                "state": "Maharashtra",
+                "zip": "4000001",
+                "country": "india",
+                "landmark": "Near Central Park",
+                "typeOfAddress": "home",
+                "isDefault": true,
+                "createdAt": "2025-01-15T10:30:00.000Z",
+                "updatedAt": "2025-01-15T10:30:00.000Z"
+            },
+            {
+                "_id": "60d5ec49f1b2c8b1f8e4e1a3",
+                "street": "456 Park Avenue",
+                "city": "Delhi",
+                "state": "Delhi",
+                "zip": "1100001",
+                "country": "india",
+                "landmark": "Near Metro Station",
+                "typeOfAddress": "work",
+                "isDefault": false,
+                "createdAt": "2025-01-16T14:20:00.000Z",
+                "updatedAt": "2025-01-16T14:20:00.000Z"
+            }
+        ],
+        "createdAt": "2025-01-15T10:30:00.000Z",
+        "updatedAt": "2025-01-16T14:20:00.000Z"
+    }
+}
+```
+
+<br>
+<details>
+  <summary><b>Request Body Fields</b></summary>
+
+<br>
+
+| Field           | Type      | Required | Description                                                                                                                           |
+| --------------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `street`        | `string`  | Yes      | Street address (2-100 characters).                                                                                                    |
+| `city`          | `string`  | Yes      | City name (2-50 characters).                                                                                                          |
+| `state`         | `string`  | Yes      | State/province name (2-50 characters).                                                                                                |
+| `zip`           | `string`  | Yes      | ZIP/postal code (exactly 7 characters).                                                                                               |
+| `country`       | `string`  | No       | Country name. Allowed values: `india`, `united states`, `china`, `japan`, `canada`, `russia`, `spain`, `singapore`. Default: `india`. |
+| `landmark`      | `string`  | No       | Nearby landmark (2-100 characters).                                                                                                   |
+| `typeOfAddress` | `string`  | No       | Address type: `home` or `work`. Default: `home`.                                                                                      |
+| `isDefault`     | `boolean` | No       | Whether this is the default address. Default: `false`.                                                                                |
+
+</details>
+
+<details>
+    <summary><b>Response Details</b></summary>
+
+<br>
+
+| Field                            | Type      | Description                                            |
+| -------------------------------- | --------- | ------------------------------------------------------ |
+| `success`                        | `boolean` | Indicates if the request was successful.               |
+| `statusCode`                     | `number`  | HTTP status code (201 for successful creation).        |
+| `message`                        | `string`  | Success message.                                       |
+| `data._id`                       | `string`  | Unique user identifier.                                |
+| `data.username`                  | `string`  | User's username.                                       |
+| `data.email`                     | `string`  | User's email address.                                  |
+| `data.phoneNumber`               | `string`  | User's phone number.                                   |
+| `data.fullName`                  | `object`  | Object containing user's full name.                    |
+| `data.fullName.firstName`        | `string`  | User's first name.                                     |
+| `data.fullName.lastName`         | `string`  | User's last name.                                      |
+| `data.role`                      | `string`  | User's role (user or seller).                          |
+| `data.profilePicture`            | `string`  | URL to the user's profile picture.                     |
+| `data.addresses`                 | `array`   | Array of all user's addresses (including the new one). |
+| `data.addresses[]._id`           | `string`  | Unique identifier for the address.                     |
+| `data.addresses[].street`        | `string`  | Street address.                                        |
+| `data.addresses[].city`          | `string`  | City name.                                             |
+| `data.addresses[].state`         | `string`  | State/province name.                                   |
+| `data.addresses[].zip`           | `string`  | ZIP/postal code.                                       |
+| `data.addresses[].country`       | `string`  | Country name.                                          |
+| `data.addresses[].landmark`      | `string`  | Nearby landmark (optional).                            |
+| `data.addresses[].typeOfAddress` | `string`  | Address type (home or work).                           |
+| `data.addresses[].isDefault`     | `boolean` | Whether this is the default address.                   |
+| `data.addresses[].createdAt`     | `string`  | ISO 8601 timestamp of address creation.                |
+| `data.addresses[].updatedAt`     | `string`  | ISO 8601 timestamp of last address update.             |
+| `data.createdAt`                 | `string`  | ISO 8601 timestamp of account creation.                |
+| `data.updatedAt`                 | `string`  | ISO 8601 timestamp of last account update.             |
+
+**Note:** The response includes the complete updated user profile with all addresses.
+
+</details>
+
+<details>
+    <summary><b>Validation Rules</b></summary>
+
+<br>
+
+- **Street:** Required, 2-100 characters. Leading/trailing whitespace is trimmed and cleaned.
+- **City:** Required, 2-50 characters. Leading/trailing whitespace is trimmed and cleaned.
+- **State:** Required, 2-50 characters. Leading/trailing whitespace is trimmed and cleaned.
+- **ZIP Code:** Required, must be exactly 7 characters.
+- **Country:** Optional, must be one of the supported countries (lowercase): `india`, `united states`, `china`, `japan`, `canada`, `russia`, `spain`, `singapore`.
+- **Landmark:** Optional, 2-100 characters if provided. Leading/trailing whitespace is trimmed and cleaned.
+- **Type of Address:** Optional, must be either `home` or `work` (case-insensitive).
+- **Is Default:** Optional, must be a boolean value.
+
+</details>
+
+<details>
+    <summary><b>Usage</b></summary>
+
+<br>
+
+**Example using cURL:**
+
+```bash
+curl -X POST http://localhost:8000/api/v1/users/me/addresses \
+  -H "Content-Type: application/json" \
+  -H "Cookie: accessToken=<your_access_token>" \
+  -d '{
+    "street": "456 Park Avenue",
+    "city": "Delhi",
+    "state": "Delhi",
+    "zip": "1100001",
+    "country": "india",
+    "landmark": "Near Metro Station",
+    "typeOfAddress": "work",
+    "isDefault": false
+  }'
+```
+
+**Example using JavaScript (fetch):**
+
+```javascript
+const response = await fetch("http://localhost:8000/api/v1/users/me/addresses", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+        street: "456 Park Avenue",
+        city: "Delhi",
+        state: "Delhi",
+        zip: "1100001",
+        country: "india",
+        landmark: "Near Metro Station",
+        typeOfAddress: "work",
+        isDefault: false,
+    }),
+    credentials: "include", // Important for sending cookies
+});
+
+const data = await response.json();
+console.log(data.data.addresses); // Array of all addresses
+```
+
+**Example using Axios:**
+
+```javascript
+const response = await axios.post(
+    "http://localhost:8000/api/v1/users/me/addresses",
+    {
+        street: "456 Park Avenue",
+        city: "Delhi",
+        state: "Delhi",
+        zip: "1100001",
+        country: "india",
+        landmark: "Near Metro Station",
+        typeOfAddress: "work",
+        isDefault: false,
+    },
+    {
+        withCredentials: true, // Important for sending cookies
+    }
+);
+
+console.log(response.data.data.addresses); // Array of all addresses
+```
+
+**Minimal Request (only required fields):**
+
+```javascript
+{
+    "street": "456 Park Avenue",
+    "city": "Delhi",
+    "state": "Delhi",
+    "zip": "1100001"
+}
+```
+
+</details>
+
+<details>
+    <summary><b>Expected HTTP Status Codes</b></summary>
+
+<br>
+
+| Status Code                 | Meaning                                                                    |
+| --------------------------- | -------------------------------------------------------------------------- |
+| `201 Created`               | Address added successfully to user's profile.                              |
+| `400 Bad Request`           | Validation error (invalid input format, missing required fields, etc.).    |
+| `401 Unauthorized`          | User is not authenticated or access token is invalid/expired.              |
+| `500 Internal Server Error` | Server error occurred while adding the address.                            |
+
+</details>
+
+<details>
+    <summary><b>Error Response Examples</b></summary>
+
+<br>
+
+**Validation Error (400 Bad Request):**
+
+```json
+{
+    "success": false,
+    "statusCode": 400,
+    "message": "Validation error",
+    "errors": [
+        {
+            "field": "street",
+            "message": "Street required"
+        },
+        {
+            "field": "zip",
+            "message": "ZIP must be 7 chars"
+        },
+        {
+            "field": "country",
+            "message": "Invalid country"
+        }
+    ]
+}
+```
+
+**Unauthorized (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Unauthorized request",
+    "errorCode": "UNAUTHORIZED"
+}
+```
+
+**Invalid Token (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Invalid access token",
+    "errorCode": "INVALID_TOKEN"
+}
+```
+
+</details>
