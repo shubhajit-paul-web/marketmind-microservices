@@ -62,6 +62,24 @@ class UserDAO {
             { new: true, runValidators: false }
         );
     }
+
+    /**
+     * Adds a new address to a user's addresses array
+     * @param {string} id - User ID to add the address to
+     * @param {Object} newAddress - Address object to be added to the user's addresses
+     * @returns {Promise<Object|null>} Updated user document with the new address or null if not found
+     */
+    async addAddressToUser(id, newAddress) {
+        return await User.findByIdAndUpdate(
+            id,
+            {
+                $push: {
+                    addresses: newAddress,
+                },
+            },
+            { new: true, runValidators: true }
+        );
+    }
 }
 
 export default new UserDAO();
