@@ -45,6 +45,19 @@ class UserController {
             .status(StatusCodes.OK)
             .json(ApiResponse.success(responseMessages.FETCHED("User address"), address));
     });
+
+    /**
+     * Delete a specific address from the user's address list
+     * @route DELETE /api/v1/users/me/addresses/:id
+     * @access Private
+     */
+    deleteUserAddress = asyncHandler(async (req, res) => {
+        await UserService.deleteUserAddress(req.user?._id, req.params?.id, req.user?.addresses);
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.DELETED("User address")));
+    });
 }
 
 export default new UserController();

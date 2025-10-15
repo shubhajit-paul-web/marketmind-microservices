@@ -14,4 +14,7 @@ router.post("/me/addresses", authUser, addUserAddressValidator, UserController.a
 // GET /api/v1/users/me/addresses/:id
 router.get("/me/addresses/:id", authUser, UserController.getUserAddress);
 
+// DELETE /api/v1/users/me/addresses/:id
+router.delete("/me/addresses/:id", authUser, UserController.deleteUserAddress);
+
 export default router;

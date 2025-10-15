@@ -80,6 +80,24 @@ class UserDAO {
             { new: true, runValidators: true }
         );
     }
+
+    /**
+     * Deletes a specific address from a user's address list
+     * @param {string} userId - The ID of the user whose address is to be deleted
+     * @param {string} addressId - The ID of the address to be removed from the user's address list
+     * @returns {Promise<Object|null>} Updated user document after address deletion, or null if user not found
+     */
+    async deleteUserAddress(userId, addressId) {
+        return await User.findByIdAndUpdate(
+            userId,
+            {
+                $pull: {
+                    addresses: { _id: addressId },
+                },
+            },
+            { new: true }
+        );
+    }
 }
 
 export default new UserDAO();
