@@ -3,6 +3,7 @@ import UserDAO from "../dao/user.dao.js";
 import ApiError from "../utils/ApiError.js";
 import responseMessages from "../constants/responseMessages.js";
 import errorCodes from "../constants/errorCodes.js";
+import { uploadFile } from "./storage.service.js";
 
 /**
  * User Service.
@@ -78,6 +79,7 @@ class UserService {
      * @returns {Promise<Object>} The updated address after the modification
      */
     async updateUserAddress(userId, addressId, addresses, addressDataToUpdate) {
+        // Allowed fields
         const addressFields = [
             "street",
             "city",
@@ -89,6 +91,7 @@ class UserService {
             "isDefault",
         ];
 
+        // Check if the request body contains at least one of the allowed fields
         const isEmptyFields = addressFields.some((field) =>
             // eslint-disable-next-line no-prototype-builtins
             addressDataToUpdate?.hasOwnProperty(field)
@@ -102,6 +105,7 @@ class UserService {
             );
         }
 
+        // Check if an address with the given ID exists in the array
         const hasAddress = addresses?.find((address) => address?._id?.toString() === addressId);
 
         if (!hasAddress) {
@@ -116,6 +120,53 @@ class UserService {
 
         // Returning updated address
         return updatedUser.addresses?.find((address) => address?._id?.toString() === addressId);
+    }
+
+    /**
+     * Updates a user's profile based on the provided data.
+     * @param {string} userId - The ID of the user to update.
+     * @param {object} profileDataToUpdate - An object containing the user profile data to update.
+     * @returns {Promise<object>} The updated user profile.
+     */
+    async updateUserProfile(userId, profileDataToUpdate) {
+        // Allowed fields
+        const fields = ["email", "phoneNumber", "firstName", "lastName", "profilePicture", "role"];
+
+        // Check if the request body contains at least one of the allowed fields
+        // eslint-disable-next-line no-prototype-builtins
+        const isEmptyFields = fields.some((field) => profileDataToUpdate?.hasOwnProperty(field));
+
+        if (!isEmptyFields) {
+            throw new ApiError(
+                StatusCodes.BAD_REQUEST,
+                responseMessages.MISSING_REQUIRED_FIELDS,
+                errorCodes.MISSING_REQUIRED_FIELDS
+            );
+        }
+
+        // Prepare the nested 'fullName' field for update
+        if (profileDataToUpdate?.firstName || profileDataToUpdate?.lastName) {
+            if (profileDataToUpdate?.firstName) {
+                profileDataToUpdate["fullName.firstName"] = profileDataToUpdate.firstName;
+            }
+            if (profileDataToUpdate?.lastName) {
+                profileDataToUpdate["fullName.lastName"] = profileDataToUpdate.lastName;
+            }
+        }
+
+        if (profileDataToUpdate?.profilePicture) {
+            const uploadedProfilePicture = await uploadFile(profileDataToUpdate?.profilePicture);
+
+            profileDataToUpdate.profilePicture = uploadedProfilePicture?.url;
+        }
+
+        // Remove fields that are not allowed to be updated from the request
+        delete profileDataToUpdate["username"];
+        delete profileDataToUpdate["addresses"];
+        delete profileDataToUpdate["password"];
+
+        // Return updated user profile
+        return await UserDAO.updateUserProfile(userId, profileDataToUpdate);
     }
 }
 

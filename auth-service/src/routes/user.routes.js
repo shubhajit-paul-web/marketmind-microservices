@@ -5,11 +5,15 @@ import {
     addUserAddressValidator,
     updateUserAddressValidator,
 } from "../validators/user.validators.js";
+import upload from "../middlewares/multer.middleware.js";
 
 const router = Router();
 
 // GET /api/v1/users/me
 router.get("/me", authUser, UserController.getCurrentUserProfile);
+
+// PATCH /api/v1/users/me
+router.patch("/me", authUser, upload.single("profilePicture"), UserController.updateUserProfile);
 
 // POST /api/v1/users/me/addresses
 router.post("/me/addresses", authUser, addUserAddressValidator, UserController.addUserAddress);

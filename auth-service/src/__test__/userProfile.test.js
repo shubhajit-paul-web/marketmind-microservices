@@ -33,3 +33,36 @@ describe("GET /api/v1/users/me", () => {
         expect(res.body.data.password).toBeUndefined();
     });
 });
+
+describe("PATCH /api/v1/users/me", () => {
+    // Test Case 1: Successful profile update
+    // Given an authenticated user
+    // When a PATCH request is made to /api/v1/users/me with valid profile data and cookies
+    // Then it should respond with 200 and the updated user profile
+    it("should successfully update user profile and return 200 with updated user data", async () => {
+        const registerUserResponse = await registerUser();
+        const registerUserCookies = registerUserResponse.headers["set-cookie"];
+
+        const res = await request(app)
+            .patch("/api/v1/users/me")
+            .field("email", "updated123@gmail.com")
+            .field("firstName", "Sadhu")
+            .attach("profilePicture", registerUserPayload.profilePicture)
+            .set("Cookie", registerUserCookies);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.success).toBe(true);
+        expect(res.body.statusCode).toBe(200);
+        expect(res.body.message).toBe(responseMessages.UPDATED("User profile"));
+        expect(res.body.data).toBeDefined();
+        expect(res.body.data.username).toBe(registerUserPayload.username);
+        expect(res.body.data.email).toBe("updated123@gmail.com"); // updated
+        expect(res.body.data.phoneNumber).toBe("+918645789512");
+        expect(res.body.data.fullName).toBeDefined();
+        expect(res.body.data.fullName.firstName).toBe("Sadhu"); // updated
+        expect(res.body.data.fullName.lastName).toBe(registerUserPayload.lastName);
+        expect(res.body.data.profilePicture).toBeDefined(); // updated
+        expect(res.body.data.addresses).toBeDefined();
+        expect(res.body.data.password).toBeUndefined();
+    });
+});

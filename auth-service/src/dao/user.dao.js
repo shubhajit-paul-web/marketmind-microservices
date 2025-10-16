@@ -114,6 +114,22 @@ class UserDAO {
 
         return await user.save();
     }
+
+    /**
+     * Finds a user by their ID and updates their profile
+     * @param {string} userId - The ID of the user to update
+     * @param {object} profileDataToUpdate - An object containing the fields to update
+     * @returns {Promise<object | null>} A promise that resolves to the updated user document, or null if not found
+     */
+    async updateUserProfile(userId, profileDataToUpdate) {
+        return await User.findByIdAndUpdate(
+            userId,
+            {
+                $set: profileDataToUpdate,
+            },
+            { new: true, runValidators: true }
+        );
+    }
 }
 
 export default new UserDAO();

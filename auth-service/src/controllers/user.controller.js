@@ -80,6 +80,24 @@ class UserController {
             .status(StatusCodes.OK)
             .json(ApiResponse.success(responseMessages.UPDATED("User address"), updatedAddress));
     });
+
+    /**
+     * Update the profile of the currently logged-in user
+     * @route PATCH /api/v1/users/me
+     * @access Private
+     */
+    updateUserProfile = asyncHandler(async (req, res) => {
+        const updatedUserProfile = await UserService.updateUserProfile(req.user?._id, {
+            ...req.body,
+            profilePicture: req?.file,
+        });
+
+        return res
+            .status(StatusCodes.OK)
+            .json(
+                ApiResponse.success(responseMessages.UPDATED("User profile"), updatedUserProfile)
+            );
+    });
 }
 
 export default new UserController();
