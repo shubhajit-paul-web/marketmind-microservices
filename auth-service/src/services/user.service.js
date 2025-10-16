@@ -15,7 +15,16 @@ class UserService {
      * @param {Object} newAddress - Address object to add
      * @returns {Promise<Object>} Updated user object
      */
-    async addUserAddress(id, newAddress) {
+    async addUserAddress(id, newAddress, addresses) {
+        // Validate if the user has reached the maximum address limit of 5
+        if (addresses.length === 5) {
+            throw new ApiError(
+                StatusCodes.BAD_REQUEST,
+                responseMessages.ADDRESS_LIMIT_REACHED,
+                errorCodes.ADDRESS_LIMIT_REACHED
+            );
+        }
+
         return await UserDAO.addAddressToUser(id, newAddress);
     }
 
@@ -69,6 +78,30 @@ class UserService {
      * @returns {Promise<Object>} The updated address after the modification
      */
     async updateUserAddress(userId, addressId, addresses, addressDataToUpdate) {
+        const addressFields = [
+            "street",
+            "city",
+            "state",
+            "zip",
+            "country",
+            "landmark",
+            "typeOfAddress",
+            "isDefault",
+        ];
+
+        const isEmptyFields = addressFields.some((field) =>
+            // eslint-disable-next-line no-prototype-builtins
+            addressDataToUpdate?.hasOwnProperty(field)
+        );
+
+        if (!isEmptyFields) {
+            throw new ApiError(
+                StatusCodes.BAD_REQUEST,
+                responseMessages.MISSING_REQUIRED_FIELDS,
+                errorCodes.MISSING_REQUIRED_FIELDS
+            );
+        }
+
         const hasAddress = addresses?.find((address) => address?._id?.toString() === addressId);
 
         if (!hasAddress) {

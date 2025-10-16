@@ -26,7 +26,11 @@ class UserController {
      * @access Private
      */
     addUserAddress = asyncHandler(async (req, res) => {
-        const updatedUser = await UserService.addUserAddress(req.user?._id, req.body);
+        const updatedUser = await UserService.addUserAddress(
+            req.user?._id,
+            req.body,
+            req.user?.addresses
+        );
 
         return res
             .status(StatusCodes.CREATED)

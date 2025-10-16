@@ -1,7 +1,10 @@
 import { Router } from "express";
 import authUser from "../middlewares/auth.middleware.js";
 import UserController from "../controllers/user.controller.js";
-import { addUserAddressValidator } from "../validators/user.validators.js";
+import {
+    addUserAddressValidator,
+    updateUserAddressValidator,
+} from "../validators/user.validators.js";
 
 const router = Router();
 
@@ -18,6 +21,11 @@ router.get("/me/addresses/:id", authUser, UserController.getUserAddress);
 router.delete("/me/addresses/:id", authUser, UserController.deleteUserAddress);
 
 // PATCH /api/v1/users/me/addresses/:id
-router.patch("/me/addresses/:id", authUser, UserController.updateUserAddress);
+router.patch(
+    "/me/addresses/:id",
+    authUser,
+    updateUserAddressValidator,
+    UserController.updateUserAddress
+);
 
 export default router;

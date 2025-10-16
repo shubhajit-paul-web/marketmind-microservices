@@ -241,4 +241,33 @@ describe("PATCH /api/v1/users/me/addresses/:id", () => {
         expect(res.body.data.isDefault).toBe(dummyAddress.isDefault);
         expect(res.body.data._id).toBeDefined();
     });
+
+    // Test Case 2: Update user address with empty request body
+    // Given a registered user with an existing address
+    // When a PATCH request is made to /api/v1/users/me/addresses/:id with an empty request body
+    // Then it should respond with a 400 status code and a 'MISSING_REQUIRED_FIELDS' error
+    it("should return a validation error when updating an address with an empty body", async () => {
+        const registerUserResponse = await registerUser();
+        const cookies = registerUserResponse.headers["set-cookie"];
+
+        const updatedUser = await request(app)
+            .post("/api/v1/users/me/addresses")
+            .send(dummyAddress)
+            .set("Cookie", cookies)
+            .expect(201);
+
+        const addressId = updatedUser.body?.data?.addresses[0]?._id;
+
+        const res = await request(app)
+            .patch(`/api/v1/users/me/addresses/${addressId}`)
+            .send()
+            .set("Cookie", cookies);
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.success).toBe(false);
+        expect(res.body.statusCode).toBe(400);
+        expect(res.body.errorCode).toBe(errorCodes.MISSING_REQUIRED_FIELDS);
+        expect(res.body.isOperational).toBe(true);
+        expect(res.body.message).toBe(responseMessages.MISSING_REQUIRED_FIELDS);
+    });
 });

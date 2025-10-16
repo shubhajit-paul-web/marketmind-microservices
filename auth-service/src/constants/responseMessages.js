@@ -15,6 +15,7 @@ export default {
     LOGOUT_SUCCESS: "Logged out successfully",
     PROFILE_FETCHED_SUCCESS: "User profile fetched successfully",
     ADDRESS_ADDED_SUCCESS: "Address added successfully",
+    ADDRESS_LIMIT_REACHED: "You have reached the maximum limit of 5 addresses",
     TOKEN_EXPIRED: "Token expired, please login again",
     INVALID_TOKEN: "Invalid authentication token",
     MISSING_ACCESS_TOKEN: "Access token not found, please login again",

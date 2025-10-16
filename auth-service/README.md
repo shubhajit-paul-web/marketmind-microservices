@@ -749,34 +749,34 @@ Enables authenticated users to view their own profile information, including per
 
 <br>
 
-| Field                             | Type      | Description                                                   |
-| --------------------------------- | --------- | ------------------------------------------------------------- |
-| `success`                         | `boolean` | Indicates if the request was successful.                      |
-| `statusCode`                      | `number`  | HTTP status code (200 for successful retrieval).              |
-| `message`                         | `string`  | Success message.                                              |
-| `data._id`                        | `string`  | Unique user identifier.                                       |
-| `data.username`                   | `string`  | User's username.                                              |
-| `data.email`                      | `string`  | User's email address.                                         |
-| `data.phoneNumber`                | `string`  | User's phone number.                                          |
-| `data.fullName`                   | `object`  | Object containing user's full name.                           |
-| `data.fullName.firstName`         | `string`  | User's first name.                                            |
-| `data.fullName.lastName`          | `string`  | User's last name.                                             |
-| `data.role`                       | `string`  | User's role (user or seller).                                 |
-| `data.profilePicture`             | `string`  | URL to the user's profile picture.                            |
-| `data.addresses`                  | `array`   | Array of user's saved address objects.                        |
-| `data.addresses[]._id`            | `string`  | Unique identifier for the address.                            |
-| `data.addresses[].street`         | `string`  | Street address.                                               |
-| `data.addresses[].city`           | `string`  | City name.                                                    |
-| `data.addresses[].state`          | `string`  | State/province name.                                          |
-| `data.addresses[].zip`            | `string`  | ZIP/postal code.                                              |
-| `data.addresses[].country`        | `string`  | Country name.                                                 |
-| `data.addresses[].landmark`       | `string`  | Nearby landmark (optional).                                   |
-| `data.addresses[].typeOfAddress`  | `string`  | Address type (home or work).                                  |
-| `data.addresses[].isDefault`      | `boolean` | Whether this is the default address.                          |
-| `data.addresses[].createdAt`      | `string`  | ISO 8601 timestamp of address creation.                       |
-| `data.addresses[].updatedAt`      | `string`  | ISO 8601 timestamp of last address update.                    |
-| `data.createdAt`                  | `string`  | ISO 8601 timestamp of account creation.                       |
-| `data.updatedAt`                  | `string`  | ISO 8601 timestamp of last account update.                    |
+| Field                            | Type      | Description                                      |
+| -------------------------------- | --------- | ------------------------------------------------ |
+| `success`                        | `boolean` | Indicates if the request was successful.         |
+| `statusCode`                     | `number`  | HTTP status code (200 for successful retrieval). |
+| `message`                        | `string`  | Success message.                                 |
+| `data._id`                       | `string`  | Unique user identifier.                          |
+| `data.username`                  | `string`  | User's username.                                 |
+| `data.email`                     | `string`  | User's email address.                            |
+| `data.phoneNumber`               | `string`  | User's phone number.                             |
+| `data.fullName`                  | `object`  | Object containing user's full name.              |
+| `data.fullName.firstName`        | `string`  | User's first name.                               |
+| `data.fullName.lastName`         | `string`  | User's last name.                                |
+| `data.role`                      | `string`  | User's role (user or seller).                    |
+| `data.profilePicture`            | `string`  | URL to the user's profile picture.               |
+| `data.addresses`                 | `array`   | Array of user's saved address objects.           |
+| `data.addresses[]._id`           | `string`  | Unique identifier for the address.               |
+| `data.addresses[].street`        | `string`  | Street address.                                  |
+| `data.addresses[].city`          | `string`  | City name.                                       |
+| `data.addresses[].state`         | `string`  | State/province name.                             |
+| `data.addresses[].zip`           | `string`  | ZIP/postal code.                                 |
+| `data.addresses[].country`       | `string`  | Country name.                                    |
+| `data.addresses[].landmark`      | `string`  | Nearby landmark (optional).                      |
+| `data.addresses[].typeOfAddress` | `string`  | Address type (home or work).                     |
+| `data.addresses[].isDefault`     | `boolean` | Whether this is the default address.             |
+| `data.addresses[].createdAt`     | `string`  | ISO 8601 timestamp of address creation.          |
+| `data.addresses[].updatedAt`     | `string`  | ISO 8601 timestamp of last address update.       |
+| `data.createdAt`                 | `string`  | ISO 8601 timestamp of account creation.          |
+| `data.updatedAt`                 | `string`  | ISO 8601 timestamp of last account update.       |
 
 **Note:** Sensitive fields like `password` and `refreshToken` are automatically excluded from the response.
 
@@ -1119,12 +1119,12 @@ console.log(response.data.data.addresses); // Array of all addresses
 
 <br>
 
-| Status Code                 | Meaning                                                                    |
-| --------------------------- | -------------------------------------------------------------------------- |
-| `201 Created`               | Address added successfully to user's profile.                              |
-| `400 Bad Request`           | Validation error (invalid input format, missing required fields, etc.).    |
-| `401 Unauthorized`          | User is not authenticated or access token is invalid/expired.              |
-| `500 Internal Server Error` | Server error occurred while adding the address.                            |
+| Status Code                 | Meaning                                                                                                  |
+| --------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `201 Created`               | Address added successfully to user's profile.                                                            |
+| `400 Bad Request`           | Validation error (invalid input format, missing required fields, etc.) or address limit reached (max 5). |
+| `401 Unauthorized`          | User is not authenticated or access token is invalid/expired.                                            |
+| `500 Internal Server Error` | Server error occurred while adding the address.                                                          |
 
 </details>
 
@@ -1154,6 +1154,609 @@ console.log(response.data.data.addresses); // Array of all addresses
             "message": "Invalid country"
         }
     ]
+}
+```
+
+**Address Limit Reached (400 Bad Request):**
+
+```json
+{
+    "success": false,
+    "statusCode": 400,
+    "message": "Address limit reached. You can add up to 5 addresses only",
+    "errorCode": "ADDRESS_LIMIT_REACHED"
+}
+```
+
+**Unauthorized (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Unauthorized request",
+    "errorCode": "UNAUTHORIZED"
+}
+```
+
+**Invalid Token (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Invalid access token",
+    "errorCode": "INVALID_TOKEN"
+}
+```
+
+</details>
+
+<br>
+
+## Get User Address
+
+**Description:** <br>
+Retrieve a specific address from the authenticated user's address list.
+
+**Purpose:**<br>
+Enables authenticated users to fetch details of a specific address by its ID. This is useful for viewing, editing, or verifying a particular address before performing operations like checkout or shipping.
+
+**Endpoint:** `GET /api/v1/users/me/addresses/:id`
+
+**Authentication:** Required (User must be logged in)
+
+**Request Headers:**
+
+- Cookies: `accessToken` (automatically sent by browser)
+
+**URL Parameters:**
+
+- `id` (required): The unique identifier of the address to retrieve
+
+**Request Body:** None
+
+**Response Example (200 OK):**
+
+```json
+{
+    "success": true,
+    "statusCode": 200,
+    "message": "User address fetched successfully",
+    "data": {
+        "_id": "60d5ec49f1b2c8b1f8e4e1a2",
+        "street": "123 Main Street",
+        "city": "Mumbai",
+        "state": "Maharashtra",
+        "zip": "4000001",
+        "country": "india",
+        "landmark": "Near Central Park",
+        "typeOfAddress": "home",
+        "isDefault": true,
+        "createdAt": "2025-01-15T10:30:00.000Z",
+        "updatedAt": "2025-01-15T10:30:00.000Z"
+    }
+}
+```
+
+<br>
+<details>
+  <summary><b>Response Details</b></summary>
+
+<br>
+
+| Field                | Type      | Description                                      |
+| -------------------- | --------- | ------------------------------------------------ |
+| `success`            | `boolean` | Indicates if the request was successful.         |
+| `statusCode`         | `number`  | HTTP status code (200 for successful retrieval). |
+| `message`            | `string`  | Success message.                                 |
+| `data._id`           | `string`  | Unique identifier for the address.               |
+| `data.street`        | `string`  | Street address.                                  |
+| `data.city`          | `string`  | City name.                                       |
+| `data.state`         | `string`  | State/province name.                             |
+| `data.zip`           | `string`  | ZIP/postal code.                                 |
+| `data.country`       | `string`  | Country name.                                    |
+| `data.landmark`      | `string`  | Nearby landmark (if provided).                   |
+| `data.typeOfAddress` | `string`  | Address type (home or work).                     |
+| `data.isDefault`     | `boolean` | Whether this is the default address.             |
+| `data.createdAt`     | `string`  | ISO 8601 timestamp of address creation.          |
+| `data.updatedAt`     | `string`  | ISO 8601 timestamp of last address update.       |
+
+</details>
+
+<details>
+    <summary><b>Usage</b></summary>
+
+<br>
+
+**Example using cURL:**
+
+```bash
+curl -X GET http://localhost:8000/api/v1/users/me/addresses/60d5ec49f1b2c8b1f8e4e1a2 \
+  -H "Cookie: accessToken=<your_access_token>"
+```
+
+**Example using JavaScript (fetch):**
+
+```javascript
+const addressId = "60d5ec49f1b2c8b1f8e4e1a2";
+const response = await fetch(`http://localhost:8000/api/v1/users/me/addresses/${addressId}`, {
+    method: "GET",
+    credentials: "include", // Important for sending cookies
+});
+
+const data = await response.json();
+console.log(data.data); // Address object
+```
+
+**Example using Axios:**
+
+```javascript
+const addressId = "60d5ec49f1b2c8b1f8e4e1a2";
+const response = await axios.get(`http://localhost:8000/api/v1/users/me/addresses/${addressId}`, {
+    withCredentials: true, // Important for sending cookies
+});
+
+console.log(response.data.data); // Address object
+```
+
+</details>
+
+<details>
+    <summary><b>Expected HTTP Status Codes</b></summary>
+
+<br>
+
+| Status Code                 | Meaning                                                       |
+| --------------------------- | ------------------------------------------------------------- |
+| `200 OK`                    | Address retrieved successfully.                               |
+| `401 Unauthorized`          | User is not authenticated or access token is invalid/expired. |
+| `404 Not Found`             | Address with the specified ID does not exist.                 |
+| `500 Internal Server Error` | Server error occurred while fetching the address.             |
+
+</details>
+
+<details>
+    <summary><b>Error Response Examples</b></summary>
+
+<br>
+
+**Address Not Found (404 Not Found):**
+
+```json
+{
+    "success": false,
+    "statusCode": 404,
+    "message": "Address not found",
+    "errorCode": "ADDRESS_NOT_FOUND"
+}
+```
+
+**Unauthorized (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Unauthorized request",
+    "errorCode": "UNAUTHORIZED"
+}
+```
+
+**Invalid Token (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Invalid access token",
+    "errorCode": "INVALID_TOKEN"
+}
+```
+
+</details>
+
+<br>
+
+## Update User Address
+
+**Description:** <br>
+Update a specific address in the authenticated user's address list.
+
+**Purpose:**<br>
+Enables authenticated users to modify details of an existing address. Users can update any field of the address including street, city, state, ZIP code, country, landmark, address type, or default status. At least one field must be provided in the request.
+
+**Endpoint:** `PATCH /api/v1/users/me/addresses/:id`
+
+**Authentication:** Required (User must be logged in)
+
+**Request Headers:**
+
+- Cookies: `accessToken` (automatically sent by browser)
+- Content-Type: `application/json`
+
+**URL Parameters:**
+
+- `id` (required): The unique identifier of the address to update
+
+**Request Body (application/json):**
+
+```json
+{
+    "street": "789 Updated Street",
+    "city": "Bangalore",
+    "state": "Karnataka",
+    "zip": "5600001",
+    "country": "india",
+    "landmark": "Near Tech Park",
+    "typeOfAddress": "work",
+    "isDefault": true
+}
+```
+
+**Response Example (200 OK):**
+
+```json
+{
+    "success": true,
+    "statusCode": 200,
+    "message": "User address updated successfully",
+    "data": {
+        "_id": "60d5ec49f1b2c8b1f8e4e1a2",
+        "street": "789 Updated Street",
+        "city": "Bangalore",
+        "state": "Karnataka",
+        "zip": "5600001",
+        "country": "india",
+        "landmark": "Near Tech Park",
+        "typeOfAddress": "work",
+        "isDefault": true,
+        "createdAt": "2025-01-15T10:30:00.000Z",
+        "updatedAt": "2025-01-16T15:45:00.000Z"
+    }
+}
+```
+
+<br>
+<details>
+  <summary><b>Request Body Fields</b></summary>
+
+<br>
+
+**Note:** All fields are optional, but at least one field must be provided.
+
+| Field           | Type      | Required | Description                                                                                                         |
+| --------------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| `street`        | `string`  | No       | Street address (2-100 characters).                                                                                  |
+| `city`          | `string`  | No       | City name (2-50 characters).                                                                                        |
+| `state`         | `string`  | No       | State/province name (2-50 characters).                                                                              |
+| `zip`           | `string`  | No       | ZIP/postal code (exactly 7 characters).                                                                             |
+| `country`       | `string`  | No       | Country name. Allowed values: `india`, `united states`, `china`, `japan`, `canada`, `russia`, `spain`, `singapore`. |
+| `landmark`      | `string`  | No       | Nearby landmark (2-100 characters).                                                                                 |
+| `typeOfAddress` | `string`  | No       | Address type: `home` or `work`.                                                                                     |
+| `isDefault`     | `boolean` | No       | Whether this is the default address.                                                                                |
+
+</details>
+
+<details>
+    <summary><b>Response Details</b></summary>
+
+<br>
+
+| Field                | Type      | Description                                   |
+| -------------------- | --------- | --------------------------------------------- |
+| `success`            | `boolean` | Indicates if the request was successful.      |
+| `statusCode`         | `number`  | HTTP status code (200 for successful update). |
+| `message`            | `string`  | Success message.                              |
+| `data._id`           | `string`  | Unique identifier for the address.            |
+| `data.street`        | `string`  | Updated street address.                       |
+| `data.city`          | `string`  | Updated city name.                            |
+| `data.state`         | `string`  | Updated state/province name.                  |
+| `data.zip`           | `string`  | Updated ZIP/postal code.                      |
+| `data.country`       | `string`  | Updated country name.                         |
+| `data.landmark`      | `string`  | Updated landmark (if provided).               |
+| `data.typeOfAddress` | `string`  | Updated address type (home or work).          |
+| `data.isDefault`     | `boolean` | Updated default address status.               |
+| `data.createdAt`     | `string`  | ISO 8601 timestamp of address creation.       |
+| `data.updatedAt`     | `string`  | ISO 8601 timestamp of last address update.    |
+
+**Note:** Only the updated address object is returned, not the entire user profile.
+
+</details>
+
+<details>
+    <summary><b>Validation Rules</b></summary>
+
+<br>
+
+- **At least one field required:** The request must include at least one field to update. Empty requests will be rejected.
+- **Street:** If provided, must be 2-100 characters. Leading/trailing whitespace is trimmed and cleaned.
+- **City:** If provided, must be 2-50 characters. Leading/trailing whitespace is trimmed and cleaned.
+- **State:** If provided, must be 2-50 characters. Leading/trailing whitespace is trimmed and cleaned.
+- **ZIP Code:** If provided, must be exactly 7 characters.
+- **Country:** If provided, must be one of the supported countries (lowercase).
+- **Landmark:** If provided, must be 2-100 characters. Leading/trailing whitespace is trimmed and cleaned.
+- **Type of Address:** If provided, must be either `home` or `work` (case-insensitive).
+- **Is Default:** If provided, must be a boolean value.
+
+</details>
+
+<details>
+    <summary><b>Usage</b></summary>
+
+<br>
+
+**Example using cURL:**
+
+```bash
+curl -X PATCH http://localhost:8000/api/v1/users/me/addresses/60d5ec49f1b2c8b1f8e4e1a2 \
+  -H "Content-Type: application/json" \
+  -H "Cookie: accessToken=<your_access_token>" \
+  -d '{
+    "street": "789 Updated Street",
+    "city": "Bangalore",
+    "isDefault": true
+  }'
+```
+
+**Example using JavaScript (fetch):**
+
+```javascript
+const addressId = "60d5ec49f1b2c8b1f8e4e1a2";
+const response = await fetch(`http://localhost:8000/api/v1/users/me/addresses/${addressId}`, {
+    method: "PATCH",
+    headers: {
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+        street: "789 Updated Street",
+        city: "Bangalore",
+        state: "Karnataka",
+        isDefault: true,
+    }),
+    credentials: "include", // Important for sending cookies
+});
+
+const data = await response.json();
+console.log(data.data); // Updated address object
+```
+
+**Example using Axios:**
+
+```javascript
+const addressId = "60d5ec49f1b2c8b1f8e4e1a2";
+const response = await axios.patch(
+    `http://localhost:8000/api/v1/users/me/addresses/${addressId}`,
+    {
+        street: "789 Updated Street",
+        city: "Bangalore",
+        state: "Karnataka",
+        isDefault: true,
+    },
+    {
+        withCredentials: true, // Important for sending cookies
+    }
+);
+
+console.log(response.data.data); // Updated address object
+```
+
+**Partial Update (only specific fields):**
+
+```javascript
+// Update only the landmark and address type
+{
+    "landmark": "Near New Shopping Mall",
+    "typeOfAddress": "home"
+}
+```
+
+</details>
+
+<details>
+    <summary><b>Expected HTTP Status Codes</b></summary>
+
+<br>
+
+| Status Code                 | Meaning                                                       |
+| --------------------------- | ------------------------------------------------------------- |
+| `200 OK`                    | Address updated successfully.                                 |
+| `400 Bad Request`           | Validation error or no fields provided to update.             |
+| `401 Unauthorized`          | User is not authenticated or access token is invalid/expired. |
+| `404 Not Found`             | Address with the specified ID does not exist.                 |
+| `500 Internal Server Error` | Server error occurred while updating the address.             |
+
+</details>
+
+<details>
+    <summary><b>Error Response Examples</b></summary>
+
+<br>
+
+**Validation Error (400 Bad Request):**
+
+```json
+{
+    "success": false,
+    "statusCode": 400,
+    "message": "Validation error",
+    "errors": [
+        {
+            "field": "street",
+            "message": "Street 2-100 chars"
+        },
+        {
+            "field": "zip",
+            "message": "ZIP must be 7 chars"
+        }
+    ]
+}
+```
+
+**Missing Required Fields (400 Bad Request):**
+
+```json
+{
+    "success": false,
+    "statusCode": 400,
+    "message": "Missing required fields",
+    "errorCode": "MISSING_REQUIRED_FIELDS"
+}
+```
+
+**Address Not Found (404 Not Found):**
+
+```json
+{
+    "success": false,
+    "statusCode": 404,
+    "message": "Address not found",
+    "errorCode": "ADDRESS_NOT_FOUND"
+}
+```
+
+**Unauthorized (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Unauthorized request",
+    "errorCode": "UNAUTHORIZED"
+}
+```
+
+**Invalid Token (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Invalid access token",
+    "errorCode": "INVALID_TOKEN"
+}
+```
+
+</details>
+
+<br>
+
+## Delete User Address
+
+**Description:** <br>
+Delete a specific address from the authenticated user's address list.
+
+**Purpose:**<br>
+Enables authenticated users to remove an address from their profile. This is useful for cleaning up old or unused addresses. Users can maintain up to 5 addresses in their profile.
+
+**Endpoint:** `DELETE /api/v1/users/me/addresses/:id`
+
+**Authentication:** Required (User must be logged in)
+
+**Request Headers:**
+
+- Cookies: `accessToken` (automatically sent by browser)
+
+**URL Parameters:**
+
+- `id` (required): The unique identifier of the address to delete
+
+**Request Body:** None
+
+**Response Example (200 OK):**
+
+```json
+{
+    "success": true,
+    "statusCode": 200,
+    "message": "User address deleted successfully"
+}
+```
+
+<br>
+<details>
+  <summary><b>Response Details</b></summary>
+
+<br>
+
+| Field        | Type      | Description                                     |
+| ------------ | --------- | ----------------------------------------------- |
+| `success`    | `boolean` | Indicates if the request was successful.        |
+| `statusCode` | `number`  | HTTP status code (200 for successful deletion). |
+| `message`    | `string`  | Success message confirming deletion.            |
+
+**Note:** The response does not include the deleted address data. The address is permanently removed from the user's profile.
+
+</details>
+
+<details>
+    <summary><b>Usage</b></summary>
+
+<br>
+
+**Example using cURL:**
+
+```bash
+curl -X DELETE http://localhost:8000/api/v1/users/me/addresses/60d5ec49f1b2c8b1f8e4e1a2 \
+  -H "Cookie: accessToken=<your_access_token>"
+```
+
+**Example using JavaScript (fetch):**
+
+```javascript
+const addressId = "60d5ec49f1b2c8b1f8e4e1a2";
+const response = await fetch(`http://localhost:8000/api/v1/users/me/addresses/${addressId}`, {
+    method: "DELETE",
+    credentials: "include", // Important for sending cookies
+});
+
+const data = await response.json();
+console.log(data.message); // Success message
+```
+
+**Example using Axios:**
+
+```javascript
+const addressId = "60d5ec49f1b2c8b1f8e4e1a2";
+const response = await axios.delete(
+    `http://localhost:8000/api/v1/users/me/addresses/${addressId}`,
+    {
+        withCredentials: true, // Important for sending cookies
+    }
+);
+
+console.log(response.data.message); // Success message
+```
+
+</details>
+
+<details>
+    <summary><b>Expected HTTP Status Codes</b></summary>
+
+<br>
+
+| Status Code                 | Meaning                                                       |
+| --------------------------- | ------------------------------------------------------------- |
+| `200 OK`                    | Address deleted successfully.                                 |
+| `401 Unauthorized`          | User is not authenticated or access token is invalid/expired. |
+| `404 Not Found`             | Address with the specified ID does not exist.                 |
+| `500 Internal Server Error` | Server error occurred while deleting the address.             |
+
+</details>
+
+<details>
+    <summary><b>Error Response Examples</b></summary>
+
+<br>
+
+**Address Not Found (404 Not Found):**
+
+```json
+{
+    "success": false,
+    "statusCode": 404,
+    "message": "Address not found",
+    "errorCode": "ADDRESS_NOT_FOUND"
 }
 ```
 
