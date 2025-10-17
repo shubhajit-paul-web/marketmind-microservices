@@ -1783,3 +1783,725 @@ console.log(response.data.message); // Success message
 ```
 
 </details>
+
+<br>
+
+## Update User Profile
+
+**Description:** <br>
+Update the profile information of the currently authenticated user.
+
+**Purpose:**<br>
+Enables authenticated users to modify their profile details including email, phone number, first name, last name, role, and profile picture. Users can update one or more fields in a single request. This is useful for keeping user information up-to-date.
+
+**Endpoint:** `PATCH /api/v1/users/me`
+
+**Authentication:** Required (User must be logged in)
+
+**Request Headers:**
+
+- Cookies: `accessToken` (automatically sent by browser)
+- Content-Type: `multipart/form-data`
+
+**Request Body (multipart/form-data):**
+
+```json
+{
+    "email": "newemail@example.com",
+    "phoneNumber": "+919876543210",
+    "firstName": "John",
+    "lastName": "Smith",
+    "role": "seller"
+}
+```
+
+**File Upload (Optional):**
+
+- Field name: `profilePicture`
+- Accepted formats: Images (e.g., JPEG, PNG)
+
+**Response Example (200 OK):**
+
+```json
+{
+    "success": true,
+    "statusCode": 200,
+    "message": "User profile updated successfully",
+    "data": {
+        "_id": "60d5ec49f1b2c8b1f8e4e1a1",
+        "username": "johndoe123",
+        "email": "newemail@example.com",
+        "phoneNumber": "+919876543210",
+        "fullName": {
+            "firstName": "John",
+            "lastName": "Smith"
+        },
+        "role": "seller",
+        "profilePicture": "https://example.com/uploads/profile-updated-123.jpg",
+        "addresses": [
+            {
+                "_id": "60d5ec49f1b2c8b1f8e4e1a2",
+                "street": "123 Main Street",
+                "city": "Mumbai",
+                "state": "Maharashtra",
+                "zip": "4000001",
+                "country": "india",
+                "landmark": "Near Central Park",
+                "typeOfAddress": "home",
+                "isDefault": true,
+                "createdAt": "2025-01-15T10:30:00.000Z",
+                "updatedAt": "2025-01-15T10:30:00.000Z"
+            }
+        ],
+        "createdAt": "2025-01-15T10:30:00.000Z",
+        "updatedAt": "2025-01-16T16:20:00.000Z"
+    }
+}
+```
+
+<br>
+<details>
+  <summary><b>Request Body Fields</b></summary>
+
+<br>
+
+**Note:** All fields are optional, but at least one field must be provided.
+
+| Field            | Type     | Required | Description                                                                        |
+| ---------------- | -------- | -------- | ---------------------------------------------------------------------------------- |
+| `email`          | `string` | No       | Valid email address.                                                               |
+| `phoneNumber`    | `string` | No       | Valid phone number in international format (e.g., +919876543210).                  |
+| `firstName`      | `string` | No       | User's first name (2-30 characters, letters only).                                 |
+| `lastName`       | `string` | No       | User's last name (2-30 characters, letters only).                                  |
+| `role`           | `string` | No       | User role: `user` or `seller`.                                                     |
+| `profilePicture` | `file`   | No       | New profile picture image file. If provided, replaces the existing profile image. |
+
+</details>
+
+<details>
+    <summary><b>Response Details</b></summary>
+
+<br>
+
+| Field                     | Type      | Description                                 |
+| ------------------------- | --------- | ------------------------------------------- |
+| `success`                 | `boolean` | Indicates if the request was successful.    |
+| `statusCode`              | `number`  | HTTP status code (200 for successful)       |
+| `message`                 | `string`  | Success message.                            |
+| `data._id`                | `string`  | Unique user identifier.                     |
+| `data.username`           | `string`  | User's username (cannot be changed).        |
+| `data.email`              | `string`  | Updated email address.                      |
+| `data.phoneNumber`        | `string`  | Updated phone number.                       |
+| `data.fullName`           | `object`  | Object containing user's full name.         |
+| `data.fullName.firstName` | `string`  | Updated first name.                         |
+| `data.fullName.lastName`  | `string`  | Updated last name.                          |
+| `data.role`               | `string`  | Updated user role.                          |
+| `data.profilePicture`     | `string`  | URL to the updated profile picture.         |
+| `data.addresses`          | `array`   | Array of user's saved address objects.      |
+| `data.createdAt`          | `string`  | ISO 8601 timestamp of account creation.     |
+| `data.updatedAt`          | `string`  | ISO 8601 timestamp of last account update.  |
+
+**Note:** The response includes the complete updated user profile.
+
+</details>
+
+<details>
+    <summary><b>Validation Rules</b></summary>
+
+<br>
+
+- **At least one field required:** The request must include at least one field to update.
+- **Email:** If provided, must be a valid email format. Will be checked for uniqueness.
+- **Phone Number:** If provided, must be in international format (e.g., +919876543210) with 7-15 digits.
+- **First/Last Name:** If provided, only alphabetic characters allowed, 2-30 characters each. Automatically capitalized.
+- **Role:** If provided, must be either `user` or `seller` (case-insensitive).
+- **Profile Picture:** If provided, must be a valid image file.
+
+**Note:** The username cannot be changed through this endpoint.
+
+</details>
+
+<details>
+    <summary><b>Usage</b></summary>
+
+<br>
+
+**Example using cURL:**
+
+```bash
+curl -X PATCH http://localhost:8000/api/v1/users/me \
+  -H "Cookie: accessToken=<your_access_token>" \
+  -F "email=newemail@example.com" \
+  -F "firstName=John" \
+  -F "lastName=Smith" \
+  -F "profilePicture=@/path/to/new-profile.jpg"
+```
+
+**Example using JavaScript (fetch with FormData):**
+
+```javascript
+const formData = new FormData();
+formData.append("email", "newemail@example.com");
+formData.append("firstName", "John");
+formData.append("lastName", "Smith");
+formData.append("phoneNumber", "+919876543210");
+formData.append("role", "seller");
+
+// Optionally add profile picture
+if (fileInput.files[0]) {
+    formData.append("profilePicture", fileInput.files[0]);
+}
+
+const response = await fetch("http://localhost:8000/api/v1/users/me", {
+    method: "PATCH",
+    body: formData,
+    credentials: "include", // Important for sending cookies
+});
+
+const data = await response.json();
+console.log(data.data); // Updated user profile
+```
+
+**Example using Axios:**
+
+```javascript
+const formData = new FormData();
+formData.append("email", "newemail@example.com");
+formData.append("firstName", "John");
+formData.append("lastName", "Smith");
+
+const response = await axios.patch("http://localhost:8000/api/v1/users/me", formData, {
+    withCredentials: true, // Important for sending cookies
+    headers: {
+        "Content-Type": "multipart/form-data",
+    },
+});
+
+console.log(response.data.data); // Updated user profile
+```
+
+**Partial Update (only specific fields):**
+
+```bash
+# Update only email
+curl -X PATCH http://localhost:8000/api/v1/users/me \
+  -H "Cookie: accessToken=<your_access_token>" \
+  -F "email=newemail@example.com"
+```
+
+</details>
+
+<details>
+    <summary><b>Expected HTTP Status Codes</b></summary>
+
+<br>
+
+| Status Code                 | Meaning                                                       |
+| --------------------------- | ------------------------------------------------------------- |
+| `200 OK`                    | User profile updated successfully.                            |
+| `400 Bad Request`           | Validation error or no fields provided to update.             |
+| `401 Unauthorized`          | User is not authenticated or access token is invalid/expired. |
+| `409 Conflict`              | Email or phone number already exists for another user.        |
+| `500 Internal Server Error` | Server error occurred while updating the profile.             |
+
+</details>
+
+<details>
+    <summary><b>Error Response Examples</b></summary>
+
+<br>
+
+**Validation Error (400 Bad Request):**
+
+```json
+{
+    "success": false,
+    "statusCode": 400,
+    "message": "Validation error",
+    "errors": [
+        {
+            "field": "email",
+            "message": "Please provide a valid email id"
+        },
+        {
+            "field": "firstName",
+            "message": "First name must be 2-30 characters"
+        }
+    ]
+}
+```
+
+**Conflict Error (409 Conflict):**
+
+```json
+{
+    "success": false,
+    "statusCode": 409,
+    "message": "User with this email already exists",
+    "errorCode": "EMAIL_ALREADY_EXISTS"
+}
+```
+
+**Unauthorized (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Unauthorized request",
+    "errorCode": "UNAUTHORIZED"
+}
+```
+
+**Invalid Token (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Invalid access token",
+    "errorCode": "INVALID_TOKEN"
+}
+```
+
+</details>
+
+<br>
+
+## Change Password
+
+**Description:** <br>
+Change the password for the currently authenticated user.
+
+**Purpose:**<br>
+Enables authenticated users to update their account password for security purposes. The user must provide their current password for verification along with the new password. Upon successful password change, new authentication tokens are generated and set in cookies.
+
+**Endpoint:** `PATCH /api/v1/auth/password`
+
+**Authentication:** Required (User must be logged in)
+
+**Request Headers:**
+
+- Cookies: `accessToken` (automatically sent by browser)
+- Content-Type: `application/json`
+
+**Request Body (application/json):**
+
+```json
+{
+    "oldPassword": "CurrentPass123",
+    "newPassword": "NewSecurePass456"
+}
+```
+
+**Response Example (200 OK):**
+
+```json
+{
+    "success": true,
+    "statusCode": 200,
+    "message": "Password updated successfully"
+}
+```
+
+<br>
+<details>
+  <summary><b>Request Body Fields</b></summary>
+
+<br>
+
+| Field         | Type     | Required | Description                                                                       |
+| ------------- | -------- | -------- | --------------------------------------------------------------------------------- |
+| `oldPassword` | `string` | Yes      | User's current password for verification.                                         |
+| `newPassword` | `string` | Yes      | New password (min 8 chars, uppercase, lowercase, and number required).            |
+
+</details>
+
+<details>
+    <summary><b>Response Details</b></summary>
+
+<br>
+
+| Field        | Type      | Description                                  |
+| ------------ | --------- | -------------------------------------------- |
+| `success`    | `boolean` | Indicates if the request was successful.     |
+| `statusCode` | `number`  | HTTP status code (200 for successful update).|
+| `message`    | `string`  | Success message confirming password change.  |
+
+**Note:** New authentication tokens (`accessToken` and `refreshToken`) are automatically generated and set as HTTP-only cookies. The user remains logged in with the new credentials.
+
+</details>
+
+<details>
+    <summary><b>Validation Rules</b></summary>
+
+<br>
+
+- **Old Password:** Required field. Cannot be empty.
+- **New Password:** Required field. Must meet strong password requirements:
+    - Minimum 8 characters
+    - At least one uppercase letter
+    - At least one lowercase letter
+    - At least one number
+- **Password Verification:** The old password must match the current password in the database.
+- **Password Difference:** The new password should be different from the old password (recommended but not enforced).
+
+</details>
+
+<details>
+    <summary><b>Usage</b></summary>
+
+<br>
+
+**Example using cURL:**
+
+```bash
+curl -X PATCH http://localhost:8000/api/v1/auth/password \
+  -H "Content-Type: application/json" \
+  -H "Cookie: accessToken=<your_access_token>" \
+  -d '{
+    "oldPassword": "CurrentPass123",
+    "newPassword": "NewSecurePass456"
+  }'
+```
+
+**Example using JavaScript (fetch):**
+
+```javascript
+const response = await fetch("http://localhost:8000/api/v1/auth/password", {
+    method: "PATCH",
+    headers: {
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+        oldPassword: "CurrentPass123",
+        newPassword: "NewSecurePass456",
+    }),
+    credentials: "include", // Important for sending cookies
+});
+
+const data = await response.json();
+console.log(data.message); // Success message
+```
+
+**Example using Axios:**
+
+```javascript
+const response = await axios.patch(
+    "http://localhost:8000/api/v1/auth/password",
+    {
+        oldPassword: "CurrentPass123",
+        newPassword: "NewSecurePass456",
+    },
+    {
+        withCredentials: true, // Important for sending cookies
+    }
+);
+
+console.log(response.data.message); // Success message
+```
+
+</details>
+
+<details>
+    <summary><b>Expected HTTP Status Codes</b></summary>
+
+<br>
+
+| Status Code                 | Meaning                                                                |
+| --------------------------- | ---------------------------------------------------------------------- |
+| `200 OK`                    | Password changed successfully. New tokens set in cookies.              |
+| `400 Bad Request`           | Validation error (missing fields, weak password).                      |
+| `401 Unauthorized`          | Invalid old password or user not authenticated.                        |
+| `500 Internal Server Error` | Server error occurred while changing the password.                     |
+
+</details>
+
+<details>
+    <summary><b>Error Response Examples</b></summary>
+
+<br>
+
+**Validation Error (400 Bad Request):**
+
+```json
+{
+    "success": false,
+    "statusCode": 400,
+    "message": "Validation error",
+    "errors": [
+        {
+            "field": "oldPassword",
+            "message": "Old password is required"
+        },
+        {
+            "field": "newPassword",
+            "message": "Weak password: must be at least 8 chars, include uppercase, lowercase & number"
+        }
+    ]
+}
+```
+
+**Invalid Old Password (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Invalid old password",
+    "errorCode": "INVALID_PASSWORD"
+}
+```
+
+**Unauthorized (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Unauthorized request",
+    "errorCode": "UNAUTHORIZED"
+}
+```
+
+**Invalid Token (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Invalid access token",
+    "errorCode": "INVALID_TOKEN"
+}
+```
+
+</details>
+
+<br>
+
+## Refresh Access Token
+
+**Description:** <br>
+Generate a new access token using a valid refresh token.
+
+**Purpose:**<br>
+Enables clients to obtain a new access token when the current one has expired, without requiring the user to log in again. This endpoint uses the refresh token stored in HTTP-only cookies to authenticate the request and issue a new access token, maintaining a seamless user session.
+
+**Endpoint:** `GET /api/v1/auth/refresh-token`
+
+**Authentication:** Public (Requires valid refresh token cookie)
+
+**Request Headers:**
+
+- Cookies: `refreshToken` (automatically sent by browser)
+
+**Request Body:** None
+
+**Response Example (200 OK):**
+
+```json
+{
+    "success": true,
+    "statusCode": 200,
+    "message": "Access token generated successfully"
+}
+```
+
+<br>
+<details>
+  <summary><b>Response Details</b></summary>
+
+<br>
+
+| Field        | Type      | Description                                                   |
+| ------------ | --------- | ------------------------------------------------------------- |
+| `success`    | `boolean` | Indicates if the request was successful.                      |
+| `statusCode` | `number`  | HTTP status code (200 for successful token generation).       |
+| `message`    | `string`  | Success message confirming access token generation.           |
+
+**Note:** The new `accessToken` is automatically set as an HTTP-only cookie and not included in the response body. The refresh token remains unchanged.
+
+</details>
+
+<details>
+    <summary><b>How It Works</b></summary>
+
+<br>
+
+1. **Client sends request:** The browser automatically includes the `refreshToken` cookie in the request.
+2. **Token verification:** The server validates the refresh token against the database and checks its expiry.
+3. **User lookup:** The server retrieves the user associated with the refresh token.
+4. **Token generation:** A new access token is generated for the user.
+5. **Cookie update:** The new access token is set as an HTTP-only cookie with appropriate expiration.
+6. **Response:** The server returns a success response.
+
+**Token Lifecycle:**
+
+- **Access Token:** Short-lived (typically 15 minutes to 1 hour). Used for authenticating API requests.
+- **Refresh Token:** Long-lived (typically 7-30 days). Used only for generating new access tokens.
+
+**When to use:**
+
+- When the access token has expired (401 Unauthorized with TOKEN_EXPIRED error).
+- Proactively before the access token expires (e.g., during app initialization).
+- After detecting authentication errors in API responses.
+
+</details>
+
+<details>
+    <summary><b>Usage</b></summary>
+
+<br>
+
+**Example using cURL:**
+
+```bash
+curl -X GET http://localhost:8000/api/v1/auth/refresh-token \
+  -H "Cookie: refreshToken=<your_refresh_token>"
+```
+
+**Example using JavaScript (fetch):**
+
+```javascript
+const response = await fetch("http://localhost:8000/api/v1/auth/refresh-token", {
+    method: "GET",
+    credentials: "include", // Important for sending cookies
+});
+
+const data = await response.json();
+console.log(data.message); // Success message
+// New access token is now set in cookies
+```
+
+**Example using Axios:**
+
+```javascript
+const response = await axios.get("http://localhost:8000/api/v1/auth/refresh-token", {
+    withCredentials: true, // Important for sending cookies
+});
+
+console.log(response.data.message); // Success message
+// New access token is now set in cookies
+```
+
+**Example with automatic retry on token expiration:**
+
+```javascript
+// Axios interceptor to automatically refresh token on 401 errors
+axios.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
+
+        // If error is 401 and we haven't retried yet
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+
+            try {
+                // Refresh the access token
+                await axios.get("http://localhost:8000/api/v1/auth/refresh-token", {
+                    withCredentials: true,
+                });
+
+                // Retry the original request
+                return axios(originalRequest);
+            } catch (refreshError) {
+                // Refresh token is invalid, redirect to login
+                window.location.href = "/login";
+                return Promise.reject(refreshError);
+            }
+        }
+
+        return Promise.reject(error);
+    }
+);
+```
+
+</details>
+
+<details>
+    <summary><b>Expected HTTP Status Codes</b></summary>
+
+<br>
+
+| Status Code                 | Meaning                                                                 |
+| --------------------------- | ----------------------------------------------------------------------- |
+| `200 OK`                    | New access token generated successfully and set in cookies.             |
+| `401 Unauthorized`          | Refresh token is missing, invalid, expired, or doesn't match the database. |
+| `404 Not Found`             | User associated with the refresh token no longer exists.                |
+| `500 Internal Server Error` | Server error occurred while generating the access token.                |
+
+</details>
+
+<details>
+    <summary><b>Error Response Examples</b></summary>
+
+<br>
+
+**Missing Refresh Token (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Unauthorized request",
+    "errorCode": "UNAUTHORIZED"
+}
+```
+
+**Invalid Refresh Token (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Invalid refresh token",
+    "errorCode": "INVALID_TOKEN"
+}
+```
+
+**Expired Refresh Token (401 Unauthorized):**
+
+```json
+{
+    "success": false,
+    "statusCode": 401,
+    "message": "Refresh token has expired",
+    "errorCode": "TOKEN_EXPIRED"
+}
+```
+
+**User Not Found (404 Not Found):**
+
+```json
+{
+    "success": false,
+    "statusCode": 404,
+    "message": "User not found",
+    "errorCode": "USER_NOT_FOUND"
+}
+```
+
+</details>
+
+<details>
+    <summary><b>Security Considerations</b></summary>
+
+<br>
+
+- **HTTP-Only Cookies:** Both access and refresh tokens are stored in HTTP-only cookies to prevent XSS attacks.
+- **Secure Flag:** In production, cookies should be sent only over HTTPS connections.
+- **SameSite Attribute:** Cookies should use SameSite attribute to prevent CSRF attacks.
+- **Token Rotation:** Consider implementing refresh token rotation for enhanced security (new refresh token issued with each refresh).
+- **Token Revocation:** Refresh tokens can be invalidated in the database during logout or when suspicious activity is detected.
+- **Expiration:** Always set appropriate expiration times for both tokens.
+
+**Best Practices:**
+
+1. Store tokens only in HTTP-only cookies, never in localStorage or sessionStorage.
+2. Implement automatic token refresh before expiration.
+3. Handle token refresh failures gracefully by redirecting to login.
+4. Monitor and log failed token refresh attempts for security auditing.
+5. Implement rate limiting on this endpoint to prevent abuse.
+
+</details>

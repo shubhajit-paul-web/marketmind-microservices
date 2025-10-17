@@ -154,3 +154,19 @@ export const loginUserValidator = [
     // Middleware to handle validation errors and send formatted response
     respondWithValidationErrors,
 ];
+
+// Change password validator
+export const changePasswordValidator = [
+    body("oldPassword").notEmpty().withMessage("Old password is required").trim(),
+    body("newPassword")
+        .notEmpty()
+        .withMessage("New password is required")
+        .trim()
+        .isStrongPassword({ minSymbols: 0 })
+        .withMessage(
+            "Weak password: must be at least 8 chars, include uppercase, lowercase & number"
+        ),
+
+    // Middleware to handle validation errors and send formatted response
+    respondWithValidationErrors,
+];

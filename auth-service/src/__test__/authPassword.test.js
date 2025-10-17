@@ -20,7 +20,7 @@ describe("PATCH /api/v1/auth/password", () => {
             .patch("/api/v1/auth/password")
             .send({
                 oldPassword: registerUserPayload.password,
-                newPassword: "DEV123#***",
+                newPassword: "DEVabc123#***",
             })
             .set("Cookie", registerUserCookies);
 
@@ -47,7 +47,7 @@ describe("PATCH /api/v1/auth/password", () => {
             .patch("/api/v1/auth/password")
             .send({
                 oldPassword: "ABCDabcd4654#*", // wrong old password
-                newPassword: "DEV123#***",
+                newPassword: "DEVac123#***",
             })
             .set("Cookie", registerUserCookies);
 

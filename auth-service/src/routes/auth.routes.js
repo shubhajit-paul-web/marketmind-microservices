@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { registerUserValidator, loginUserValidator } from "../validators/auth.validators.js";
+import {
+    registerUserValidator,
+    loginUserValidator,
+    changePasswordValidator,
+} from "../validators/auth.validators.js";
 import upload from "../middlewares/multer.middleware.js";
 import AuthController from "../controllers/auth.controller.js";
 import authUser from "../middlewares/auth.middleware.js";
@@ -21,7 +25,7 @@ router.post("/login", loginUserValidator, AuthController.login);
 router.post("/logout", authUser, AuthController.logout);
 
 // PATCH /api/v1/auth/password
-router.patch("/password", authUser, AuthController.changePassword);
+router.patch("/password", authUser, changePasswordValidator, AuthController.changePassword);
 
 // GET /api/v1/auth/refresh-token
 router.get("/refresh-token", AuthController.refreshAccessToken);
