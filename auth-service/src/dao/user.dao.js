@@ -130,6 +130,32 @@ class UserDAO {
             { new: true, runValidators: true }
         );
     }
+
+    /**
+     * Checks if the provided password is correct for a user
+     * @param {string} userId - The ID of the user
+     * @param {string} password - The password to validate
+     * @returns {Promise<boolean>} A promise that resolves to true if the password is correct, otherwise false
+     */
+    async isPasswordCorrect(userId, password) {
+        const user = await User.findById(userId).select("+password");
+
+        return await user.isPasswordCorrect(password);
+    }
+
+    /**
+     * Finds a user by their ID and updates their password
+     * @param {string} userId - The ID of the user
+     * @param {string} newPassword - The new password to set
+     * @returns {Promise<object>} A promise that resolves to the updated user document
+     */
+    async changePassword(userId, newPassword) {
+        const user = await User.findById(userId);
+
+        user.password = newPassword;
+
+        return await user.save();
+    }
 }
 
 export default new UserDAO();

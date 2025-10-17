@@ -20,4 +20,7 @@ router.post("/login", loginUserValidator, AuthController.login);
 // POST /api/v1/auth/logout
 router.post("/logout", authUser, AuthController.logout);
 
+// PATCH /api/v1/auth/password
+router.patch("/password", authUser, AuthController.changePassword);
+
 export default router;

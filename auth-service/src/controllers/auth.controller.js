@@ -69,6 +69,30 @@ class AuthController {
             .status(StatusCodes.OK)
             .json(ApiResponse.success(responseMessages.LOGOUT_SUCCESS));
     });
+
+    /**
+     * Changes the password for the currently logged-in user
+     * @route PATCH /api/v1/auth/password
+     * @access Private
+     */
+    changePassword = asyncHandler(async (req, res) => {
+        await AuthService.changePassword(
+            req.user?._id,
+            req.body?.oldPassword,
+            req.body?.newPassword
+        );
+
+        const { accessToken, refreshToken } = await AuthService.generateAccessAndRefreshToken(
+            req.user?._id
+        );
+
+        res.cookie("accessToken", accessToken, setCookieOptions(ACCESS_TOKEN_COOKIE_EXP));
+        res.cookie("refreshToken", refreshToken, setCookieOptions(REFRESH_TOKEN_COOKIE_EXP));
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.UPDATED("Password")));
+    });
 }
 
 export default new AuthController();

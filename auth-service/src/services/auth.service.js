@@ -122,6 +122,27 @@ class AuthService {
 
         return { accessToken, refreshToken };
     }
+
+    /**
+     * Validates the old password and updates it to a new one
+     * @param {string} userId - The ID of the user
+     * @param {string} oldPassword - The user's current password for validation
+     * @param {string} newPassword - The new password to set
+     * @returns {Promise<object>} A promise that resolves to the updated user document
+     */
+    async changePassword(userId, oldPassword, newPassword) {
+        const isPasswordCorrect = await UserDAO.isPasswordCorrect(userId, oldPassword);
+
+        if (!isPasswordCorrect) {
+            throw new ApiError(
+                StatusCodes.UNAUTHORIZED,
+                responseMessages.INVALID("Old password"),
+                errorCodes.PASSWORDS_DO_NOT_MATCH
+            );
+        }
+
+        return await UserDAO.changePassword(userId, newPassword);
+    }
 }
 
 export default new AuthService();
