@@ -4,6 +4,7 @@ import UserController from "../controllers/user.controller.js";
 import {
     addUserAddressValidator,
     updateUserAddressValidator,
+    updateUserProfileValidator,
 } from "../validators/user.validators.js";
 import upload from "../middlewares/multer.middleware.js";
 
@@ -13,7 +14,13 @@ const router = Router();
 router.get("/me", authUser, UserController.getCurrentUserProfile);
 
 // PATCH /api/v1/users/me
-router.patch("/me", authUser, upload.single("profilePicture"), UserController.updateUserProfile);
+router.patch(
+    "/me",
+    authUser,
+    upload.single("profilePicture"),
+    updateUserProfileValidator,
+    UserController.updateUserProfile
+);
 
 // POST /api/v1/users/me/addresses
 router.post("/me/addresses", authUser, addUserAddressValidator, UserController.addUserAddress);

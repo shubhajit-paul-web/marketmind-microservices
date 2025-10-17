@@ -4,6 +4,7 @@ import app from "../app.js";
 import registerUser from "./test-utils/registerUser.js";
 import responseMessages from "../constants/responseMessages.js";
 import registerUserPayload from "./test-utils/registerUserPayload.js";
+import errorCodes from "../constants/errorCodes.js";
 
 describe("GET /api/v1/users/me", () => {
     // Test Case 1: Successful retrieval of user profile
@@ -64,5 +65,27 @@ describe("PATCH /api/v1/users/me", () => {
         expect(res.body.data.profilePicture).toBeDefined(); // updated
         expect(res.body.data.addresses).toBeDefined();
         expect(res.body.data.password).toBeUndefined();
+    });
+
+    // Test Case 2: Incomplete profile update
+    // Given an authenticated user
+    // When a PATCH request is made to /api/v1/users/me with an incomplete request body
+    // Then it should respond with a 400 error and a "missing required fields" message
+    it("should fail to update user if request body is incomplete", async () => {
+        const registerUserResponse = await registerUser();
+        const registerUserCookies = registerUserResponse.headers["set-cookie"];
+
+        const res = await request(app)
+            .patch("/api/v1/users/me")
+            .field("email", "updated123")
+            .set("Cookie", registerUserCookies);
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.success).toBe(false);
+        expect(res.body.statusCode).toBe(400);
+        expect(res.body.errorCode).toBe(errorCodes.MISSING_REQUIRED_FIELDS);
+        expect(res.body.isOperational).toBe(true);
+        expect(res.body.message).toBe(responseMessages.MISSING_REQUIRED_FIELDS);
+        expect(Array.isArray(res.body.errors)).toBe(true);
     });
 });
