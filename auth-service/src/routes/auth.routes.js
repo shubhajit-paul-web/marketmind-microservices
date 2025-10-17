@@ -23,4 +23,7 @@ router.post("/logout", authUser, AuthController.logout);
 // PATCH /api/v1/auth/password
 router.patch("/password", authUser, AuthController.changePassword);
 
+// GET /api/v1/auth/refresh-token
+router.get("/refresh-token", AuthController.refreshAccessToken);
+
 export default router;

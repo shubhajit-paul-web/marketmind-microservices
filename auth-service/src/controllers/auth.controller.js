@@ -93,6 +93,21 @@ class AuthController {
             .status(StatusCodes.OK)
             .json(ApiResponse.success(responseMessages.UPDATED("Password")));
     });
+
+    /**
+     * Refreshes the access token using the refresh token
+     * @route GET /api/v1/auth/refresh-token
+     * @access Public (Requires refresh token cookie)
+     */
+    refreshAccessToken = asyncHandler(async (req, res) => {
+        const accessToken = await AuthService.refreshAccessToken(req?.cookies?.refreshToken);
+
+        res.cookie("accessToken", accessToken, setCookieOptions(ACCESS_TOKEN_COOKIE_EXP));
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.ACCESS_TOKEN_GENERATED_SUCCESS));
+    });
 }
 
 export default new AuthController();

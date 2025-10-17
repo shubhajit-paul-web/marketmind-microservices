@@ -5,6 +5,8 @@ import responseMessages from "../constants/responseMessages.js";
 import errorCodes from "../constants/errorCodes.js";
 import { uploadFile } from "./storage.service.js";
 import redis from "../db/redis.js";
+import jwt from "jsonwebtoken";
+import config from "../config/config.js";
 
 /**
  * Authentication Service
@@ -142,6 +144,52 @@ class AuthService {
         }
 
         return await UserDAO.changePassword(userId, newPassword);
+    }
+
+    /**
+     * Verifies a refresh token and generates a new access token
+     * @param {string} refreshToken - The JWT refresh token
+     * @returns {Promise<string>} A promise that resolves to a new JWT access token
+     */
+    async refreshAccessToken(refreshToken) {
+        if (!refreshToken) {
+            throw new ApiError(
+                StatusCodes.UNAUTHORIZED,
+                responseMessages.MISSING_REFRESH_TOKEN,
+                errorCodes.MISSING_TOKEN
+            );
+        }
+
+        try {
+            const decoded = jwt.verify(refreshToken, config.JWT.REFRESH_TOKEN_SECRET);
+
+            const user = await UserDAO.findUserById(decoded?._id);
+
+            if (!user) {
+                throw new ApiError(
+                    StatusCodes.NOT_FOUND,
+                    responseMessages.USER_NOT_FOUND,
+                    errorCodes.USER_NOT_FOUND
+                );
+            }
+
+            // Generate and return the new access token
+            return await user.generateAccessToken();
+        } catch (error) {
+            if (error.name === "TokenExpiredError") {
+                throw new ApiError(
+                    StatusCodes.UNAUTHORIZED,
+                    responseMessages.TOKEN_EXPIRED,
+                    errorCodes.EXPIRED_TOKEN
+                );
+            }
+
+            throw new ApiError(
+                StatusCodes.UNAUTHORIZED,
+                responseMessages.INVALID_TOKEN,
+                errorCodes.INVALID_TOKEN
+            );
+        }
     }
 }
 
