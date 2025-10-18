@@ -1,26 +1,26 @@
-# Auth service
+# 🔐 Auth Service
 
-The Auth Service is a microservice of the MarketMind eCommerce platform that handles user authentication and authorization, ensuring secure access across the system.
+The **Auth Service** is a core microservice for the MarketMind eCommerce platform, responsible for securely managing user identity, authentication, and authorization.
 
-## Overview
+<br>
 
-This service handles:
+This service provides a stand-alone solution for:
 
-- User authentication (login, signup, logout, update account, change or forgot password, token refresh, get users, etc.)
-- Role-based access control (RBAC)
-- Application and system health monitoring
-
-_The service is designed to operate as a stand-alone microservice within a distributed system._
+* **User Authentication:** Handling user registration, login, logout, and password changes.
+* **Token Management:** Issuing and refreshing secure `accessToken` and `refreshToken` pairs using HTTP-only cookies.
+* **User Profile Management:** Allowing users to fetch, update, and manage their personal information and profile picture.
+* **Address Management:** Enabling users to perform full CRUD operations (Create, Read, Update, Delete) on their saved addresses.
+* **Health Monitoring:** Exposing a `GET /api/v1/health` endpoint to monitor application and system status.
 
 <br><br>
 
 ## ⚙️ API Reference
 
-> All endpoints follow the platform’s authentication and access rules.
+All endpoints follow the platform’s authentication and access rules.
 
 <br>
 
-## Health check
+> ## Health check
 
 **Description:** <br>
 Check the application's and system's health status.
@@ -100,7 +100,7 @@ You can use this endpoint to:
 
 <br>
 
-## Register User
+> ## Register User
 
 **Description:** <br>
 Register a new user account with profile information and optional address details.
@@ -345,7 +345,7 @@ const data = await response.json();
 
 <br>
 
-## Login User
+> ## Login User
 
 **Description:** <br>
 Authenticate a user and generate access and refresh tokens.
@@ -571,7 +571,7 @@ You can use any of these as the identifier:
 
 <br>
 
-## Logout User
+> ## Logout User
 
 **Description:** <br>
 Logout an authenticated user and invalidate their refresh token.
@@ -686,7 +686,7 @@ const data = await response.json();
 
 <br>
 
-## Get Current User Profile
+> ## Get Current User Profile
 
 **Description:** <br>
 Retrieve the profile information of the currently authenticated user.
@@ -873,7 +873,7 @@ console.log(response.data.data); // User profile data
 
 <br>
 
-## Add User Address
+> ## Add User Address
 
 **Description:** <br>
 Add a new address to the authenticated user's profile.
@@ -1194,7 +1194,7 @@ console.log(response.data.data.addresses); // Array of all addresses
 
 <br>
 
-## Get User Address
+> ## Get User Address
 
 **Description:** <br>
 Retrieve a specific address from the authenticated user's address list.
@@ -1358,7 +1358,7 @@ console.log(response.data.data); // Address object
 
 <br>
 
-## Update User Address
+> ## Update User Address
 
 **Description:** <br>
 Update a specific address in the authenticated user's address list.
@@ -1641,7 +1641,7 @@ console.log(response.data.data); // Updated address object
 
 <br>
 
-## Delete User Address
+> ## Delete User Address
 
 **Description:** <br>
 Delete a specific address from the authenticated user's address list.
@@ -1786,7 +1786,7 @@ console.log(response.data.message); // Success message
 
 <br>
 
-## Update User Profile
+> ## Update User Profile
 
 **Description:** <br>
 Update the profile information of the currently authenticated user.
@@ -2068,7 +2068,7 @@ curl -X PATCH http://localhost:8000/api/v1/users/me \
 
 <br>
 
-## Change Password
+> ## Change Password
 
 **Description:** <br>
 Change the password for the currently authenticated user.
@@ -2279,7 +2279,7 @@ console.log(response.data.message); // Success message
 
 <br>
 
-## Refresh Access Token
+> ## Refresh Access Token
 
 **Description:** <br>
 Generate a new access token using a valid refresh token.
