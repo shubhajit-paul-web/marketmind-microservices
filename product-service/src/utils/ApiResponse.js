@@ -21,7 +21,8 @@ class ApiResponse {
         this.statusCode = statusCode;
         this.message = message;
         this.data = data;
-        this.meta = meta;
+
+        if (meta) this.meta = meta;
     }
 
     /**
