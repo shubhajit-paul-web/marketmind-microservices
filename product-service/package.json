@@ -3,18 +3,32 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-        "dev": "npx nodemon server.js",
-        "start": "node server.js"
+        "dev": "cross-env NODE_ENV=development npx nodemon server.js",
+        "start": "cross-env NODE_ENV=production node server.js"
     },
-    "keywords": [],
-    "author": "",
+    "keywords": [
+        "product service",
+        "microservice",
+        "marketmind"
+    ],
+    "type": "module",
+    "author": "Shubhajit Paul",
     "license": "ISC",
     "description": "",
     "dependencies": {
+        "colorette": "^2.0.20",
+        "cookie-parser": "^1.4.7",
+        "cors": "^2.8.5",
+        "cross-env": "^10.1.0",
+        "dotenv-flow": "^4.1.0",
         "express": "^5.1.0",
+        "express-validator": "^7.2.1",
         "helmet": "^8.1.0",
+        "jest": "^30.2.0",
         "mongoose": "^8.19.1",
         "morgan": "^1.10.1",
+        "multer": "^2.0.2",
+        "supertest": "^7.1.4",
         "winston": "^3.18.3"
     }
 }
