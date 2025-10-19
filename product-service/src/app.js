@@ -4,6 +4,9 @@ import cookieParser from "cookie-parser";
 import morganLogger from "./loggers/morgan.logger.js";
 import cors from "cors";
 import config from "./config/config.js";
+import errorHandler from "./middlewares/error.middleware.js";
+import ApiError from "./utils/ApiError.js";
+import errorCodes from "./constants/errorCodes.js";
 
 const app = express();
 
@@ -28,8 +31,19 @@ app.use(
 
 // Routes import
 import healthcheckRoutes from "./routes/healthcheck.routes.js";
+import { StatusCodes } from "http-status-codes";
 
 // Routes declaration
 app.use("/api/v1/health", healthcheckRoutes);
+
+// 404 handler
+app.use(async (req, res, next) => {
+    return next(
+        new ApiError(StatusCodes.NOT_FOUND, `${req.originalUrl} not found`, errorCodes.NOT_FOUND)
+    );
+});
+
+// Global error handler
+app.use(errorHandler);
 
 export default app;
