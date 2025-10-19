@@ -47,9 +47,6 @@ const fileLogFormat = format.printf(({ timestamp, level, message, meta }) => {
     return `[${timestamp}] ${level.toUpperCase()}: ${message} ${metaString}`;
 });
 
-// Custom file log format for http
-const HTTPLogFormat = format.printf(({ message }) => message);
-
 // Console log format with meta
 const consoleLogFormat = format.printf(({ timestamp, level, message, meta }) => {
     const metaString = meta ? JSON.stringify(meta) : "";
@@ -87,13 +84,6 @@ const logger = createLogger({
             filename: path.join(logDir, "debug.log"),
             level: "debug",
             format: format.combine(filterOnly("debug"), fileLogFormat),
-        }),
-
-        // HTTP log file
-        new transports.File({
-            filename: path.join(logDir, "http.log"),
-            level: "http",
-            format: format.combine(filterOnly("http"), HTTPLogFormat),
         }),
     ],
     // Don't exit on uncaught exceptions

@@ -39,7 +39,7 @@ function gracefulShutdown(server, signal) {
         setTimeout(() => {
             logger.on("finish", () => process.exit(0));
             logger.end();
-        }, 200);
+        }, 500).unref();
     });
 
     // Fallback: force shutdown after timeout (15s)
