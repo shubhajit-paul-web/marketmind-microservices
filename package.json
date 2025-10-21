@@ -36,5 +36,8 @@
         "husky": "^9.1.7",
         "lint-staged": "^16.2.3",
         "prettier": "3.6.2"
+    },
+    "dependencies": {
+        "uuid": "^13.0.0"
     }
 }

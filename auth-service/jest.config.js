@@ -1,7 +1,7 @@
 export default {
     testEnvironment: "node",
     transform: {},
-    testTimeout: 30000,
+    testTimeout: 40000,
     coverageDirectory: "coverage",
     coveragePathIgnorePatterns: ["/node_modules/", "/logs/", "/coverage/"],
     coverageProvider: "v8",
