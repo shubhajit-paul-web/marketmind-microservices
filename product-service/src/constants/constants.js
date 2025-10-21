@@ -1,1 +1,1 @@
-export const DB_NAME = "marketmind-ai";
+export const DB_NAME = "marketmind-product-service";
