@@ -36,9 +36,9 @@ export async function uploadFile(file) {
 
     try {
         const uploadedFile = await client.files.upload({
-            file: await toFile(Buffer.from(file.buffer), "profile-picture"),
+            file: await toFile(Buffer.from(file.buffer), "product"),
             fileName: uuidv4(),
-            folder: "marketmind/profile-pictures",
+            folder: "marketmind/products",
         });
 
         return uploadedFile;
