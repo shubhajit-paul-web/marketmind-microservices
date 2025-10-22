@@ -4,6 +4,7 @@ import ApiError from "../utils/ApiError.js";
 import { StatusCodes } from "http-status-codes";
 import errorCodes from "../constants/errorCodes.js";
 import { v4 as uuidv4 } from "uuid";
+import responseMessages from "../constants/responseMessages.js";
 
 const client = new ImageKit({
     publicKey: config.IMAGEKIT.PUBLIC_KEY,
@@ -18,13 +19,17 @@ const client = new ImageKit({
  */
 export async function uploadFile(file) {
     if (!file?.buffer) {
-        throw new ApiError(StatusCodes.NOT_FOUND, "File not found", errorCodes.FILE_NOT_FOUND);
+        throw new ApiError(
+            StatusCodes.NOT_FOUND,
+            responseMessages.FILE_NOT_FOUND,
+            errorCodes.FILE_NOT_FOUND
+        );
     }
 
     if (!file?.mimetype?.startsWith("image/")) {
         throw new ApiError(
             StatusCodes.BAD_REQUEST,
-            "Please upload a valid image file",
+            responseMessages.INVALID_IMAGE_FILE,
             errorCodes.VALIDATION_ERROR
         );
     }
@@ -40,7 +45,7 @@ export async function uploadFile(file) {
     } catch (error) {
         throw new ApiError(
             StatusCodes.INTERNAL_SERVER_ERROR,
-            "Failed to upload file",
+            responseMessages.IMAGE_UPLOAD_FAILED,
             errorCodes.INTERNAL_SERVER_ERROR,
             false,
             error.message,
