@@ -8,6 +8,11 @@ export default {
     FORBIDDEN: "Access forbidden",
     VALIDATION_ERROR: "Validation failed",
     MISSING_REQUIRED_FIELDS: "Missing required fields",
+    TOKEN_EXPIRED: "Token expired, please login again",
+    INVALID_TOKEN: "Invalid authentication token",
+    MISSING_ACCESS_TOKEN: "Access token not found, please login again",
+    TOKEN_BLACKLISTED: "Token has been invalidated, please login again",
+    INSUFFICIENT_PERMISSIONS: "You don't have permission to access this resource",
 
     // Product-specific
     PRODUCT_CREATED_SUCCESS: "Product created successfully",
