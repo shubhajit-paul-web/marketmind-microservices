@@ -4,7 +4,9 @@
     "main": "index.js",
     "scripts": {
         "dev": "cross-env NODE_ENV=development npx nodemon server.js",
-        "start": "cross-env NODE_ENV=production node server.js"
+        "start": "cross-env NODE_ENV=production node server.js",
+        "test": "cross-env NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js",
+        "test:fix": "cross-env NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles"
     },
     "keywords": [
         "product service",

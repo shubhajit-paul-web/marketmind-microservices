@@ -50,6 +50,14 @@ function createAuthMiddleware(roles = ["user"]) {
             req.user = decoded;
             next();
         } catch (error) {
+            if (error.statusCode === StatusCodes.FORBIDDEN) {
+                throw new ApiError(
+                    StatusCodes.FORBIDDEN,
+                    responseMessages.INSUFFICIENT_PERMISSIONS,
+                    errorCodes.INSUFFICIENT_PERMISSIONS
+                );
+            }
+
             if (error.name === "TokenExpiredError") {
                 throw new ApiError(
                     StatusCodes.UNAUTHORIZED,

@@ -8,7 +8,7 @@ import productPayload from "./productPayload.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function createProduct() {
-    const token = loginUser();
+    const token = await loginUser();
 
     return await request(app)
         .post("/api/v1/products")
@@ -19,11 +19,8 @@ async function createProduct() {
         .field("price.amount", productPayload["price.amount"])
         .field("price.discountPrice", productPayload["price.discountPrice"])
         .field("price.currency", productPayload["price.currency"])
-        .attach(
-            "images",
-            path.join(__dirname, "images/product-img1.jpg"),
-            path.join(__dirname, "images/product-img2.jpg")
-        )
+        .attach("images", path.join(__dirname, "images/product-img1.jpg"))
+        .attach("images", path.join(__dirname, "images/product-img2.jpg"))
         .set("Authorization", `Bearer ${token}`)
         .expect(201);
 }

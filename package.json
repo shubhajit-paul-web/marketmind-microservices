@@ -8,8 +8,9 @@
         "lint:fix": "eslint --fix",
         "format:check": "prettier . --check",
         "format:fix": "prettier --write .",
-        "test": "npm run test:auth",
-        "test:auth": "npm --prefix ./auth-service test"
+        "test": "npm run test:auth && npm run test:product",
+        "test:auth": "npm --prefix ./auth-service test",
+        "test:product": "npm --prefix ./product-service test"
     },
     "lint-staged": {
         "*.js": [
@@ -36,8 +37,5 @@
         "husky": "^9.1.7",
         "lint-staged": "^16.2.3",
         "prettier": "3.6.2"
-    },
-    "dependencies": {
-        "uuid": "^13.0.0"
     }
 }

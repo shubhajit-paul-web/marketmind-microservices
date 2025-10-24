@@ -1,7 +1,6 @@
 // Response messages for standardized API responses in Product Service
 export default {
     // Generic
-    SUCCESS: "Operation successful",
     SOMETHING_WENT_WRONG: "Something went wrong!",
     TOO_MANY_REQUESTS: "Too many requests! Please try again after some time",
     UNAUTHORIZED: "Unauthorized access",

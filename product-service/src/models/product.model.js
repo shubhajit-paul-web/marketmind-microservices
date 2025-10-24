@@ -54,6 +54,7 @@ const productSchema = new Schema(
         price: priceSchema,
         images: [
             {
+                _id: false,
                 url: String,
                 thumbnail: String,
                 id: String,

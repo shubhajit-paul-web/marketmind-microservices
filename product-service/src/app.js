@@ -7,6 +7,7 @@ import config from "./config/config.js";
 import errorHandler from "./middlewares/error.middleware.js";
 import ApiError from "./utils/ApiError.js";
 import errorCodes from "./constants/errorCodes.js";
+import { StatusCodes } from "http-status-codes";
 
 const app = express();
 
@@ -31,10 +32,11 @@ app.use(
 
 // Routes import
 import healthcheckRoutes from "./routes/healthcheck.routes.js";
-import { StatusCodes } from "http-status-codes";
+import productRoutes from "./routes/product.routes.js";
 
 // Routes declaration
 app.use("/api/v1/health", healthcheckRoutes);
+app.use("/api/v1/products", productRoutes);
 
 // 404 handler
 app.use(async (req, res, next) => {

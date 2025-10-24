@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
-import config from "./src/config/config.js";
+import redis from "./src/db/redis.js";
 import logger from "./src/loggers/winston.logger.js";
 
 let mongoServer;
@@ -11,8 +11,6 @@ beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();
     const uri = mongoServer.getUri();
 
-    config.MONGODB_URI = uri; // Override DB_URL in your config for tests
-
     await mongoose.connect(uri);
 
     logger.debug("🟢 MongoDB connected successfully");
@@ -21,6 +19,7 @@ beforeAll(async () => {
 // Disconnect and stop the in-memory MongoDB after all tests
 afterAll(async () => {
     await mongoose.disconnect();
+    redis.disconnect();
 
     if (mongoServer) {
         await mongoServer.stop();
