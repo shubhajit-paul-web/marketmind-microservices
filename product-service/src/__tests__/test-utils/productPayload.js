@@ -3,7 +3,7 @@ export default {
     description: "A descriptive summary of the product used for testing purposes.",
     category: "electronics",
     stock: 10,
-    "price.amount": 999,
-    "price.discountPrice": 899,
-    "price.currency": "INR",
+    priceAmount: 999,
+    discountPrice: 899,
+    priceCurrency: "INR",
 };

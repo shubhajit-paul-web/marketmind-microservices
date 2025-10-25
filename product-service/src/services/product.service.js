@@ -13,10 +13,14 @@ class ProductService {
      * @returns {Promise<Object>} Created product object
      */
     async createProduct(sellerId, productData) {
-        const { amount, discountPrice, currency = "INR" } = productData;
+        const { priceAmount, discountPrice, priceCurrency } = productData;
 
         // Structure price object with amount, discount, and currency
-        productData.price = { amount, discountPrice, currency };
+        productData.price = {
+            amount: priceAmount,
+            discountPrice,
+            currency: priceCurrency,
+        };
 
         // Upload product images if provided
         if (productData?.images?.length > 0) {
