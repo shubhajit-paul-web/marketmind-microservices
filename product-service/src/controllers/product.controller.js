@@ -24,6 +24,23 @@ class ProductController {
             .status(StatusCodes.CREATED)
             .json(ApiResponse.created(responseMessages.PRODUCT_CREATED_SUCCESS, createdProduct));
     });
+
+    /**
+     * Update an existing product
+     * @route PATCH /api/v1/products/:productId
+     * @access Private
+     */
+    updateProduct = asyncHandler(async (req, res) => {
+        const updatedProduct = await ProductService.updateProduct(
+            req.user?._id,
+            req.params?.productId,
+            req.body
+        );
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.PRODUCT_UPDATED_SUCCESS, updatedProduct));
+    });
 }
 
 export default new ProductController();

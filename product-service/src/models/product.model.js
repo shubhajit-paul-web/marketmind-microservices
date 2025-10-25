@@ -63,6 +63,7 @@ const productSchema = new Schema(
         seller: {
             type: Schema.Types.ObjectId,
             required: true,
+            immutable: true,
         },
         isActive: {
             type: Boolean,

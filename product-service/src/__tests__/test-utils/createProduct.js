@@ -7,10 +7,11 @@ import productPayload from "./productPayload.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Creates a new product by sending a POST request
 async function createProduct() {
     const token = await loginUser();
 
-    return await request(app)
+    const createdProduct = await request(app)
         .post("/api/v1/products")
         .field("name", productPayload.name)
         .field("description", productPayload.description)
@@ -23,6 +24,8 @@ async function createProduct() {
         .attach("images", path.join(__dirname, "images/product-img2.jpg"))
         .set("Authorization", `Bearer ${token}`)
         .expect(201);
+
+    return { createdProduct, token };
 }
 
 export default createProduct;

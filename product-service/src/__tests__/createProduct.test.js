@@ -14,7 +14,7 @@ describe("POST /api/v1/products", () => {
     // Then respond 201 and return the created product object with correct fields
     it("should create a product and return a success response with 200 status code and created product object", async () => {
         // Create a product
-        const res = await createProduct();
+        const { createdProduct: res } = await createProduct();
 
         expect(res.body.statusCode).toBe(201);
         expect(res.body.success).toBe(true);
