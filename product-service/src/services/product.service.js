@@ -4,6 +4,8 @@ import ApiError from "../utils/ApiError.js";
 import { uploadFile } from "./storage.service.js";
 import responseMessages from "../constants/responseMessages.js";
 import errorCodes from "../constants/errorCodes.js";
+import formatUploadedImages from "../utils/formatUploadedImages.js";
+import { MAX_PRODUCT_IMAGES } from "../constants/constants.js";
 
 /**
  * Product Service
@@ -30,16 +32,21 @@ class ProductService {
 
         // Upload product images if provided
         if (productData?.images?.length > 0) {
+            if (productData.images.length > MAX_PRODUCT_IMAGES) {
+                throw new ApiError(
+                    StatusCodes.BAD_REQUEST,
+                    responseMessages.IMAGE_LIMIT_EXCEEDED(MAX_PRODUCT_IMAGES),
+                    errorCodes.IMAGE_LIMIT_EXCEEDED
+                );
+            }
+
+            // Upload all images to storage service concurrently
             const uploadedImages = await Promise.all(
                 productData.images.map((image) => uploadFile(image))
             );
 
-            // Map uploaded images to required format with url, thumbnail, and id
-            productData.images = uploadedImages?.map((image) => ({
-                url: image?.url,
-                thumbnail: image?.thumbnailUrl,
-                id: image?.fileId,
-            }));
+            // Format uploaded images with url, thumbnail, and id
+            productData.images = formatUploadedImages(uploadedImages);
         }
 
         return await ProductDAO.createProduct(sellerId, productData);
@@ -53,6 +60,9 @@ class ProductService {
      * @returns {Promise<Object>} The updated product document
      */
     async updateProduct(sellerId, productId, productData = {}) {
+        // Verify seller authorization for a product and return it if authorized
+        const existingProduct = await this.authorizeProductAccess(sellerId, productId);
+
         const allowedFieldsToUpdate = [
             "name",
             "description",
@@ -73,17 +83,6 @@ class ProductService {
                 StatusCodes.BAD_REQUEST,
                 responseMessages.MISSING_REQUIRED_FIELDS,
                 errorCodes.MISSING_REQUIRED_FIELDS
-            );
-        }
-
-        // Retrieve the existing product from the database
-        const existingProduct = await ProductDAO.findProductById(productId);
-
-        if (!existingProduct) {
-            throw new ApiError(
-                StatusCodes.NOT_FOUND,
-                responseMessages.PRODUCT_NOT_FOUND,
-                errorCodes.PRODUCT_NOT_FOUND
             );
         }
 
@@ -114,6 +113,77 @@ class ProductService {
 
         // Return the updated product
         return updatedProduct;
+    }
+
+    /**
+     * Add images to an existing product
+     * @param {string} sellerId - ID of the seller
+     * @param {string} productId - ID of the product
+     * @param {Array} [newImages=[]] - Array of image files to upload
+     * @returns {Promise<Object>} Updated product with new images
+     */
+    async addProductImages(sellerId, productId, newImages = []) {
+        // Verify seller authorization for a product and return it if authorized
+        const existingProduct = await this.authorizeProductAccess(sellerId, productId);
+
+        // Validate that at least one image is provided
+        if (newImages?.length === 0) {
+            throw new ApiError(
+                StatusCodes.BAD_REQUEST,
+                responseMessages.IMAGE_REQUIRED,
+                errorCodes.IMAGE_REQUIRED
+            );
+        }
+
+        // Check if product has already reached the maximum image limit
+        if (existingProduct?.images?.length === MAX_PRODUCT_IMAGES) {
+            throw new ApiError(
+                StatusCodes.BAD_REQUEST,
+                responseMessages.IMAGE_LIMIT_REACHED,
+                errorCodes.IMAGE_LIMIT_EXCEEDED
+            );
+        }
+
+        // Upload all images to storage service concurrently
+        const uploadedImages = await Promise.all(newImages.map((image) => uploadFile(image)));
+
+        // Format uploaded images with url, thumbnail, and id
+        const formattedUploadedImages = formatUploadedImages(uploadedImages);
+
+        // Return the updated product with new images
+        return await ProductDAO.addProductImages(sellerId, productId, formattedUploadedImages);
+    }
+
+    /**
+     * Verify seller authorization for a product and return it if authorized.
+     * Throws 404 if the product doesn't exist, 403 if the seller lacks access.
+     * @param {string} sellerId
+     * @param {string} productId
+     * @returns {Promise<Object>} The authorized product document
+     */
+    async authorizeProductAccess(sellerId, productId) {
+        const hasProduct = await ProductDAO.findProductById(productId);
+
+        if (!hasProduct) {
+            throw new ApiError(
+                StatusCodes.NOT_FOUND,
+                responseMessages.PRODUCT_NOT_FOUND,
+                errorCodes.PRODUCT_NOT_FOUND
+            );
+        }
+
+        const hasAccess = await ProductDAO.findProductByIdAndSeller(sellerId, productId);
+
+        if (!hasAccess) {
+            throw new ApiError(
+                StatusCodes.FORBIDDEN,
+                responseMessages.INSUFFICIENT_PERMISSIONS,
+                errorCodes.INSUFFICIENT_PERMISSIONS
+            );
+        }
+
+        // Return product after access check succeeds
+        return hasAccess;
     }
 }
 

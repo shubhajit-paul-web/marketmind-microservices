@@ -33,7 +33,32 @@ class ProductDAO {
                 new: true,
                 runValidators: true,
             }
-        );
+        ).lean();
+    }
+
+    /**
+     * Adds new images to an existing product
+     * @param {string} sellerId - ID of the seller who owns the product
+     * @param {string} productId - ID of the product to add images to
+     * @param {Array<Object>} newImages - Array of image objects to add to the product
+     * @returns {Promise<Object|null>} Updated product document with new images or null if not found
+     */
+    async addProductImages(sellerId, productId, newImages) {
+        return await Product.findOneAndUpdate(
+            {
+                _id: productId,
+                seller: sellerId,
+            },
+            {
+                $push: {
+                    images: { $each: newImages },
+                },
+            },
+            {
+                new: true,
+                runValidators: true,
+            }
+        ).lean();
     }
 
     /**
@@ -42,7 +67,20 @@ class ProductDAO {
      * @returns {Promise<Object|null>} Product document or null if not found
      */
     async findProductById(productId) {
-        return await Product.findById(productId);
+        return await Product.findById(productId).lean();
+    }
+
+    /**
+     * Finds a product by its ID and seller
+     * @param {string} sellerId - ID of the seller who owns the product
+     * @param {string} productId - ID of the product to find
+     * @returns {Promise<Object|null>} Product document or null if not found or doesn't belong to seller
+     */
+    async findProductByIdAndSeller(sellerId, productId) {
+        return await Product.findOne({
+            _id: productId,
+            seller: sellerId,
+        }).lean();
     }
 }
 

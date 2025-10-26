@@ -3,6 +3,7 @@ import createAuthMiddleware from "../middlewares/auth.middleware.js";
 import upload from "../middlewares/multer.middleware.js";
 import { createProductValidator, updateProductValidator } from "../validators/product.validator.js";
 import ProductController from "../controllers/product.controller.js";
+import { MAX_PRODUCT_IMAGES } from "../constants/constants.js";
 
 const router = Router();
 
@@ -21,6 +22,14 @@ router.patch(
     createAuthMiddleware(["seller"]),
     updateProductValidator,
     ProductController.updateProduct
+);
+
+// POST /api/v1/products/:productId/images
+router.post(
+    "/:productId/images",
+    createAuthMiddleware(["seller"]),
+    upload.array("images", MAX_PRODUCT_IMAGES),
+    ProductController.addProductImages
 );
 
 export default router;
