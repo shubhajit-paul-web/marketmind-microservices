@@ -1,5 +1,6 @@
 import { Router } from "express";
 import createAuthMiddleware from "../middlewares/auth.middleware.js";
+import authorizeProductAccess from "../middlewares/authProduct.middleware.js";
 import upload from "../middlewares/multer.middleware.js";
 import {
     createProductValidator,
@@ -25,6 +26,7 @@ router.patch(
     "/:productId",
     createAuthMiddleware(["seller"]),
     updateProductValidator,
+    authorizeProductAccess,
     ProductController.updateProduct
 );
 
@@ -33,6 +35,7 @@ router.post(
     "/:productId/images",
     createAuthMiddleware(["seller"]),
     productIdValidator,
+    authorizeProductAccess,
     upload.array("images", MAX_PRODUCT_IMAGES),
     ProductController.addProductImages
 );
@@ -42,8 +45,18 @@ router.patch(
     "/:productId/images/:imageId",
     createAuthMiddleware(["seller"]),
     productIdValidator,
+    authorizeProductAccess,
     upload.single("image"),
     ProductController.updateProductImage
+);
+
+// DELETE /api/v1/products/:productId/images/:imageId
+router.delete(
+    "/:productId/images/:imageId",
+    createAuthMiddleware(["seller"]),
+    productIdValidator,
+    authorizeProductAccess,
+    ProductController.deleteProductImage
 );
 
 export default router;

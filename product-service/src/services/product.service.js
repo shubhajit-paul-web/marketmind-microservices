@@ -54,15 +54,12 @@ class ProductService {
 
     /**
      * Update an existing product
-     * @param {string} sellerId - ID of the seller making the update request
-     * @param {string} productId - ID of the product to update
+     * @param {string} sellerId - ID of the seller
+     * @param {string} product - Product object to update
      * @param {Object} [productData={}] - Partial set of product fields to update
      * @returns {Promise<Object>} The updated product document
      */
-    async updateProduct(sellerId, productId, productData = {}) {
-        // Verify seller authorization for a product and return it if authorized
-        const existingProduct = await this.authorizeProductAccess(sellerId, productId);
-
+    async updateProduct(sellerId, product, productData = {}) {
         const allowedFieldsToUpdate = [
             "name",
             "description",
@@ -91,9 +88,9 @@ class ProductService {
 
         if (price) {
             productData.price = {
-                amount: price.amount ?? existingProduct.price.amount,
-                discountPrice: price.discountPrice ?? existingProduct.price.discountPrice,
-                currency: price.currency ?? existingProduct.price.currency,
+                amount: price.amount ?? product.price?.amount,
+                discountPrice: price.discountPrice ?? product.price?.discountPrice,
+                currency: price.currency ?? product.price?.currency,
             };
         }
 
@@ -101,7 +98,7 @@ class ProductService {
         delete productData["images"];
         delete productData["seller"];
 
-        const updatedProduct = await ProductDAO.updateProduct(sellerId, productId, productData);
+        const updatedProduct = await ProductDAO.updateProduct(sellerId, product?._id, productData);
 
         if (!updatedProduct) {
             throw new ApiError(
@@ -118,14 +115,11 @@ class ProductService {
     /**
      * Add images to an existing product
      * @param {string} sellerId - ID of the seller
-     * @param {string} productId - ID of the product
+     * @param {string} product - Product object
      * @param {Array} [newImages=[]] - Array of image files to upload
      * @returns {Promise<Object>} Updated product with new images
      */
-    async addProductImages(sellerId, productId, newImages = []) {
-        // Verify seller authorization for a product and return it if authorized
-        const existingProduct = await this.authorizeProductAccess(sellerId, productId);
-
+    async addProductImages(sellerId, product, newImages = []) {
         // Validate that at least one image is provided
         if (newImages?.length === 0) {
             throw new ApiError(
@@ -136,7 +130,7 @@ class ProductService {
         }
 
         // Check if product has already reached the maximum image limit
-        if (existingProduct?.images?.length === MAX_PRODUCT_IMAGES) {
+        if (product?.images?.length === MAX_PRODUCT_IMAGES) {
             throw new ApiError(
                 StatusCodes.BAD_REQUEST,
                 responseMessages.IMAGE_LIMIT_REACHED,
@@ -151,21 +145,18 @@ class ProductService {
         const formattedUploadedImages = formatUploadedImages(uploadedImages);
 
         // Return the updated product with new images
-        return await ProductDAO.addProductImages(sellerId, productId, formattedUploadedImages);
+        return await ProductDAO.addProductImages(sellerId, product?._id, formattedUploadedImages);
     }
 
     /**
      * Update a specific product image
      * @param {string} sellerId - ID of the seller
-     * @param {string} productId - ID of the product
+     * @param {string} product - Product object
      * @param {string} imageId - ID of the image to replace
      * @param {Object} newImage - New image file to upload
      * @returns {Promise<Object>} Updated product with replaced image
      */
-    async updateProductImage(sellerId, productId, imageId, newImage) {
-        // Verify seller authorization for a product and return it if authorized
-        const existingProduct = await this.authorizeProductAccess(sellerId, productId);
-
+    async updateProductImage(sellerId, product, imageId, newImage) {
         if (!newImage?.buffer) {
             throw new ApiError(
                 StatusCodes.BAD_REQUEST,
@@ -175,7 +166,7 @@ class ProductService {
         }
 
         // Find the index of the image to replace
-        const oldImageIndex = existingProduct.images?.findIndex((img) => img?.id === imageId);
+        const oldImageIndex = product.images?.findIndex((img) => img?.id === imageId);
 
         if (oldImageIndex === -1) {
             throw new ApiError(
@@ -194,42 +185,33 @@ class ProductService {
         // Return the updated product with replaced image
         return await ProductDAO.updateProductImage(
             sellerId,
-            productId,
+            product?._id,
             oldImageIndex,
             formattedUploadedImage
         );
     }
 
     /**
-     * Verify seller authorization for a product and return it if authorized.
-     * Throws 404 if the product doesn't exist, 403 if the seller lacks access.
-     * @param {string} sellerId
-     * @param {string} productId
-     * @returns {Promise<Object>} The authorized product document
+     * Delete a specific product image
+     * @param {string} sellerId - ID of the seller
+     * @param {Object} product - Product object
+     * @param {string} imageId - ID of the image to delete
+     * @returns {Promise<Object>} Updated product without the deleted image
      */
-    async authorizeProductAccess(sellerId, productId) {
-        const hasProduct = await ProductDAO.findProductById(productId);
+    async deleteProductImage(sellerId, product, imageId) {
+        const hasImage = product?.images?.some((img) => img?.id === imageId);
 
-        if (!hasProduct) {
+        if (!hasImage) {
             throw new ApiError(
                 StatusCodes.NOT_FOUND,
-                responseMessages.PRODUCT_NOT_FOUND,
-                errorCodes.PRODUCT_NOT_FOUND
+                responseMessages.IMAGE_NOT_FOUND,
+                errorCodes.IMAGE_NOT_FOUND
             );
         }
 
-        const hasAccess = await ProductDAO.findProductByIdAndSeller(sellerId, productId);
+        deleteFile(imageId);
 
-        if (!hasAccess) {
-            throw new ApiError(
-                StatusCodes.FORBIDDEN,
-                responseMessages.INSUFFICIENT_PERMISSIONS,
-                errorCodes.INSUFFICIENT_PERMISSIONS
-            );
-        }
-
-        // Return product after access check succeeds
-        return hasAccess;
+        return await ProductDAO.deleteProductImage(sellerId, product?._id, imageId);
     }
 }
 

@@ -33,7 +33,7 @@ class ProductController {
     updateProduct = asyncHandler(async (req, res) => {
         const updatedProduct = await ProductService.updateProduct(
             req.user?._id,
-            req.params?.productId,
+            req.product,
             req.body
         );
 
@@ -50,7 +50,7 @@ class ProductController {
     addProductImages = asyncHandler(async (req, res) => {
         const updatedProduct = await ProductService.addProductImages(
             req.user?._id,
-            req.params?.productId,
+            req.product,
             req.files
         );
 
@@ -67,7 +67,7 @@ class ProductController {
     updateProductImage = asyncHandler(async (req, res) => {
         const updatedProduct = await ProductService.updateProductImage(
             req.user?._id,
-            req?.params?.productId,
+            req.product,
             req?.params?.imageId,
             req.file
         );
@@ -75,6 +75,23 @@ class ProductController {
         return res
             .status(StatusCodes.OK)
             .json(ApiResponse.success(responseMessages.IMAGE_UPDATED_SUCCESS, updatedProduct));
+    });
+
+    /**
+     * Delete a specific image of an existing product
+     * @route DELETE /api/v1/products/:productId/images/:imageId
+     * @access Private
+     */
+    deleteProductImage = asyncHandler(async (req, res) => {
+        const updatedProduct = await ProductService.deleteProductImage(
+            req.user?._id,
+            req.product,
+            req.params?.imageId
+        );
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.IMAGE_REMOVED_SUCCESS, updatedProduct));
     });
 }
 

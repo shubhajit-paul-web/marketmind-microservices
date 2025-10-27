@@ -80,6 +80,21 @@ class ProductDAO {
         return await product.save({ validateModifiedOnly: true });
     }
 
+    async deleteProductImage(sellerId, productId, imageId) {
+        return await Product.findOneAndUpdate(
+            {
+                _id: productId,
+                seller: sellerId,
+            },
+            {
+                $pull: {
+                    images: { id: imageId },
+                },
+            },
+            { new: true }
+        ).lean();
+    }
+
     /**
      * Finds a product by its ID
      * @param {string} productId - ID of the product to find
