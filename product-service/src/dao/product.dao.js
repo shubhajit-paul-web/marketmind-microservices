@@ -62,6 +62,25 @@ class ProductDAO {
     }
 
     /**
+     * Updates a specific image in an existing product
+     * @param {string} sellerId - ID of the seller who owns the product
+     * @param {string} productId - ID of the product to update
+     * @param {number} imageIndex - Index of the image to update in the images array
+     * @param {Object} newImage - New image object to replace the existing image
+     * @returns {Promise<Object>} Updated product document with the modified image
+     */
+    async updateProductImage(sellerId, productId, imageIndex, newImage) {
+        const product = await Product.findOne({
+            _id: productId,
+            seller: sellerId,
+        });
+
+        product.images[imageIndex] = newImage;
+
+        return await product.save({ validateModifiedOnly: true });
+    }
+
+    /**
      * Finds a product by its ID
      * @param {string} productId - ID of the product to find
      * @returns {Promise<Object|null>} Product document or null if not found

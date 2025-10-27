@@ -31,11 +31,13 @@ export default {
 
     // Media / Files
     IMAGE_UPLOAD_SUCCESS: "Image uploaded successfully",
+    IMAGE_UPDATED_SUCCESS: "Image updated successfully",
     IMAGE_UPLOAD_FAILED: "Image upload failed",
     IMAGE_REMOVED_SUCCESS: "Image removed successfully",
     IMAGE_REQUIRED: "Please provide at least one image",
     IMAGE_LIMIT_REACHED: "The maximum number of images for this product has been reached",
     IMAGE_LIMIT_EXCEEDED: (max = 5) => `You can upload a maximum of ${max} images per product`,
+    IMAGE_NOT_FOUND: "Image not found",
     INVALID_IMAGE_FILE: "Please upload a valid image file",
     FILE_NOT_FOUND: "File not found",
     FILE_ID_NOT_FOUND: "File ID not found",

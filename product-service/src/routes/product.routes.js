@@ -1,7 +1,11 @@
 import { Router } from "express";
 import createAuthMiddleware from "../middlewares/auth.middleware.js";
 import upload from "../middlewares/multer.middleware.js";
-import { createProductValidator, updateProductValidator } from "../validators/product.validator.js";
+import {
+    createProductValidator,
+    updateProductValidator,
+    productIdValidator,
+} from "../validators/product.validator.js";
 import ProductController from "../controllers/product.controller.js";
 import { MAX_PRODUCT_IMAGES } from "../constants/constants.js";
 
@@ -28,8 +32,18 @@ router.patch(
 router.post(
     "/:productId/images",
     createAuthMiddleware(["seller"]),
+    productIdValidator,
     upload.array("images", MAX_PRODUCT_IMAGES),
     ProductController.addProductImages
+);
+
+// PATCH /api/v1/products/:productId/images/:imageId
+router.patch(
+    "/:productId/images/:imageId",
+    createAuthMiddleware(["seller"]),
+    productIdValidator,
+    upload.single("image"),
+    ProductController.updateProductImage
 );
 
 export default router;

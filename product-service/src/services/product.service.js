@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import ProductDAO from "../dao/product.dao.js";
 import ApiError from "../utils/ApiError.js";
-import { uploadFile } from "./storage.service.js";
+import { uploadFile, deleteFile } from "./storage.service.js";
 import responseMessages from "../constants/responseMessages.js";
 import errorCodes from "../constants/errorCodes.js";
 import formatUploadedImages from "../utils/formatUploadedImages.js";
@@ -152,6 +152,52 @@ class ProductService {
 
         // Return the updated product with new images
         return await ProductDAO.addProductImages(sellerId, productId, formattedUploadedImages);
+    }
+
+    /**
+     * Update a specific product image
+     * @param {string} sellerId - ID of the seller
+     * @param {string} productId - ID of the product
+     * @param {string} imageId - ID of the image to replace
+     * @param {Object} newImage - New image file to upload
+     * @returns {Promise<Object>} Updated product with replaced image
+     */
+    async updateProductImage(sellerId, productId, imageId, newImage) {
+        // Verify seller authorization for a product and return it if authorized
+        const existingProduct = await this.authorizeProductAccess(sellerId, productId);
+
+        if (!newImage?.buffer) {
+            throw new ApiError(
+                StatusCodes.BAD_REQUEST,
+                responseMessages.IMAGE_REQUIRED,
+                errorCodes.IMAGE_REQUIRED
+            );
+        }
+
+        // Find the index of the image to replace
+        const oldImageIndex = existingProduct.images?.findIndex((img) => img?.id === imageId);
+
+        if (oldImageIndex === -1) {
+            throw new ApiError(
+                StatusCodes.NOT_FOUND,
+                responseMessages.IMAGE_NOT_FOUND,
+                errorCodes.IMAGE_NOT_FOUND
+            );
+        }
+
+        // Delete old image from storage
+        deleteFile(imageId);
+
+        const uploadedImage = await uploadFile(newImage);
+        const formattedUploadedImage = formatUploadedImages([uploadedImage])?.[0];
+
+        // Return the updated product with replaced image
+        return await ProductDAO.updateProductImage(
+            sellerId,
+            productId,
+            oldImageIndex,
+            formattedUploadedImage
+        );
     }
 
     /**

@@ -92,7 +92,7 @@ export const createProductValidator = [
  * @description Validates product updates request body
  */
 export const updateProductValidator = [
-    param("productId").custom(isValidObjectId).withMessage("Invalid product id"),
+    param("productId").custom(isValidObjectId).withMessage("Invalid product ID"),
 
     body("name")
         .optional({ checkFalsy: true })
@@ -146,6 +146,17 @@ export const updateProductValidator = [
         .toUpperCase()
         .isIn(["INR", "USD"])
         .withMessage("Currency must be either INR or USD"),
+
+    // Middleware to handle validation errors and send formatted response
+    respondWithValidationErrors,
+];
+
+/**
+ * Product id validator
+ * @description Validates productId param
+ */
+export const productIdValidator = [
+    param("productId").custom(isValidObjectId).withMessage("Invalid product ID"),
 
     // Middleware to handle validation errors and send formatted response
     respondWithValidationErrors,

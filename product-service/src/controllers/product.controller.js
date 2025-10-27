@@ -58,6 +58,24 @@ class ProductController {
             .status(StatusCodes.OK)
             .json(ApiResponse.success(responseMessages.IMAGE_UPLOAD_SUCCESS, updatedProduct));
     });
+
+    /**
+     * Update a specific image of an existing product
+     * @route PATCH /api/v1/products/:productId/images/:imageId
+     * @access Private
+     */
+    updateProductImage = asyncHandler(async (req, res) => {
+        const updatedProduct = await ProductService.updateProductImage(
+            req.user?._id,
+            req?.params?.productId,
+            req?.params?.imageId,
+            req.file
+        );
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.IMAGE_UPDATED_SUCCESS, updatedProduct));
+    });
 }
 
 export default new ProductController();
