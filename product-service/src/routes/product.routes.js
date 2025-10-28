@@ -50,6 +50,16 @@ router.patch(
     ProductController.updateProductImage
 );
 
+// PUT /api/v1/products/:productId/images
+router.put(
+    "/:productId/images",
+    createAuthMiddleware(["seller"]),
+    productIdValidator,
+    authorizeProductAccess,
+    upload.array("images", 5),
+    ProductController.replaceAllProductImages
+);
+
 // DELETE /api/v1/products/:productId/images/:imageId
 router.delete(
     "/:productId/images/:imageId",

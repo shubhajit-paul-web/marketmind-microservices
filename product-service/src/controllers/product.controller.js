@@ -77,6 +77,18 @@ class ProductController {
             .json(ApiResponse.success(responseMessages.IMAGE_UPDATED_SUCCESS, updatedProduct));
     });
 
+    replaceAllProductImages = asyncHandler(async (req, res) => {
+        const updatedProduct = await ProductService.replaceAllProductImages(
+            req.user?._id,
+            req.product?._id,
+            req.files
+        );
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.IMAGES_REPLACED_SUCCESS, updatedProduct));
+    });
+
     /**
      * Delete a specific image of an existing product
      * @route DELETE /api/v1/products/:productId/images/:imageId

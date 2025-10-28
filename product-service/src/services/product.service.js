@@ -191,6 +191,33 @@ class ProductService {
         );
     }
 
+    async replaceAllProductImages(sellerId, productId, newImages = []) {
+        if (newImages?.length === 0) {
+            throw new ApiError(
+                StatusCodes.BAD_REQUEST,
+                responseMessages.IMAGE_REQUIRED,
+                errorCodes.IMAGE_REQUIRED
+            );
+        }
+
+        if (newImages?.length > MAX_PRODUCT_IMAGES) {
+            throw new ApiError(
+                StatusCodes.BAD_REQUEST,
+                responseMessages.IMAGE_LIMIT_EXCEEDED(MAX_PRODUCT_IMAGES),
+                errorCodes.IMAGE_LIMIT_EXCEEDED
+            );
+        }
+
+        const uploadedImages = await Promise.all(newImages?.map((image) => uploadFile(image)));
+        const formattedUploadedImages = formatUploadedImages(uploadedImages);
+
+        return await ProductDAO.replaceAllProductImages(
+            sellerId,
+            productId,
+            formattedUploadedImages
+        );
+    }
+
     /**
      * Delete a specific product image
      * @param {string} sellerId - ID of the seller

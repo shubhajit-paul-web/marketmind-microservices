@@ -30,10 +30,11 @@ export default {
     INVENTORY_ADJUSTED_SUCCESS: "Inventory adjusted successfully",
 
     // Media / Files
-    IMAGE_UPLOAD_SUCCESS: "Image uploaded successfully",
-    IMAGE_UPDATED_SUCCESS: "Image updated successfully",
-    IMAGE_UPLOAD_FAILED: "Image upload failed",
-    IMAGE_REMOVED_SUCCESS: "Image removed successfully",
+    IMAGE_UPLOAD_SUCCESS: "Product image uploaded successfully",
+    IMAGE_UPDATED_SUCCESS: "Product image updated successfully",
+    IMAGES_REPLACED_SUCCESS: "All product images replaced successfully",
+    IMAGE_UPLOAD_FAILED: "Product image upload failed",
+    IMAGE_REMOVED_SUCCESS: "Product image removed successfully",
     IMAGE_REQUIRED: "Please provide at least one image",
     IMAGE_LIMIT_REACHED: "The maximum number of images for this product has been reached",
     IMAGE_LIMIT_EXCEEDED: (max = 5) => `You can upload a maximum of ${max} images per product`,

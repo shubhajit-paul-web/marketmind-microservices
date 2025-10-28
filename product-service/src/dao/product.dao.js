@@ -80,6 +80,13 @@ class ProductDAO {
         return await product.save({ validateModifiedOnly: true });
     }
 
+    /**
+     * Deletes a specific image from an existing product
+     * @param {string} sellerId - ID of the seller who owns the product
+     * @param {string} productId - ID of the product to delete the image from
+     * @param {string} imageId - ID of the image to delete from the images array
+     * @returns {Promise<Object|null>} Updated product document without the deleted image or null if not found
+     */
     async deleteProductImage(sellerId, productId, imageId) {
         return await Product.findOneAndUpdate(
             {
@@ -90,6 +97,19 @@ class ProductDAO {
                 $pull: {
                     images: { id: imageId },
                 },
+            },
+            { new: true }
+        ).lean();
+    }
+
+    async replaceAllProductImages(sellerId, productId, newImages = []) {
+        return await Product.findOneAndUpdate(
+            {
+                _id: productId,
+                seller: sellerId,
+            },
+            {
+                images: newImages,
             },
             { new: true }
         ).lean();
