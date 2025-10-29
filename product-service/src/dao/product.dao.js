@@ -1,3 +1,4 @@
+import { MAX_PRODUCTS_LIMIT } from "../constants/constants.js";
 import Product from "../models/product.model.js";
 
 /**
@@ -158,6 +159,23 @@ class ProductDAO {
             seller: sellerId,
         })
             .select(select)
+            .lean();
+    }
+
+    /**
+     * Finds products based on filter criteria with pagination and sorting
+     * @param {Object} [filter={}] - MongoDB filter object to match products
+     * @param {number} [skip=0] - Number of documents to skip for pagination
+     * @param {number} [limit=20] - Maximum number of documents to return (capped at MAX_PRODUCTS_LIMIT)
+     * @param {string} [sortBy] - Field name to sort by
+     * @param {string} [sortType="asc"] - Sort order, either "asc" for ascending or "desc" for descending
+     * @returns {Promise<Array<Object>>} Array of product documents matching the filter criteria
+     */
+    async findProducts(filter = {}, skip = 0, limit = 20, sortBy, sortType = "asc") {
+        return await Product.find(filter)
+            .sort(sortBy && { [sortBy]: sortType === "asc" ? 1 : -1 })
+            .skip(Number(skip))
+            .limit(Math.min(Number(limit), MAX_PRODUCTS_LIMIT))
             .lean();
     }
 }

@@ -130,6 +130,20 @@ class ProductController {
             .status(StatusCodes.OK)
             .json(ApiResponse.success(responseMessages.IMAGE_REMOVED_SUCCESS, updatedProduct));
     });
+
+    /**
+     * Get all products
+     * @description Retrieves a list of products based on query parameters
+     * @route GET /api/v1/products
+     * @access Public
+     */
+    getProducts = asyncHandler(async (req, res) => {
+        const products = await ProductService.getProducts(req.query);
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.PRODUCTS_FETCHED_SUCCESS, products));
+    });
 }
 
 export default new ProductController();

@@ -272,6 +272,34 @@ class ProductService {
 
         return await ProductDAO.deleteProductImage(sellerId, product?._id, imageId);
     }
+
+    async getProducts(query) {
+        const {
+            q,
+            minPrice,
+            maxPrice,
+            page = 1,
+            limit = 20,
+            sortBy,
+            sortType = "asc",
+        } = query ?? {};
+        const filter = {};
+
+        if (q) {
+            filter.$text = { $search: q };
+        }
+        if (minPrice) {
+            filter["price.amount"] = { $gte: Number(minPrice) };
+        }
+        if (maxPrice) {
+            filter["price.amount"] = { $lte: Number(maxPrice) };
+        }
+
+        const skip = (Math.max(page, 1) - 1) * limit;
+
+        // Return products
+        return await ProductDAO.findProducts(filter, skip, limit, sortBy, sortType);
+    }
 }
 
 export default new ProductService();

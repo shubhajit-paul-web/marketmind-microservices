@@ -78,4 +78,7 @@ router.delete(
     ProductController.deleteProductImage
 );
 
+// GET /api/v1/products
+router.get("/", ProductController.getProducts);
+
 export default router;
