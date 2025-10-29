@@ -123,25 +123,42 @@ class ProductDAO {
     }
 
     /**
+     * Deletes a product from the database
+     * @param {string} sellerId - ID of the seller who owns the product
+     * @param {string} productId - ID of the product to delete
+     * @returns {Promise<Object|null>} Deleted product document or null if not found
+     */
+    async deleteProduct(sellerId, productId) {
+        return await Product.findOneAndDelete({
+            _id: productId,
+            seller: sellerId,
+        }).lean();
+    }
+
+    /**
      * Finds a product by its ID
      * @param {string} productId - ID of the product to find
+     * @param {string} [select=""] - Space-separated field names to include or exclude from the result
      * @returns {Promise<Object|null>} Product document or null if not found
      */
-    async findProductById(productId) {
-        return await Product.findById(productId).lean();
+    async findProductById(productId, select = "") {
+        return await Product.findById(productId).select(select).lean();
     }
 
     /**
      * Finds a product by its ID and seller
      * @param {string} sellerId - ID of the seller who owns the product
      * @param {string} productId - ID of the product to find
+     * @param {string} [select=""] - Space-separated field names to include or exclude from the result
      * @returns {Promise<Object|null>} Product document or null if not found or doesn't belong to seller
      */
-    async findProductByIdAndSeller(sellerId, productId) {
+    async findProductByIdAndSeller(sellerId, productId, select = "") {
         return await Product.findOne({
             _id: productId,
             seller: sellerId,
-        }).lean();
+        })
+            .select(select)
+            .lean();
     }
 }
 

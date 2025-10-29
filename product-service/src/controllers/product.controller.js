@@ -45,6 +45,20 @@ class ProductController {
     });
 
     /**
+     * Delete an existing product
+     * @description Deletes a product and removes all associated images from storage
+     * @route DELETE /api/v1/products/:productId
+     * @access Private
+     */
+    deleteProduct = asyncHandler(async (req, res) => {
+        await ProductService.deleteProduct(req.user?._id, req.product?._id);
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.PRODUCT_DELETED_SUCCESS));
+    });
+
+    /**
      * Add images to an existing product
      * @description Adds new images to a product without removing existing ones
      * @route POST /api/v1/products/:productId/images

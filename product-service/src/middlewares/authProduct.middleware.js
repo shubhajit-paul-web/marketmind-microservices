@@ -11,7 +11,7 @@ async function authorizeProductAccess(req, res, next) {
     const sellerId = req.user?._id;
     const productId = req.params?.productId;
 
-    const hasProduct = await ProductDAO.findProductById(productId);
+    const hasProduct = await ProductDAO.findProductById(productId, "_id");
 
     if (!hasProduct) {
         throw new ApiError(
@@ -21,7 +21,11 @@ async function authorizeProductAccess(req, res, next) {
         );
     }
 
-    const hasAccess = await ProductDAO.findProductByIdAndSeller(sellerId, productId);
+    const hasAccess = await ProductDAO.findProductByIdAndSeller(
+        sellerId,
+        productId,
+        "-createdAt -updatedAt -__v"
+    );
 
     if (!hasAccess) {
         throw new ApiError(

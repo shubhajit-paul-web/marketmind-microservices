@@ -30,6 +30,15 @@ router.patch(
     ProductController.updateProduct
 );
 
+// DELETE /api/v1/products/:productId
+router.delete(
+    "/:productId",
+    createAuthMiddleware(["seller"]),
+    productIdValidator,
+    authorizeProductAccess,
+    ProductController.deleteProduct
+);
+
 // POST /api/v1/products/:productId/images
 router.post(
     "/:productId/images",

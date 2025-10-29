@@ -113,6 +113,22 @@ class ProductService {
     }
 
     /**
+     * Delete a product and its associated images
+     * @param {string} sellerId - ID of the seller
+     * @param {string} productId - ID of the product to delete
+     * @returns {Promise<Object>} The deleted product document
+     */
+    async deleteProduct(sellerId, productId) {
+        const deletedProduct = await ProductDAO.deleteProduct(sellerId, productId);
+
+        if (deletedProduct?.images?.length !== 0) {
+            deletedProduct.images?.forEach((image) => deleteFile(image?.id));
+        }
+
+        return deletedProduct;
+    }
+
+    /**
      * Add images to an existing product
      * @param {string} sellerId - ID of the seller
      * @param {string} product - Product object
