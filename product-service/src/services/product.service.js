@@ -191,7 +191,15 @@ class ProductService {
         );
     }
 
-    async replaceAllProductImages(sellerId, productId, newImages = []) {
+    /**
+     * Replace all existing product images with new ones
+     * @param {string} sellerId - ID of the seller
+     * @param {Object} product - Product object
+     * @param {Array} [newImages=[]] - Array of new image files to upload
+     * @returns {Promise<Object>} Updated product with new images
+     */
+    async replaceAllProductImages(sellerId, product, newImages = []) {
+        // Validate that at least one image is provided
         if (newImages?.length === 0) {
             throw new ApiError(
                 StatusCodes.BAD_REQUEST,
@@ -200,6 +208,7 @@ class ProductService {
             );
         }
 
+        // Validate that the number of new images does not exceed the maximum limit
         if (newImages?.length > MAX_PRODUCT_IMAGES) {
             throw new ApiError(
                 StatusCodes.BAD_REQUEST,
@@ -208,12 +217,19 @@ class ProductService {
             );
         }
 
+        // Upload all new images to storage service concurrently
         const uploadedImages = await Promise.all(newImages?.map((image) => uploadFile(image)));
         const formattedUploadedImages = formatUploadedImages(uploadedImages);
 
+        // Delete all existing product images from storage to free up space
+        if (product?.images?.length !== 0) {
+            product.images?.forEach((image) => deleteFile(image?.id));
+        }
+
+        // Return updated product with new images
         return await ProductDAO.replaceAllProductImages(
             sellerId,
-            productId,
+            product?._id,
             formattedUploadedImages
         );
     }

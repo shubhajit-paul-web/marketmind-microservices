@@ -102,6 +102,13 @@ class ProductDAO {
         ).lean();
     }
 
+    /**
+     * Replaces all images of an existing product with new images
+     * @param {string} sellerId - ID of the seller who owns the product
+     * @param {string} productId - ID of the product to replace images for
+     * @param {Array<Object>} newImages - Array of new image objects to replace all existing images
+     * @returns {Promise<Object|null>} Updated product document with replaced images or null if not found
+     */
     async replaceAllProductImages(sellerId, productId, newImages = []) {
         return await Product.findOneAndUpdate(
             {

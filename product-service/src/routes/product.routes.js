@@ -56,7 +56,7 @@ router.put(
     createAuthMiddleware(["seller"]),
     productIdValidator,
     authorizeProductAccess,
-    upload.array("images", 5),
+    upload.array("images"),
     ProductController.replaceAllProductImages
 );
 

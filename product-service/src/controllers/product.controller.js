@@ -11,6 +11,7 @@ import responseMessages from "../constants/responseMessages.js";
 class ProductController {
     /**
      * Create a new product
+     * @description Creates a new product with provided details and optional images
      * @route POST /api/v1/products
      * @access Private
      */
@@ -27,6 +28,7 @@ class ProductController {
 
     /**
      * Update an existing product
+     * @description Updates product fields such as name, description, category, stock, and price
      * @route PATCH /api/v1/products/:productId
      * @access Private
      */
@@ -44,6 +46,7 @@ class ProductController {
 
     /**
      * Add images to an existing product
+     * @description Adds new images to a product without removing existing ones
      * @route POST /api/v1/products/:productId/images
      * @access Private
      */
@@ -61,6 +64,7 @@ class ProductController {
 
     /**
      * Update a specific image of an existing product
+     * @description Replaces a single product image identified by imageId with a new one
      * @route PATCH /api/v1/products/:productId/images/:imageId
      * @access Private
      */
@@ -77,10 +81,16 @@ class ProductController {
             .json(ApiResponse.success(responseMessages.IMAGE_UPDATED_SUCCESS, updatedProduct));
     });
 
+    /**
+     * Replace all product images
+     * @description Removes all existing product images and replaces them with new ones
+     * @route PUT /api/v1/products/:productId/images
+     * @access Private
+     */
     replaceAllProductImages = asyncHandler(async (req, res) => {
         const updatedProduct = await ProductService.replaceAllProductImages(
             req.user?._id,
-            req.product?._id,
+            req.product,
             req.files
         );
 
@@ -91,6 +101,7 @@ class ProductController {
 
     /**
      * Delete a specific image of an existing product
+     * @description Removes a single product image identified by imageId from storage and database
      * @route DELETE /api/v1/products/:productId/images/:imageId
      * @access Private
      */
