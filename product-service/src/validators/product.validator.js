@@ -1,7 +1,8 @@
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 import cleanString from "../utils/cleanString.js";
 import respondWithValidationErrors from "../middlewares/validator.middleware.js";
 import { isValidObjectId } from "mongoose";
+import { MAX_PRODUCTS_LIMIT } from "../constants/constants.js";
 
 // Custom discount price validator - util
 const discountPriceValidatorUtil = (discountPrice, { req }) => {
@@ -157,6 +158,62 @@ export const updateProductValidator = [
  */
 export const productIdValidator = [
     param("productId").custom(isValidObjectId).withMessage("Invalid product ID"),
+
+    // Middleware to handle validation errors and send formatted response
+    respondWithValidationErrors,
+];
+
+/**
+ * Find Products pagination validator
+ * @description Validates pagination query params
+ */
+export const findProductsPaginationValidator = [
+    query("page")
+        .optional()
+        .toInt()
+        .isInt({ min: 1 })
+        .withMessage("Page must be a positive integer")
+        .default(1),
+    query("limit")
+        .optional()
+        .toInt()
+        .isInt({ max: MAX_PRODUCTS_LIMIT })
+        .withMessage(`Limit must be a positive integer between 1 and ${MAX_PRODUCTS_LIMIT}`)
+        .default(20),
+    query("q")
+        .optional()
+        .isString()
+        .withMessage("Search query must be a string")
+        .isLength({ min: 2, max: 100 })
+        .withMessage("Search query must be 2-100 characters long"),
+    query("minPrice")
+        .optional()
+        .toFloat()
+        .isFloat({ min: 0 })
+        .withMessage("minPrice must be a positive number"),
+    query("maxPrice")
+        .optional()
+        .toFloat()
+        .isFloat({ min: 0 })
+        .withMessage("maxPrice must be a positive number")
+        .custom((_, { req }) => {
+            const min = req.query?.minPrice !== undefined && Number(req.query?.minPrice);
+            const max = req.query?.minPrice !== undefined && Number(req.query?.maxPrice);
+
+            if (min !== undefined && max !== undefined && min > max) {
+                throw new Error("minPrice must be less than or equal to maxPrice");
+            }
+            return true;
+        }),
+    query("sortBy")
+        .optional()
+        .isIn(["amount", "discountPrice", "createdAt"])
+        .withMessage("Invalid sort field"),
+    query("sortType")
+        .optional()
+        .isIn(["asc", "desc"])
+        .withMessage("Sort type must be asc or desc")
+        .default("asc"),
 
     // Middleware to handle validation errors and send formatted response
     respondWithValidationErrors,

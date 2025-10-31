@@ -273,32 +273,65 @@ class ProductService {
         return await ProductDAO.deleteProductImage(sellerId, product?._id, imageId);
     }
 
+    /**
+     * Get a list of products with filtering, sorting, and pagination
+     * @param {Object} query - Query parameters for filtering and pagination
+     * @param {string} [query.q] - Text search query
+     * @param {number} [query.minPrice] - Minimum price filter
+     * @param {number} [query.maxPrice] - Maximum price filter
+     * @param {number} [query.page=1] - Current page number
+     * @param {number} [query.limit=20] - Number of products per page
+     * @param {string} [query.sortBy] - Field to sort by
+     * @param {string} [query.sortType] - Sort order (asc/desc)
+     * @returns {Promise<Object>} Object containing products array and pagination metadata
+     */
     async getProducts(query) {
-        const {
-            q,
-            minPrice,
-            maxPrice,
-            page = 1,
-            limit = 20,
-            sortBy,
-            sortType = "asc",
-        } = query ?? {};
-        const filter = {};
+        const { q, minPrice, maxPrice, page = 1, limit = 20, sortType } = query;
+        let { sortBy } = query;
 
-        if (q) {
-            filter.$text = { $search: q };
+        // Map sortBy to nested price fields if needed
+        if (["amount", "discountPrice"].includes(sortBy)) {
+            sortBy = `price.${sortBy}`;
         }
-        if (minPrice) {
+
+        // Build filter for active products only
+        const filter = { isActive: true };
+
+        if (q) filter.$text = { $search: q };
+
+        // Apply price range filters
+        if (minPrice && maxPrice) {
+            filter["price.amount"] = { $gte: Number(minPrice), $lte: Number(maxPrice) };
+        } else if (minPrice) {
             filter["price.amount"] = { $gte: Number(minPrice) };
-        }
-        if (maxPrice) {
+        } else if (maxPrice) {
             filter["price.amount"] = { $lte: Number(maxPrice) };
         }
 
         const skip = (Math.max(page, 1) - 1) * limit;
 
-        // Return products
-        return await ProductDAO.findProducts(filter, skip, limit, sortBy, sortType);
+        const { totalProducts, products } = await ProductDAO.findProducts(
+            filter,
+            skip,
+            limit,
+            sortBy,
+            sortType
+        );
+
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        const pagination = {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            totalProducts: totalProducts || 0,
+            totalPages: totalPages || 0,
+            hasNextPage: page < totalPages,
+            hasPrevPage: page > 1,
+            nextPage: page < totalPages ? page + 1 : null,
+            prevPage: page > 1 ? page - 1 : null,
+        };
+
+        return { products, pagination };
     }
 }
 

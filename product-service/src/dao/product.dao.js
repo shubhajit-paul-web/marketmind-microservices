@@ -1,4 +1,3 @@
-import { MAX_PRODUCTS_LIMIT } from "../constants/constants.js";
 import Product from "../models/product.model.js";
 
 /**
@@ -172,11 +171,16 @@ class ProductDAO {
      * @returns {Promise<Array<Object>>} Array of product documents matching the filter criteria
      */
     async findProducts(filter = {}, skip = 0, limit = 20, sortBy, sortType = "asc") {
-        return await Product.find(filter)
-            .sort(sortBy && { [sortBy]: sortType === "asc" ? 1 : -1 })
-            .skip(Number(skip))
-            .limit(Math.min(Number(limit), MAX_PRODUCTS_LIMIT))
-            .lean();
+        const [totalProducts, products] = await Promise.all([
+            Product.countDocuments(filter),
+            Product.find(filter)
+                .sort(sortBy && { [sortBy]: sortType === "asc" ? 1 : -1 })
+                .skip(Number(skip))
+                .limit(Number(limit))
+                .lean(),
+        ]);
+
+        return { totalProducts, products };
     }
 }
 

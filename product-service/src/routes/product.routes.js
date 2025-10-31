@@ -6,6 +6,7 @@ import {
     createProductValidator,
     updateProductValidator,
     productIdValidator,
+    findProductsPaginationValidator,
 } from "../validators/product.validator.js";
 import ProductController from "../controllers/product.controller.js";
 import { MAX_PRODUCT_IMAGES } from "../constants/constants.js";
@@ -79,6 +80,6 @@ router.delete(
 );
 
 // GET /api/v1/products
-router.get("/", ProductController.getProducts);
+router.get("/", findProductsPaginationValidator, ProductController.getProducts);
 
 export default router;

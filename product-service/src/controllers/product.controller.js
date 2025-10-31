@@ -138,11 +138,13 @@ class ProductController {
      * @access Public
      */
     getProducts = asyncHandler(async (req, res) => {
-        const products = await ProductService.getProducts(req.query);
+        const { products, pagination } = await ProductService.getProducts(req.query || {});
 
         return res
             .status(StatusCodes.OK)
-            .json(ApiResponse.success(responseMessages.PRODUCTS_FETCHED_SUCCESS, products));
+            .json(
+                ApiResponse.success(responseMessages.PRODUCTS_FETCHED_SUCCESS, products, pagination)
+            );
     });
 }
 
