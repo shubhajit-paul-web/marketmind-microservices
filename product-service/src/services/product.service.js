@@ -333,6 +333,25 @@ class ProductService {
 
         return { products, pagination };
     }
+
+    /**
+     * Get a single product by ID
+     * @param {string} productId - ID of the product to retrieve
+     * @returns {Promise<Object>} The product document
+     */
+    async getProduct(productId) {
+        const product = await ProductDAO.findActiveProduct(productId);
+
+        if (!product) {
+            throw new ApiError(
+                StatusCodes.NOT_FOUND,
+                responseMessages.PRODUCT_NOT_FOUND,
+                errorCodes.PRODUCT_NOT_FOUND
+            );
+        }
+
+        return product;
+    }
 }
 
 export default new ProductService();

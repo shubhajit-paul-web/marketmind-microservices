@@ -13,7 +13,7 @@ import { MAX_PRODUCT_IMAGES } from "../constants/constants.js";
 
 const router = Router();
 
-// POST /api/v1/products
+// (Private) POST /api/v1/products
 router.post(
     "/",
     createAuthMiddleware(["seller"]),
@@ -22,7 +22,7 @@ router.post(
     ProductController.createProduct
 );
 
-// PATCH /api/v1/products/:productId
+// (Private) PATCH /api/v1/products/:productId
 router.patch(
     "/:productId",
     createAuthMiddleware(["seller"]),
@@ -31,7 +31,7 @@ router.patch(
     ProductController.updateProduct
 );
 
-// DELETE /api/v1/products/:productId
+// (Private) DELETE /api/v1/products/:productId
 router.delete(
     "/:productId",
     createAuthMiddleware(["seller"]),
@@ -40,7 +40,7 @@ router.delete(
     ProductController.deleteProduct
 );
 
-// POST /api/v1/products/:productId/images
+// (Private) POST /api/v1/products/:productId/images
 router.post(
     "/:productId/images",
     createAuthMiddleware(["seller"]),
@@ -50,7 +50,7 @@ router.post(
     ProductController.addProductImages
 );
 
-// PATCH /api/v1/products/:productId/images/:imageId
+// (Private) PATCH /api/v1/products/:productId/images/:imageId
 router.patch(
     "/:productId/images/:imageId",
     createAuthMiddleware(["seller"]),
@@ -60,7 +60,7 @@ router.patch(
     ProductController.updateProductImage
 );
 
-// PUT /api/v1/products/:productId/images
+// (Private) PUT /api/v1/products/:productId/images
 router.put(
     "/:productId/images",
     createAuthMiddleware(["seller"]),
@@ -70,7 +70,7 @@ router.put(
     ProductController.replaceAllProductImages
 );
 
-// DELETE /api/v1/products/:productId/images/:imageId
+// (Private) DELETE /api/v1/products/:productId/images/:imageId
 router.delete(
     "/:productId/images/:imageId",
     createAuthMiddleware(["seller"]),
@@ -79,7 +79,10 @@ router.delete(
     ProductController.deleteProductImage
 );
 
-// GET /api/v1/products
+// (Public) GET /api/v1/products
 router.get("/", findProductsPaginationValidator, ProductController.getProducts);
+
+// (Public) GET /api/v1/products/:productId
+router.get("/:productId", productIdValidator, ProductController.getProduct);
 
 export default router;

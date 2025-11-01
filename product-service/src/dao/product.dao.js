@@ -162,6 +162,18 @@ class ProductDAO {
     }
 
     /**
+     * Finds an active product by its ID
+     * @param {string} productId - ID of the product to find
+     * @returns {Promise<Object|null>} Active product document or null if not found or not active
+     */
+    async findActiveProduct(productId) {
+        return await Product.findOne({
+            _id: productId,
+            isActive: true,
+        }).lean();
+    }
+
+    /**
      * Finds products based on filter criteria with pagination and sorting
      * @param {Object} [filter={}] - MongoDB filter object to match products
      * @param {number} [skip=0] - Number of documents to skip for pagination

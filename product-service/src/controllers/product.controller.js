@@ -146,6 +146,20 @@ class ProductController {
                 ApiResponse.success(responseMessages.PRODUCTS_FETCHED_SUCCESS, products, pagination)
             );
     });
+
+    /**
+     * Get a single product by ID
+     * @description Retrieves detailed information about a specific product
+     * @route GET /api/v1/products/:productId
+     * @access Public
+     */
+    getProduct = asyncHandler(async (req, res) => {
+        const product = await ProductService.getProduct(req.params?.productId);
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.PRODUCT_FETCHED_SUCCESS, product));
+    });
 }
 
 export default new ProductController();
