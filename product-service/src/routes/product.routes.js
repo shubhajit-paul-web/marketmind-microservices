@@ -87,6 +87,14 @@ router.get(
     ProductController.getOwnProducts
 );
 
+// (Private) GET /api/v1/products/:productId/mine
+router.get(
+    "/:productId/mine",
+    createAuthMiddleware(["seller"]),
+    productIdValidator,
+    ProductController.getOwnProduct
+);
+
 // (Public) GET /api/v1/products
 router.get("/", findProductsPaginationValidator, ProductController.getProducts);
 

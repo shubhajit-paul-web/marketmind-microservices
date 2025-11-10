@@ -179,6 +179,20 @@ class ProductController {
             .status(StatusCodes.OK)
             .json(ApiResponse.success(responseMessages.PRODUCT_FETCHED_SUCCESS, product));
     });
+
+    /**
+     * Get seller's own product by ID
+     * @description Retrieves a product that belongs to the authenticated seller. Ensures the product exists and is owned by the requester.
+     * @route GET /api/v1/products/:productId/mine
+     * @access Private
+     */
+    getOwnProduct = asyncHandler(async (req, res) => {
+        const product = await ProductService.getOwnProduct(req.user?._id, req.params?.productId);
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.PRODUCT_FETCHED_SUCCESS, product));
+    });
 }
 
 export default new ProductController();

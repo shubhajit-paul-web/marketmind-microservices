@@ -358,6 +358,26 @@ class ProductService {
 
         return product;
     }
+
+    /**
+     * Get a product owned by a specific user (seller)
+     * @param {string} userId - ID of the user/seller who owns the product
+     * @param {string} productId - ID of the product to retrieve
+     * @returns {Promise<Object>} The product document belonging to the user
+     */
+    async getOwnProduct(userId, productId) {
+        const product = await ProductDAO.findProductByIdAndSeller(userId, productId);
+
+        if (!product) {
+            throw new ApiError(
+                StatusCodes.NOT_FOUND,
+                responseMessages.PRODUCT_NOT_FOUND,
+                errorCodes.PRODUCT_NOT_FOUND
+            );
+        }
+
+        return product;
+    }
 }
 
 export default new ProductService();
