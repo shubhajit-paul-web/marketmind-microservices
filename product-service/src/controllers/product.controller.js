@@ -132,6 +132,25 @@ class ProductController {
     });
 
     /**
+     * Get seller's own products
+     * @description Retrieves a list of own products based on query parameters and seller
+     * @route GET /api/v1/products/mine
+     * @access Private
+     */
+    getOwnProducts = asyncHandler(async (req, res) => {
+        const { products, pagination } = await ProductService.getProducts(
+            req.query || {},
+            req.user || {}
+        );
+
+        return res
+            .status(StatusCodes.OK)
+            .json(
+                ApiResponse.success(responseMessages.PRODUCTS_FETCHED_SUCCESS, products, pagination)
+            );
+    });
+
+    /**
      * Get all products
      * @description Retrieves a list of products based on query parameters
      * @route GET /api/v1/products

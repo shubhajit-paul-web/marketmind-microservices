@@ -79,6 +79,14 @@ router.delete(
     ProductController.deleteProductImage
 );
 
+// (Private) GET /api/v1/products/mine
+router.get(
+    "/mine",
+    findProductsPaginationValidator,
+    createAuthMiddleware(["seller"]),
+    ProductController.getOwnProducts
+);
+
 // (Public) GET /api/v1/products
 router.get("/", findProductsPaginationValidator, ProductController.getProducts);
 

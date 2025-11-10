@@ -283,9 +283,10 @@ class ProductService {
      * @param {number} [query.limit=20] - Number of products per page
      * @param {string} [query.sortBy] - Field to sort by
      * @param {string} [query.sortType] - Sort order (asc/desc)
+     * @param {Object} user - user object (optional)
      * @returns {Promise<Object>} Object containing products array and pagination metadata
      */
-    async getProducts(query) {
+    async getProducts(query, user) {
         const { q, minPrice, maxPrice, page = 1, limit = 20, sortType } = query;
         let { sortBy } = query;
 
@@ -294,8 +295,13 @@ class ProductService {
             sortBy = `price.${sortBy}`;
         }
 
-        // Build filter for active products only
-        const filter = { isActive: true };
+        // Filter for normal users (default)
+        let filter = { isActive: true };
+
+        // Filter for sellers
+        if (user?._id && user?.role === "seller") {
+            filter = { seller: user?._id };
+        }
 
         if (q) filter.$text = { $search: q };
 
