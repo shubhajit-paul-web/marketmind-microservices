@@ -1,4 +1,4 @@
-// Response messages for standardized API responses in Product Service
+// Response messages for standardized API responses in Cart Service
 export default {
     // Generic
     SOMETHING_WENT_WRONG: "Something went wrong!",
@@ -15,21 +15,12 @@ export default {
 
     // Product-specific
     PRODUCT_CREATED_SUCCESS: "Product created successfully",
-    PRODUCT_FETCHED_SUCCESS: "Product fetched successfully",
+    CART_FETCHED_SUCCESS: "Cart fetched successfully",
     PRODUCTS_FETCHED_SUCCESS: "Products fetched successfully",
-    PRODUCT_UPDATED_SUCCESS: "Product updated successfully",
     PRODUCT_DELETED_SUCCESS: "Product deleted successfully",
     PRODUCT_NOT_FOUND: "Product not found",
-    PRODUCT_ALREADY_EXISTS: "Product already exists",
-    CATEGORY_NOT_FOUND: "Category not found",
-    DISCOUNT_PRICE_INVALID: "Discount price must be less than the original price",
     STOCK_UPDATED_SUCCESS: "Stock updated successfully",
     OUT_OF_STOCK: "Product is out of stock",
-    INVENTORY_ADJUSTED_SUCCESS: "Inventory adjusted successfully",
-
-    // Bulk operations
-    BULK_IMPORT_SUCCESS: "Products imported successfully",
-    BULK_IMPORT_FAILED: "Product import failed",
 
     // Generic helpers (useful when responding with dynamic entity names)
     NOT_FOUND: (entity = "Resource") => `${entity} not found`,

@@ -1,0 +1,31 @@
+import path from "path";
+import { fileURLToPath } from "url";
+import loginUser from "./loginUser.js";
+import request from "supertest";
+import app from "../../app.js";
+import productPayload from "./productPayload.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Creates a new product by sending a POST request
+async function createProduct() {
+    const token = await loginUser();
+
+    const createdProduct = await request(app)
+        .post("/api/v1/products")
+        .field("name", productPayload.name)
+        .field("description", productPayload.description)
+        .field("category", productPayload.category)
+        .field("stock", productPayload.stock)
+        .field("priceAmount", productPayload.priceAmount)
+        .field("discountPrice", productPayload.discountPrice)
+        .field("priceCurrency", productPayload.priceCurrency)
+        .attach("images", path.join(__dirname, "images/product-img1.jpg"))
+        .attach("images", path.join(__dirname, "images/product-img2.jpg"))
+        .set("Authorization", `Bearer ${token}`)
+        .expect(201);
+
+    return { createdProduct, token };
+}
+
+export default createProduct;
