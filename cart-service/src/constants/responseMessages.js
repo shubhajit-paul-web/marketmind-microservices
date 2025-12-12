@@ -16,6 +16,8 @@ export default {
     // Product-specific
     PRODUCT_CREATED_SUCCESS: "Product created successfully",
     CART_FETCHED_SUCCESS: "Cart fetched successfully",
+    ITEM_ADDED_SUCCESS: "Item added to cart",
+    ITEM_REMOVED_SUCCESS: "Item removed successfully",
     PRODUCTS_FETCHED_SUCCESS: "Products fetched successfully",
     PRODUCT_DELETED_SUCCESS: "Product deleted successfully",
     PRODUCT_NOT_FOUND: "Product not found",
