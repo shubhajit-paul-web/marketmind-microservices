@@ -30,6 +30,8 @@ class CartDAO {
      * @returns {Promise<Object>} The saved cart document after mutation
      */
     async addItemToCart(cart, itemIndex, productId, qty) {
+        qty = Math.abs(qty);
+
         if (itemIndex >= 0) {
             cart.items[itemIndex].quantity += qty;
         } else {
@@ -37,6 +39,18 @@ class CartDAO {
         }
 
         return await cart.save();
+    }
+
+    /**
+     * Sets the quantity for an existing cart item without triggering validators.
+     * @param {Object} cart - Cart document to update
+     * @param {number} itemIndex - Index of the item in `cart.items`
+     * @param {number} qty - New quantity to assign
+     * @returns {Promise<Object>} Cart document after save
+     */
+    async updateItemQuantity(cart, itemIndex, qty) {
+        cart.items[itemIndex].quantity = qty;
+        return await cart.save({ validateBeforeSave: false });
     }
 }
 

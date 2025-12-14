@@ -1,7 +1,10 @@
 import { Router } from "express";
 import createAuthMiddleware from "../middlewares/auth.middleware.js";
 import CartController from "../controllers/cart.controller.js";
-import { addItemToCartValidator } from "../validators/cart.validator.js";
+import {
+    addItemToCartValidator,
+    updateItemQuantityValidator,
+} from "../validators/cart.validator.js";
 
 const router = Router();
 
@@ -14,6 +17,14 @@ router.post(
     addItemToCartValidator,
     createAuthMiddleware(["user"]),
     CartController.addItemToCart
+);
+
+// (Private) PATCH /api/v1/cart/items/:productId
+router.patch(
+    "/items/:productId",
+    updateItemQuantityValidator,
+    createAuthMiddleware(["user"]),
+    CartController.updateItemQuantity
 );
 
 export default router;

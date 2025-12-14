@@ -43,6 +43,24 @@ class CartController {
             .status(StatusCodes.OK)
             .json(ApiResponse.success(responseMessages.ITEM_ADDED_SUCCESS, cart));
     });
+
+    /**
+     * Update item quantity in cart
+     * @description Updates the quantity of a specific product in the authenticated user's cart
+     * @route PATCH /api/v1/cart/items/:productId
+     * @access Private
+     */
+    updateItemQuantity = asyncHandler(async (req, res) => {
+        const cart = await CartService.updateItemQuantity(
+            req.user?._id,
+            req.params?.productId,
+            req.body?.qty
+        );
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.ITEM_UPDATED_SUCCESS, cart));
+    });
 }
 
 export default new CartController();

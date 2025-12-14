@@ -11,7 +11,7 @@ export default {
 
     // User Errors
     USER_NOT_FOUND: "USER_NOT_FOUND",
-    PRODUCT_NOT_FOUND: "PRODUCT_NOT_FOUND",
+    ITEM_NOT_FOUND: "ITEM_NOT_FOUND",
 
     // System / Misc Errors
     INTERNAL_SERVER_ERROR: "INTERNAL_SERVER_ERROR",
