@@ -19,7 +19,7 @@ describe("GET /api/v1/cart", () => {
         expect(res.body.statusCode).toBe(200);
         expect(res.body.message).toBe(responseMessages.CART_FETCHED_SUCCESS);
         expect(res.body.data).toBeDefined();
-        expect(res.body.data?.userId).toBeDefined();
-        expect(Array.isArray(res.body.data?.items)).toBe(true);
+        expect(res.body.data?.cart?.userId).toBeDefined();
+        expect(Array.isArray(res.body.data?.cart?.items)).toBe(true);
     });
 });

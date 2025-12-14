@@ -8,9 +8,10 @@
         "lint:fix": "eslint --fix",
         "format:check": "prettier . --check",
         "format:fix": "prettier --write .",
-        "test": "npm run test:auth && npm run test:product",
+        "test": "npm run test:auth && npm run test:product && npm run test:cart",
         "test:auth": "npm --prefix ./auth-service test",
-        "test:product": "npm --prefix ./product-service test"
+        "test:product": "npm --prefix ./product-service test",
+        "test:cart": "npm --prefix ./cart-service test"
     },
     "lint-staged": {
         "*.js": [

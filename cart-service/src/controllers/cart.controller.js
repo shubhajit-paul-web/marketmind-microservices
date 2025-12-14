@@ -23,7 +23,8 @@ class CartController {
                 cart,
                 totals: {
                     itemCount: cart?.items?.length ?? 0,
-                    totalQuantity: cart?.items?.reduce((total, item) => total + item?.qty, 0) ?? 0,
+                    totalQuantity:
+                        cart?.items?.reduce((total, item) => total + item?.quantity, 0) ?? 0,
                 },
             })
         );
