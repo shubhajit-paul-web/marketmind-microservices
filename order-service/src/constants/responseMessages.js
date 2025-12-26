@@ -14,8 +14,10 @@ export default {
     INSUFFICIENT_PERMISSIONS: "You don't have permission to access this resource",
 
     // Product-specific
+    ORDERED_SUCCESS: "Ordered successfully",
     PRODUCT_CREATED_SUCCESS: "Product created successfully",
     CART_FETCHED_SUCCESS: "Cart fetched successfully",
+    EMPTY_CART: "Cart is empty",
     ITEM_ADDED_SUCCESS: "Item added to cart",
     ITEM_UPDATED_SUCCESS: "Item updated successfully",
     ITEM_NOT_FOUND: "Item not found",
@@ -29,4 +31,6 @@ export default {
     NOT_FOUND: (entity = "Resource") => `${entity} not found`,
     INVALID: (entity = "Resource") => `Invalid ${entity}`,
     ALREADY_EXISTS: (entity = "Resource") => `${entity} already exists`,
+    INSUFFICIENT_STOCK: (entity = "Resource") =>
+        `Product ${entity} is out of stock or insufficient stock`,
 };

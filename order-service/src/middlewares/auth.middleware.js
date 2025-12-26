@@ -48,6 +48,7 @@ function createAuthMiddleware(roles = ["user"]) {
             }
 
             req.user = decoded;
+            req.accessToken = accessToken;
             next();
         } catch (error) {
             if (error.statusCode === StatusCodes.FORBIDDEN) {

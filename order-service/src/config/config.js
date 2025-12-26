@@ -16,6 +16,10 @@ const _config = {
         PORT: process.env.REDIS_PORT,
         PASSWORD: process.env.REDIS_PASSWORD,
     },
+    API: {
+        CART_SERVICE: process.env.CART_SERVICE_API,
+        PRODUCT_SERVICE: process.env.PRODUCT_SERVICE_API,
+    },
 };
 
 export default Object.freeze(_config);
