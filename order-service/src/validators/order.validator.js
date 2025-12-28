@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 import cleanString from "../utils/cleanString.js";
 import { COUNTRIES } from "../constants/constants.js";
 import respondWithValidationErrors from "../middlewares/validator.middleware.js";
@@ -66,6 +66,39 @@ export const createOrderValidator = [
         .toLowerCase()
         .isIn(["home", "work"])
         .withMessage("Type must be home or work"),
+
+    // Middleware to handle validation errors and send formatted response
+    respondWithValidationErrors,
+];
+
+export const getAllOrdersValidator = [
+    query("page")
+        .optional()
+        .isInt({ min: 1 })
+        .withMessage("Page must be a positive integer")
+        .toInt()
+        .default(1),
+    query("limit")
+        .optional()
+        .isInt({ min: 1, max: 100 })
+        .withMessage("Limit must be between 1 and 100")
+        .toInt()
+        .default(10),
+    query("sortBy")
+        .optional()
+        .isString()
+        .trim()
+        .isIn(["createdAt", "updatedAt", "totalAmount", "status"])
+        .withMessage("sortBy must be one of: createdAt, updatedAt, totalAmount, status")
+        .default("createdAt"),
+    query("sortType")
+        .optional()
+        .isString()
+        .trim()
+        .toLowerCase()
+        .isIn(["asc", "desc"])
+        .withMessage("sortType must be either asc or desc")
+        .default("desc"),
 
     // Middleware to handle validation errors and send formatted response
     respondWithValidationErrors,

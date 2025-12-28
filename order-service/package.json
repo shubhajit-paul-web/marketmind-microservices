@@ -9,6 +9,7 @@
         "test:fix": "cross-env NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles"
     },
     "keywords": [],
+    "type": "module",
     "author": "Shubhajit Paul",
     "license": "ISC",
     "description": "",
@@ -28,5 +29,10 @@
         "mongoose": "^9.0.2",
         "morgan": "^1.10.1",
         "winston": "^3.19.0"
+    },
+    "devDependencies": {
+        "jest": "^30.2.0",
+        "mongodb-memory-server": "^11.0.1",
+        "supertest": "^7.1.4"
     }
 }

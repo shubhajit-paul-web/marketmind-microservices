@@ -63,7 +63,9 @@ class OrderService {
                 productId: product._id,
                 quantity: cartItem?.quantity,
                 price: {
-                    amount: product.price?.discountPrice ?? product.price?.amount,
+                    amount:
+                        product.price?.discountPrice?.toFixed(2) ??
+                        product.price?.amount?.toFixed(2),
                     currency: product.price?.currency,
                 },
             };
@@ -74,7 +76,7 @@ class OrderService {
             userId,
             items: orderItems,
             totalPrice: {
-                amount: totalPriceAmount,
+                amount: totalPriceAmount.toFixed(2),
                 currency: orderCurrency,
             },
             shippingAddress: {
@@ -89,6 +91,40 @@ class OrderService {
         });
 
         return createdOrder;
+    }
+
+    async getAllOrders(userId, query) {
+        const page = parseInt(query.page) || 1;
+        const limit = parseInt(query.limit) || 10;
+        const sortType = query.sortType ?? "desc";
+        let sortBy = query.sortBy ?? "createdAt";
+
+        const skip = (page - 1) * limit;
+
+        if (sortBy === "totalAmount") sortBy = "totalPrice.amount";
+
+        // Parallel fetch: Get paginated orders and total count simultaneously to reduce response time
+        const [orders, totalOrders] = await Promise.all([
+            OrderDAO.getAllOrders(userId, skip, limit, sortBy, sortType),
+            OrderDAO.countOrders({ userId }),
+        ]);
+
+        const totalPages = Math.ceil(totalOrders / limit);
+
+        return {
+            orders,
+            pagination: {
+                page: page,
+                limit,
+                totalOrders,
+                totalPages,
+                ordersPerPage: limit,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1,
+                nextPage: page < totalPages ? page + 1 : null,
+                prevPage: page > 1 ? page - 1 : null,
+            },
+        };
     }
 }
 

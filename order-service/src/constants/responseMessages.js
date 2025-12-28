@@ -15,6 +15,7 @@ export default {
 
     // Product-specific
     ORDERED_SUCCESS: "Ordered successfully",
+    ORDERED_FETCHED_SUCCESS: "Orders fetched successfully",
     PRODUCT_CREATED_SUCCESS: "Product created successfully",
     CART_FETCHED_SUCCESS: "Cart fetched successfully",
     EMPTY_CART: "Cart is empty",

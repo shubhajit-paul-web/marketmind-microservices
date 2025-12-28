@@ -22,7 +22,7 @@ const addressSchema = new Schema(
         zip: {
             type: String,
             trim: true,
-            minLength: 6,
+            minLength: 5,
             maxLength: 7,
             required: true,
         },

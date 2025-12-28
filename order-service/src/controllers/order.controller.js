@@ -17,6 +17,19 @@ class OrderController {
             .status(StatusCodes.CREATED)
             .json(ApiResponse.success(responseMessages.ORDERED_SUCCESS, createdOrder));
     });
+
+    getAllOrders = asyncHandler(async (req, res) => {
+        const { orders, pagination } = await OrderService.getAllOrders(
+            req.user?._id,
+            req.query || {}
+        );
+
+        return res
+            .status(StatusCodes.OK)
+            .json(
+                ApiResponse.success(responseMessages.ORDERED_FETCHED_SUCCESS, orders, pagination)
+            );
+    });
 }
 
 export default new OrderController();
