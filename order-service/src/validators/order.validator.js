@@ -1,7 +1,8 @@
-import { body, query } from "express-validator";
+import { body, param, query } from "express-validator";
 import cleanString from "../utils/cleanString.js";
 import { COUNTRIES } from "../constants/constants.js";
 import respondWithValidationErrors from "../middlewares/validator.middleware.js";
+import { isValidObjectId } from "mongoose";
 
 export const createOrderValidator = [
     body("currency")
@@ -100,6 +101,11 @@ export const getAllOrdersValidator = [
         .withMessage("sortType must be either asc or desc")
         .default("desc"),
 
-    // Middleware to handle validation errors and send formatted response
+    respondWithValidationErrors,
+];
+
+export const orderIdValidator = [
+    param("orderId").custom(isValidObjectId).withMessage("Invalid order id"),
+
     respondWithValidationErrors,
 ];

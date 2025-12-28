@@ -1,6 +1,10 @@
 import { Router } from "express";
 import createAuthMiddleware from "../middlewares/auth.middleware.js";
-import { createOrderValidator, getAllOrdersValidator } from "../validators/order.validator.js";
+import {
+    createOrderValidator,
+    getAllOrdersValidator,
+    orderIdValidator,
+} from "../validators/order.validator.js";
 import OrderController from "../controllers/order.controller.js";
 
 const router = Router();
@@ -14,6 +18,14 @@ router.get(
     createAuthMiddleware(["user"]),
     getAllOrdersValidator,
     OrderController.getAllOrders
+);
+
+// (Private) GET /api/v1/orders/:orderId
+router.get(
+    "/:orderId",
+    createAuthMiddleware(["user"]),
+    orderIdValidator,
+    OrderController.getOrderById
 );
 
 export default router;

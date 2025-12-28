@@ -33,8 +33,6 @@ describe("POST /api/v1/orders - CreateOrder", () => {
             .set("Authorization", `Bearer ${token}`)
             .send(validOrderData);
 
-        console.log(response.body);
-
         expect(response.status).toBe(201);
     });
 

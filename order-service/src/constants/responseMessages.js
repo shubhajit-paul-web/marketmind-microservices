@@ -15,7 +15,10 @@ export default {
 
     // Product-specific
     ORDERED_SUCCESS: "Ordered successfully",
-    ORDERED_FETCHED_SUCCESS: "Orders fetched successfully",
+    ORDERS_FETCHED_SUCCESS: "Orders fetched successfully",
+    ORDER_NOT_FOUND: "Order not found",
+    ORDER_FETCHED_SUCCESS: "Order fetched successfully",
+    ORDER_ACCESS_FORBIDDEN: "Forbidden: You do not have access to this order",
     PRODUCT_CREATED_SUCCESS: "Product created successfully",
     CART_FETCHED_SUCCESS: "Cart fetched successfully",
     EMPTY_CART: "Cart is empty",

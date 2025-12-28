@@ -26,9 +26,15 @@ class OrderController {
 
         return res
             .status(StatusCodes.OK)
-            .json(
-                ApiResponse.success(responseMessages.ORDERED_FETCHED_SUCCESS, orders, pagination)
-            );
+            .json(ApiResponse.success(responseMessages.ORDERS_FETCHED_SUCCESS, orders, pagination));
+    });
+
+    getOrderById = asyncHandler(async (req, res) => {
+        const order = await OrderService.getOrderById(req.user?._id, req.params?.orderId);
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.ORDER_FETCHED_SUCCESS, order));
     });
 }
 

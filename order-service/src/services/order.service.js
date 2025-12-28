@@ -126,6 +126,28 @@ class OrderService {
             },
         };
     }
+
+    async getOrderById(userId, orderId) {
+        const order = await OrderDAO.getOrderById(orderId);
+
+        if (!order) {
+            throw new ApiError(
+                StatusCodes.NOT_FOUND,
+                responseMessages.ORDER_NOT_FOUND,
+                errorCodes.NOT_FOUND
+            );
+        }
+
+        if (order.userId?.toString() !== userId) {
+            throw new ApiError(
+                StatusCodes.FORBIDDEN,
+                responseMessages.ORDER_ACCESS_FORBIDDEN,
+                errorCodes.INSUFFICIENT_PERMISSIONS
+            );
+        }
+
+        return order;
+    }
 }
 
 export default new OrderService();

@@ -16,6 +16,10 @@ class OrderDAO {
     async countOrders(filter = {}) {
         return await Order.countDocuments(filter);
     }
+
+    async getOrderById(orderId) {
+        return Order.findById(orderId).lean();
+    }
 }
 
 export default new OrderDAO();
