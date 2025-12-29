@@ -20,6 +20,10 @@ class OrderDAO {
     async getOrderById(orderId) {
         return Order.findById(orderId).lean();
     }
+
+    async updateOrderStatusById(orderId, status) {
+        return Order.findOneAndUpdate({ _id: orderId }, { status }, { new: true }).lean();
+    }
 }
 
 export default new OrderDAO();

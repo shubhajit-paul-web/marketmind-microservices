@@ -19,6 +19,8 @@ export default {
     ORDER_NOT_FOUND: "Order not found",
     ORDER_FETCHED_SUCCESS: "Order fetched successfully",
     ORDER_ACCESS_FORBIDDEN: "Forbidden: You do not have access to this order",
+    ORDER_CANCELLATION_NOT_ALLOWED: "Order cannot be cancelled at this stage",
+    ORDER_CANCELED_SUCCESS: "Order canceled successfully",
     PRODUCT_CREATED_SUCCESS: "Product created successfully",
     CART_FETCHED_SUCCESS: "Cart fetched successfully",
     EMPTY_CART: "Cart is empty",

@@ -36,6 +36,17 @@ class OrderController {
             .status(StatusCodes.OK)
             .json(ApiResponse.success(responseMessages.ORDER_FETCHED_SUCCESS, order));
     });
+
+    cancelOrderById = asyncHandler(async (req, res) => {
+        const canceledOrder = await OrderService.cancelOrderById(
+            req.user?._id,
+            req.params?.orderId
+        );
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.ORDER_CANCELED_SUCCESS, canceledOrder));
+    });
 }
 
 export default new OrderController();

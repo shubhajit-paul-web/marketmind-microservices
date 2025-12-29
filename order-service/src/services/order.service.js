@@ -148,6 +148,36 @@ class OrderService {
 
         return order;
     }
+
+    async cancelOrderById(userId, orderId) {
+        const order = await OrderDAO.getOrderById(orderId);
+
+        if (!order) {
+            throw new ApiError(
+                StatusCodes.NOT_FOUND,
+                responseMessages.ORDER_NOT_FOUND,
+                errorCodes.NOT_FOUND
+            );
+        }
+
+        if (order.userId?.toString() !== userId) {
+            throw new ApiError(
+                StatusCodes.FORBIDDEN,
+                responseMessages.ORDER_ACCESS_FORBIDDEN,
+                errorCodes.INSUFFICIENT_PERMISSIONS
+            );
+        }
+
+        if (order.status !== "PENDING") {
+            throw new ApiError(
+                StatusCodes.BAD_REQUEST,
+                responseMessages.ORDER_CANCELLATION_NOT_ALLOWED,
+                errorCodes.ORDER_CANCELLATION_NOT_ALLOWED
+            );
+        }
+
+        return await OrderDAO.updateOrderStatusById(orderId, "CANCELLED");
+    }
 }
 
 export default new OrderService();

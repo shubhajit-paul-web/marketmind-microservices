@@ -28,4 +28,12 @@ router.get(
     OrderController.getOrderById
 );
 
+// (Private) PATCH /api/v1/orders/:orderId/cancel
+router.patch(
+    "/:orderId/cancel",
+    createAuthMiddleware(["user"]),
+    orderIdValidator,
+    OrderController.cancelOrderById
+);
+
 export default router;
