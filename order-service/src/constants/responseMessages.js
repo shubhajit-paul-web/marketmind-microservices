@@ -24,6 +24,8 @@ export default {
     NO_VALID_ADDRESS_FIELDS: "No valid address fields provided to update",
     ORDER_ADDRESS_UPDATED_SUCCESS: "Order address updated successfully",
     ORDER_CANCELED_SUCCESS: "Order canceled successfully",
+    ORDER_STATUS_UPDATE_SUCCESS: "Order status updated successfully",
+    ORDER_STATUS_UPDATE_FAILD: "Order status is already confirmed",
 
     // Product-specific
     PRODUCT_CREATED_SUCCESS: "Product created successfully",

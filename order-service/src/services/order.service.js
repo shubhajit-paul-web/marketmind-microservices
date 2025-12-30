@@ -6,6 +6,7 @@ import responseMessages from "../constants/responseMessages.js";
 import { StatusCodes } from "http-status-codes";
 import errorCodes from "../constants/errorCodes.js";
 import OrderDAO from "../dao/order.dao.js";
+import logger from "../loggers/winston.logger.js";
 
 class OrderService {
     async createOrder(userId, accessToken, orderCurrency, shippingAddress) {
@@ -214,6 +215,49 @@ class OrderService {
             ...order.shippingAddress,
             ...newAddress,
         });
+    }
+
+    async updateOrderStatus(accessToken, orderId, status) {
+        if (status === "CONFIRMED") {
+            const order = await OrderDAO.getOrderById(orderId);
+
+            if (!order) {
+                throw new ApiError(
+                    StatusCodes.NOT_FOUND,
+                    responseMessages.ORDER_NOT_FOUND,
+                    errorCodes.NOT_FOUND
+                );
+            }
+
+            if (order.status === "CONFIRMED") {
+                throw new ApiError(
+                    StatusCodes.BAD_REQUEST,
+                    responseMessages.ORDER_STATUS_UPDATE_FAILD,
+                    errorCodes.ORDER_STATUS_UPDATE_FAILD
+                );
+            }
+
+            // Decrease products stocks
+            order.items?.forEach(async (item) => {
+                try {
+                    axios.patch(
+                        `${_config.API.PRODUCT_SERVICE}/${item.productId}/stock`,
+                        {
+                            stock: item.quantity,
+                        },
+                        {
+                            headers: {
+                                Authorization: `Bearer ${accessToken}`,
+                            },
+                        }
+                    );
+                } catch (error) {
+                    logger.error(`Decrease products stocks ERROR: ${error.message}`);
+                }
+            });
+        }
+
+        return await OrderDAO.updateOrderStatusById(orderId, status);
     }
 }
 

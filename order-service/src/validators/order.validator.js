@@ -162,3 +162,15 @@ export const updateOrderAddressValidator = [
 
     respondWithValidationErrors,
 ];
+
+export const updateOrderStatusValidator = [
+    body("status")
+        .notEmpty()
+        .withMessage("Order status is required")
+        .trim()
+        .toUpperCase()
+        .isIn(["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"])
+        .withMessage("Order status must be pending, confirmed, shipped, delivered, or cancelled"),
+
+    respondWithValidationErrors,
+];

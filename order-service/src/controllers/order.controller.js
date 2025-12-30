@@ -61,6 +61,18 @@ class OrderController {
                 ApiResponse.success(responseMessages.ORDER_ADDRESS_UPDATED_SUCCESS, updatedOrder)
             );
     });
+
+    updateOrderStatus = asyncHandler(async (req, res) => {
+        const updatedOrder = await OrderService.updateOrderStatus(
+            req.accessToken,
+            req.params?.orderId,
+            req.body?.status
+        );
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.ORDER_STATUS_UPDATE_SUCCESS, updatedOrder));
+    });
 }
 
 export default new OrderController();
