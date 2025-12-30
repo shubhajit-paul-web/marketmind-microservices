@@ -194,6 +194,16 @@ class ProductDAO {
 
         return { totalProducts, products };
     }
+
+    /**
+     * Updates the stock level of a product
+     * @param {string} productId - ID of the product to update stock for
+     * @param {number} stock - New stock value for the product
+     * @returns {Promise<Object|null>} Updated product document with new stock value or null if not found
+     */
+    async decreaseProductStocks(productId, stock) {
+        return await Product.findByIdAndUpdate(productId, { stock }, { new: true }).lean();
+    }
 }
 
 export default new ProductDAO();

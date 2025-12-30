@@ -193,6 +193,25 @@ class ProductController {
             .status(StatusCodes.OK)
             .json(ApiResponse.success(responseMessages.PRODUCT_FETCHED_SUCCESS, product));
     });
+
+    /**
+     * Decrease product stock quantity
+     * @description Reduces the available stock of a product by a specified amount
+     * @route PATCH /api/v1/products/:productId/stock
+     * @access Private
+     */
+    decreaseProductStocks = asyncHandler(async (req, res) => {
+        const updatedProduct = await ProductService.decreaseProductStocks(
+            req.params?.productId,
+            req.body?.stock
+        );
+
+        return res
+            .status(StatusCodes.OK)
+            .json(
+                ApiResponse.success(responseMessages.PRODUCT_STOCK_UPDATED_SUCCESS, updatedProduct)
+            );
+    });
 }
 
 export default new ProductController();

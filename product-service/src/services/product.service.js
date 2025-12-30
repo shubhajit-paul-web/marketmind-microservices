@@ -378,6 +378,18 @@ class ProductService {
 
         return product;
     }
+
+    /**
+     * Decrease product stock by specified amount
+     * @param {string} productId - ID of the product to decrease stock for
+     * @param {number} stock - Amount to decrease from current stock
+     * @returns {Promise<Object>} Updated product with decreased stock
+     */
+    async decreaseProductStocks(productId, stock) {
+        const product = await this.getProduct(productId);
+
+        return await ProductDAO.decreaseProductStocks(productId, product.stock - stock);
+    }
 }
 
 export default new ProductService();

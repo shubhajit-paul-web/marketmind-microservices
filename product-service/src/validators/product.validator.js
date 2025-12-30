@@ -218,3 +218,18 @@ export const findProductsPaginationValidator = [
     // Middleware to handle validation errors and send formatted response
     respondWithValidationErrors,
 ];
+
+/**
+ * Decrease product stock quantity validator
+ * @description Validates product stock
+ */
+export const decreaseProductStocksValidator = [
+    body("stock")
+        .notEmpty()
+        .withMessage("Stock is required")
+        .isInt({ min: 0, max: 1000000 })
+        .withMessage("Stock must be a non-negative integer between 0 and 1,000,000")
+        .toInt(),
+
+    respondWithValidationErrors,
+];

@@ -7,6 +7,7 @@ import {
     updateProductValidator,
     productIdValidator,
     findProductsPaginationValidator,
+    decreaseProductStocksValidator,
 } from "../validators/product.validator.js";
 import ProductController from "../controllers/product.controller.js";
 import { MAX_PRODUCT_IMAGES } from "../constants/constants.js";
@@ -100,5 +101,14 @@ router.get("/", findProductsPaginationValidator, ProductController.getProducts);
 
 // (Public) GET /api/v1/products/:productId
 router.get("/:productId", productIdValidator, ProductController.getProduct);
+
+// (Private) PATCH /api/v1/products/:productId/stock
+router.patch(
+    "/:productId/stock",
+    createAuthMiddleware(["seller", "order_manager"]),
+    productIdValidator,
+    decreaseProductStocksValidator,
+    ProductController.decreaseProductStocks
+);
 
 export default router;

@@ -18,6 +18,7 @@ export default {
     PRODUCT_FETCHED_SUCCESS: "Product fetched successfully",
     PRODUCTS_FETCHED_SUCCESS: "Products fetched successfully",
     PRODUCT_UPDATED_SUCCESS: "Product updated successfully",
+    PRODUCT_STOCK_UPDATED_SUCCESS: "Product stock updated successfully",
     PRODUCT_DELETED_SUCCESS: "Product deleted successfully",
     PRODUCT_NOT_FOUND: "Product not found",
     PRODUCT_ALREADY_EXISTS: "Product already exists",
