@@ -24,6 +24,14 @@ class OrderDAO {
     async updateOrderStatusById(orderId, status) {
         return Order.findOneAndUpdate({ _id: orderId }, { status }, { new: true }).lean();
     }
+
+    async updateOrderAddress(orderId, newAddress) {
+        return await Order.findOneAndUpdate(
+            { _id: orderId },
+            { shippingAddress: newAddress },
+            { new: true }
+        ).lean();
+    }
 }
 
 export default new OrderDAO();

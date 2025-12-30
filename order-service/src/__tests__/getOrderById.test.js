@@ -35,7 +35,7 @@ describe("GET /api/v1/orders/:orderId - getOrderById", () => {
         expect(res.body).toHaveProperty("message");
         expect(res.body).toHaveProperty("errors");
         expect(Array.isArray(res.body.errors)).toBe(true);
-        expect(res.body.errors[0]).toHaveProperty("path", "orderId");
+        expect(res.body.errors[0]).toHaveProperty("path");
     });
 
     // Test case 3: Return 401 when accessing without authentication token

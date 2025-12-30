@@ -13,14 +13,19 @@ export default {
     TOKEN_BLACKLISTED: "Token has been invalidated, please login again",
     INSUFFICIENT_PERMISSIONS: "You don't have permission to access this resource",
 
-    // Product-specific
+    // Order-specific
     ORDERED_SUCCESS: "Ordered successfully",
     ORDERS_FETCHED_SUCCESS: "Orders fetched successfully",
     ORDER_NOT_FOUND: "Order not found",
     ORDER_FETCHED_SUCCESS: "Order fetched successfully",
     ORDER_ACCESS_FORBIDDEN: "Forbidden: You do not have access to this order",
     ORDER_CANCELLATION_NOT_ALLOWED: "Order cannot be cancelled at this stage",
+    ORDER_ADDRESS_UPDATE_NOT_ALLOWED: "Order address cannot be updated at this stage",
+    NO_VALID_ADDRESS_FIELDS: "No valid address fields provided to update",
+    ORDER_ADDRESS_UPDATED_SUCCESS: "Order address updated successfully",
     ORDER_CANCELED_SUCCESS: "Order canceled successfully",
+
+    // Product-specific
     PRODUCT_CREATED_SUCCESS: "Product created successfully",
     CART_FETCHED_SUCCESS: "Cart fetched successfully",
     EMPTY_CART: "Cart is empty",

@@ -47,6 +47,20 @@ class OrderController {
             .status(StatusCodes.OK)
             .json(ApiResponse.success(responseMessages.ORDER_CANCELED_SUCCESS, canceledOrder));
     });
+
+    updateOrderAddress = asyncHandler(async (req, res) => {
+        const updatedOrder = await OrderService.updateOrderAddress(
+            req.user?._id,
+            req.params?.orderId,
+            req.body || {}
+        );
+
+        return res
+            .status(StatusCodes.OK)
+            .json(
+                ApiResponse.success(responseMessages.ORDER_ADDRESS_UPDATED_SUCCESS, updatedOrder)
+            );
+    });
 }
 
 export default new OrderController();

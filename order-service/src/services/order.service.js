@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import axios from "axios";
 import _config from "../config/config.js";
 import ApiError from "../utils/ApiError.js";
@@ -177,6 +178,42 @@ class OrderService {
         }
 
         return await OrderDAO.updateOrderStatusById(orderId, "CANCELLED");
+    }
+
+    async updateOrderAddress(userId, orderId, newAddress) {
+        const order = await this.getOrderById(userId, orderId);
+
+        if (order.status !== "PENDING") {
+            throw new ApiError(
+                StatusCodes.BAD_REQUEST,
+                responseMessages.ORDER_ADDRESS_UPDATE_NOT_ALLOWED,
+                errorCodes.ORDER_ADDRESS_UPDATE_NOT_ALLOWED
+            );
+        }
+
+        const addressFields = ["street", "city", "state", "zip", "country", "typeOfAddress"];
+
+        // Check if new address contains at least one valid field
+        let hasNewAddressFields;
+        addressFields.forEach((field) => {
+            if (newAddress.hasOwnProperty(field)) {
+                hasNewAddressFields = true;
+            }
+        });
+
+        if (!hasNewAddressFields) {
+            throw new ApiError(
+                StatusCodes.BAD_REQUEST,
+                responseMessages.NO_VALID_ADDRESS_FIELDS,
+                errorCodes.NO_VALID_ADDRESS_FIELDS
+            );
+        }
+
+        // Return the updated order
+        return await OrderDAO.updateOrderAddress(orderId, {
+            ...order.shippingAddress,
+            ...newAddress,
+        });
     }
 }
 

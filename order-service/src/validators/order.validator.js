@@ -109,3 +109,56 @@ export const orderIdValidator = [
 
     respondWithValidationErrors,
 ];
+
+export const updateOrderAddressValidator = [
+    body("street")
+        .optional()
+        .isString()
+        .trim()
+        .customSanitizer(cleanString)
+        .isLength({ min: 2, max: 100 })
+        .withMessage("Street 2-100 chars"),
+    body("city")
+        .optional()
+        .isString()
+        .trim()
+        .customSanitizer(cleanString)
+        .isLength({ min: 2, max: 50 })
+        .withMessage("City 2-50 chars"),
+    body("state")
+        .optional()
+        .isString()
+        .trim()
+        .customSanitizer(cleanString)
+        .isLength({ min: 2, max: 50 })
+        .withMessage("State 2-50 chars"),
+    body("zip")
+        .optional()
+        .isString()
+        .trim()
+        .isLength({ min: 5, max: 7 })
+        .withMessage("ZIP must be 5-7 chars"),
+    body("country")
+        .optional()
+        .isString()
+        .trim()
+        .toLowerCase()
+        .isIn(COUNTRIES)
+        .withMessage("Invalid country name"),
+    body("landmark")
+        .optional()
+        .isString()
+        .trim()
+        .customSanitizer(cleanString)
+        .isLength({ min: 2, max: 100 })
+        .withMessage("Landmark 2-100 chars"),
+    body("typeOfAddress")
+        .optional()
+        .isString()
+        .trim()
+        .toLowerCase()
+        .isIn(["home", "work"])
+        .withMessage("Type must be home or work"),
+
+    respondWithValidationErrors,
+];

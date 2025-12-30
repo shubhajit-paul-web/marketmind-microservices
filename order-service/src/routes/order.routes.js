@@ -4,6 +4,7 @@ import {
     createOrderValidator,
     getAllOrdersValidator,
     orderIdValidator,
+    updateOrderAddressValidator,
 } from "../validators/order.validator.js";
 import OrderController from "../controllers/order.controller.js";
 
@@ -34,6 +35,15 @@ router.patch(
     createAuthMiddleware(["user"]),
     orderIdValidator,
     OrderController.cancelOrderById
+);
+
+// (Private) PATCH /api/v1/orders/:orderId/address
+router.patch(
+    "/:orderId/address",
+    createAuthMiddleware(["user"]),
+    orderIdValidator,
+    updateOrderAddressValidator,
+    OrderController.updateOrderAddress
 );
 
 export default router;
