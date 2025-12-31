@@ -12,7 +12,7 @@ import redis from "../db/redis.js";
  * @description Validates JWT from cookies and attaches user to request
  */
 async function authUser(req, res, next) {
-    const accessToken = req?.cookies?.accessToken;
+    const accessToken = req?.cookies?.accessToken ?? req.headers?.authorization?.split(" ")[1];
 
     if (!accessToken) {
         throw new ApiError(

@@ -22,6 +22,7 @@ describe("GET /api/v1/orders/:orderId - getOrderById", () => {
         expect(res.body).toHaveProperty("data");
         expect(res.body?.data).toHaveProperty("_id", createdOrderId);
         expect(res.body).toHaveProperty("message");
+        expect(res.body?.data).toHaveProperty("customerDetails");
     });
 
     // Test case 2: Return 400 for invalid orderId format with auth

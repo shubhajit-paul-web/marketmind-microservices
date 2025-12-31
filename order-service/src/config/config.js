@@ -19,6 +19,7 @@ const _config = {
     API: {
         CART_SERVICE: process.env.CART_SERVICE_API,
         PRODUCT_SERVICE: process.env.PRODUCT_SERVICE_API,
+        AUTH_SERVICE: process.env.AUTH_SERVICE_API,
     },
 };
 

@@ -34,6 +34,12 @@ describe("POST /api/v1/orders - CreateOrder", () => {
             .send(validOrderData);
 
         expect(response.status).toBe(201);
+        expect(response.body).toHaveProperty("success", true);
+        expect(response.body).toHaveProperty("message");
+        expect(response.body).toHaveProperty("data");
+        expect(response.body?.data).toHaveProperty("_id", response.body?.data?._id);
+        expect(response.body?.data).toHaveProperty("status");
+        expect(response.body?.data).toHaveProperty("customerDetails");
     });
 
     // Test case 2: Create order without authentication token

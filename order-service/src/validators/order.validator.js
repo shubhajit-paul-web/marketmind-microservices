@@ -4,6 +4,10 @@ import { COUNTRIES } from "../constants/constants.js";
 import respondWithValidationErrors from "../middlewares/validator.middleware.js";
 import { isValidObjectId } from "mongoose";
 
+/**
+ * Create order validator
+ * @description Validates order creation request body including currency and shipping address
+ */
 export const createOrderValidator = [
     body("currency")
         .optional()
@@ -72,6 +76,10 @@ export const createOrderValidator = [
     respondWithValidationErrors,
 ];
 
+/**
+ * Get all orders validator
+ * @description Validates pagination and sorting query parameters for fetching orders
+ */
 export const getAllOrdersValidator = [
     query("page")
         .optional()
@@ -104,12 +112,20 @@ export const getAllOrdersValidator = [
     respondWithValidationErrors,
 ];
 
+/**
+ * Order ID validator
+ * @description Validates order ID parameter format using MongoDB ObjectId validation
+ */
 export const orderIdValidator = [
     param("orderId").custom(isValidObjectId).withMessage("Invalid order id"),
 
     respondWithValidationErrors,
 ];
 
+/**
+ * Update order address validator
+ * @description Validates request body for updating order shipping address details
+ */
 export const updateOrderAddressValidator = [
     body("street")
         .optional()
@@ -163,14 +179,18 @@ export const updateOrderAddressValidator = [
     respondWithValidationErrors,
 ];
 
+/**
+ * Update order status validator
+ * @description Validates order status update request body with allowed status values
+ */
 export const updateOrderStatusValidator = [
     body("status")
         .notEmpty()
         .withMessage("Order status is required")
         .trim()
         .toUpperCase()
-        .isIn(["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"])
-        .withMessage("Order status must be pending, confirmed, shipped, delivered, or cancelled"),
+        .isIn(["CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"])
+        .withMessage("Order status must be confirmed, shipped, delivered, or cancelled"),
 
     respondWithValidationErrors,
 ];

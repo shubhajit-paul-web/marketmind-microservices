@@ -26,6 +26,7 @@ export default {
     ORDER_CANCELED_SUCCESS: "Order canceled successfully",
     ORDER_STATUS_UPDATE_SUCCESS: "Order status updated successfully",
     ORDER_STATUS_UPDATE_FAILD: "Order status is already confirmed",
+    ORDER_STATUS_CANNOT_BE_PENDING: "Order status cannot be set to PENDING",
 
     // Product-specific
     PRODUCT_CREATED_SUCCESS: "Product created successfully",

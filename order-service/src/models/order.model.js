@@ -61,6 +61,29 @@ const priceSchema = new Schema(
     { _id: false }
 );
 
+// Customer details Schema
+const customerDetailsSchema = new Schema(
+    {
+        username: {
+            type: String,
+            required: true,
+        },
+        fullName: {
+            firstName: String,
+            lastName: String,
+        },
+        email: {
+            type: String,
+            required: true,
+        },
+        phoneNumber: {
+            type: String,
+            required: true,
+        },
+    },
+    { _id: false }
+);
+
 const orderSchema = new Schema(
     {
         userId: {
@@ -81,13 +104,23 @@ const orderSchema = new Schema(
                 price: priceSchema,
             },
         ],
-        totalPrice: priceSchema,
+        totalPrice: {
+            type: priceSchema,
+            required: true,
+        },
         status: {
             type: String,
             enum: ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"],
             default: "PENDING",
         },
-        shippingAddress: addressSchema,
+        customerDetails: {
+            type: customerDetailsSchema,
+            required: true,
+        },
+        shippingAddress: {
+            type: addressSchema,
+            required: true,
+        },
     },
     {
         timestamps: true,
