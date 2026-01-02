@@ -13,14 +13,13 @@ export default {
     TOKEN_BLACKLISTED: "Token has been invalidated, please login again",
     INSUFFICIENT_PERMISSIONS: "You don't have permission to access this resource",
 
-    // Product-specific
-    PRODUCTS_FETCHED_SUCCESS: "Products fetched successfully",
-    PRODUCT_NOT_FOUND: "Product not found",
+    // Order specific
+    ORDER_NOT_FOUND: "Order not found",
 
-    // Generic helpers (useful when responding with dynamic entity names)
-    NOT_FOUND: (entity = "Resource") => `${entity} not found`,
-    INVALID: (entity = "Resource") => `Invalid ${entity}`,
-    ALREADY_EXISTS: (entity = "Resource") => `${entity} already exists`,
-    INSUFFICIENT_STOCK: (entity = "Resource") =>
-        `Product ${entity} is out of stock or insufficient stock`,
+    // Payment specific
+    PAYMENT_CREATION_FAILED: "Failed to create payment order, try again later.",
+    PAYMENT_INITIATED_SUCCESS: "Payment initiated successfully",
+    INVALID_SIGNATURE: "Invalid signature",
+    PAYMENT_NOT_FOUND: "Payment not found",
+    PAYMENT_SUCCESS: "Payment verified successfully",
 };

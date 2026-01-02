@@ -32,9 +32,11 @@ app.use(
 
 // Routes import
 import healthcheckRoutes from "./routes/healthcheck.routes.js";
+import paymentRoutes from "./routes/payment.routes.js";
 
 // Routes declaration
 app.use("/api/v1/health", healthcheckRoutes);
+app.use("/api/v1/payments", paymentRoutes);
 
 // 404 handler
 app.use(async (req, res, next) => {

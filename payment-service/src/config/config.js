@@ -17,8 +17,11 @@ const _config = {
         PASSWORD: process.env.REDIS_PASSWORD,
     },
     API: {
-        PRODUCT_SERVICE: process.env.PRODUCT_SERVICE_API,
-        AUTH_SERVICE: process.env.AUTH_SERVICE_API,
+        ORDER_SERVICE: process.env.ORDER_SERVICE_API,
+    },
+    RAZORPAY: {
+        API_KEY: process.env.RAZORPAY_API_KEY,
+        KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
     },
 };
 

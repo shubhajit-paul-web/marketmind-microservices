@@ -11,7 +11,12 @@
         "test": "npm run test:auth && npm run test:product",
         "test:auth": "npm --prefix ./auth-service test",
         "test:product": "npm --prefix ./product-service test",
-        "test:cart": "npm --prefix ./cart-service test"
+        "test:cart": "npm --prefix ./cart-service test",
+        "dev": "",
+        "run:auth": "npm --prefix ./auth-service",
+        "run:product": "npm --prefix ./product-service",
+        "run:cart": "npm --prefix ./cart-service",
+        "run:order": "npm --prefix ./order-service"
     },
     "lint-staged": {
         "*.js": [
@@ -32,6 +37,7 @@
         "@commitlint/cli": "^20.1.0",
         "@commitlint/config-conventional": "^20.0.0",
         "@eslint/js": "^9.37.0",
+        "concurrently": "^9.2.1",
         "eslint": "^9.37.0",
         "eslint-config-prettier": "^10.1.8",
         "globals": "^16.4.0",
