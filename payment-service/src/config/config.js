@@ -6,7 +6,7 @@ const _config = {
     PORT: process.env.PORT || 3004,
     NODE_ENV: process.env.NODE_ENV || "development",
     SERVER_URL: process.env.SERVER_URL,
-    CROSS_ORIGIN: process.env.CROSS_ORIGIN || "http://localhost:5173",
+    CORS_ORIGIN: process.env.CORS_ORIGIN || "http://localhost:5173",
     MONGODB_URI: process.env.MONGODB_URI || "mongodb://localhost:27017",
     JWT: {
         ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,

@@ -6,7 +6,7 @@ class PaymentDAO {
     }
 
     async updatePayment(filter, dataToUpdate) {
-        return await Payment.findOneAndUpdate(filter, dataToUpdate).lean();
+        return await Payment.findOneAndUpdate(filter, dataToUpdate, { new: true }).lean();
     }
 }
 

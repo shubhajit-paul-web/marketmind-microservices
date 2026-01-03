@@ -36,7 +36,10 @@ class PaymentService {
         const price = order.data?.data?.totalPrice;
 
         try {
-            const razorpayOrder = await razorpay.orders.create(price);
+            const razorpayOrder = await razorpay.orders.create({
+                amount: price.amount * 100,
+                currency: price.currency ?? "INR",
+            });
 
             const payment = await PaymentDAO.createPayment({
                 userId,
@@ -60,7 +63,7 @@ class PaymentService {
     async verifyPayment(userId, requestBody) {
         const { razorpayOrderId, paymentId, signature } = requestBody;
 
-        const isValid = await validatePaymentVerification(
+        const isValid = validatePaymentVerification(
             {
                 order_id: razorpayOrderId,
                 payment_id: paymentId,

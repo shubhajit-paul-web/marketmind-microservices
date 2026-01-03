@@ -1,6 +1,6 @@
 import { Router } from "express";
 import createAuthMiddleware from "../middlewares/auth.middleware.js";
-import { orderIdValidator } from "../validators/payment.validator.js";
+import { orderIdValidator, verifyPaymentValidator } from "../validators/payment.validator.js";
 import PaymentController from "../controllers/payment.controller.js";
 
 const router = Router();
@@ -14,6 +14,11 @@ router.post(
 );
 
 // (Private) PATCH /api/v1/payments/verify
-router.patch("/verify", createAuthMiddleware(["user"]), PaymentController.verifyPayment);
+router.patch(
+    "/verify",
+    createAuthMiddleware(["user"]),
+    verifyPaymentValidator,
+    PaymentController.verifyPayment
+);
 
 export default router;
