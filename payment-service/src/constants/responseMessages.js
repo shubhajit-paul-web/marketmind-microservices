@@ -21,5 +21,6 @@ export default {
     PAYMENT_INITIATED_SUCCESS: "Payment initiated successfully",
     INVALID_SIGNATURE: "Invalid signature",
     PAYMENT_NOT_FOUND: "Payment not found",
+    PAYMENT_INFO_FETCHED_SUCCESS: "Payment info fetched successfully",
     PAYMENT_SUCCESS: "Payment verified successfully",
 };

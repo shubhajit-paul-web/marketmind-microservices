@@ -13,12 +13,15 @@ router.post(
     PaymentController.createPayment
 );
 
-// (Private) PATCH /api/v1/payments/verify
-router.patch(
+// (Private) POST /api/v1/payments/verify
+router.post(
     "/verify",
     createAuthMiddleware(["user"]),
     verifyPaymentValidator,
     PaymentController.verifyPayment
 );
+
+// (Private) GET /api/v1/payments/:paymentId
+router.get("/:paymentId", createAuthMiddleware(["user"]), PaymentController.getPaymentInfo);
 
 export default router;

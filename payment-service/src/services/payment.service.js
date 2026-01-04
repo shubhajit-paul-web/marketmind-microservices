@@ -14,12 +14,23 @@ const razorpay = new Razorpay({
     key_secret: _config.RAZORPAY.KEY_SECRET,
 });
 
+/**
+ * Payment Service
+ * @description Handles business logic for payment processing, verification, and retrieval
+ */
 class PaymentService {
+    /**
+     * Create a new payment for an order
+     * @param {string} accessToken - User authentication token
+     * @param {string} userId - User ID making the payment
+     * @param {string} orderId - Order ID to create payment for
+     * @returns {Promise<Object>} Created payment object with Razorpay order details
+     */
     async createPayment(accessToken, userId, orderId) {
         let order;
 
         try {
-            // Fetch order details
+            // Fetch order details from order service
             order = await axios.get(`${_config.API.ORDER_SERVICE}/${orderId}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -36,11 +47,13 @@ class PaymentService {
         const price = order.data?.data?.totalPrice;
 
         try {
+            // Create Razorpay order with amount in smallest currency unit (paise for INR)
             const razorpayOrder = await razorpay.orders.create({
                 amount: price.amount * 100,
                 currency: price.currency ?? "INR",
             });
 
+            // Save payment record in database with Razorpay order ID
             const payment = await PaymentDAO.createPayment({
                 userId,
                 orderId,
@@ -60,9 +73,16 @@ class PaymentService {
         }
     }
 
+    /**
+     * Verify payment signature and update payment status
+     * @param {string} userId - User ID who made the payment
+     * @param {Object} requestBody - Payment verification data from Razorpay (razorpayOrderId, paymentId, signature)
+     * @returns {Promise<Object>} Updated payment object with completed status
+     */
     async verifyPayment(userId, requestBody) {
         const { razorpayOrderId, paymentId, signature } = requestBody;
 
+        // Validate payment signature using Razorpay's verification utility
         const isValid = validatePaymentVerification(
             {
                 order_id: razorpayOrderId,
@@ -80,6 +100,7 @@ class PaymentService {
             );
         }
 
+        // Update payment record with payment ID, signature, and mark as completed
         const payment = await PaymentDAO.updatePayment(
             {
                 userId,
@@ -92,6 +113,29 @@ class PaymentService {
                 status: "COMPLETED",
             }
         );
+
+        if (!payment) {
+            throw new ApiError(
+                StatusCodes.NOT_FOUND,
+                responseMessages.PAYMENT_NOT_FOUND,
+                errorCodes.NOT_FOUND
+            );
+        }
+
+        return payment;
+    }
+
+    /**
+     * Retrieve payment information for a user
+     * @param {string} userId - User ID who owns the payment
+     * @param {string} paymentId - Payment ID to retrieve
+     * @returns {Promise<Object>} Payment details object
+     */
+    async getPaymentInfo(userId, paymentId) {
+        const payment = await PaymentDAO.getPaymentInfo({
+            userId,
+            paymentId,
+        });
 
         if (!payment) {
             throw new ApiError(
