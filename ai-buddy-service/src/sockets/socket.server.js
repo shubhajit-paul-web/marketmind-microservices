@@ -4,6 +4,7 @@ import logger from "../loggers/winston.logger.js";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import redis from "../db/redis.js";
+import agent from "../agent/agent.js";
 
 async function initSocketServer(httpServer) {
     const io = new Server(httpServer, {
@@ -39,6 +40,7 @@ async function initSocketServer(httpServer) {
             }
 
             socket.user = decoded;
+            socket.accessToken = accessToken;
             next();
         } catch {
             return next(new Error("Invalid access token"));
@@ -46,10 +48,28 @@ async function initSocketServer(httpServer) {
     });
 
     io.on("connection", (socket) => {
-        logger.info(`🟢 A user connected: ${socket.id}`);
+        logger.info(`🟢 A user connected: ${socket.user?._id}`);
 
-        socket.on("disconnect", () => {
-            logger.info(`🔴 A user disconnected: ${socket.id}`);
+        socket.on("client-message", async (prompt) => {
+            const agentResponse = await agent.invoke(
+                {
+                    messages: [
+                        {
+                            role: "user",
+                            content: prompt?.trim(),
+                        },
+                    ],
+                },
+                {
+                    metadata: {
+                        accessToken: socket.accessToken,
+                    },
+                }
+            );
+
+            const lastMessage = agentResponse.messages[agentResponse.messages.length - 1];
+
+            socket.emit("agent-response", lastMessage.content?.trim());
         });
     });
 }
