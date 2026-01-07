@@ -19,6 +19,7 @@
     "helmet": "^8.1.0",
     "ioredis": "^5.9.0",
     "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^7.0.12",
     "winston": "^3.19.0"
   }
 }
