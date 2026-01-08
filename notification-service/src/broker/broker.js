@@ -22,6 +22,13 @@ async function connectToRabbit() {
     }
 }
 
+/**
+ * Publishes a message to a RabbitMQ queue.
+ *
+ * @param {string} queueName - The name of the queue to publish the message to
+ * @param {Object} [data={}] - The message data to publish. Will be serialized to JSON
+ * @returns {Promise<void>}
+ */
 async function publishToQueue(queueName, data = {}) {
     if (!connection || !channel) await connectToRabbit();
 
@@ -32,6 +39,13 @@ async function publishToQueue(queueName, data = {}) {
     channel.sendToQueue(queueName, Buffer.from(JSON.stringify(data)));
 }
 
+/**
+ * Subscribes to a RabbitMQ queue and processes incoming messages.
+ *
+ * @param {string} queueName - The name of the queue to subscribe to
+ * @param {Function} callback - Async function to handle each message. Receives the parsed message data
+ * @returns {Promise<void>}
+ */
 async function subscribeToQueue(queueName, callback) {
     if (!connection || !channel) await connectToRabbit();
 
