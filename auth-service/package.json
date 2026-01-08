@@ -16,8 +16,10 @@
     "description": "",
     "dependencies": {
         "@imagekit/nodejs": "^7.1.1",
+        "amqplib": "^0.10.9",
         "bcrypt": "^6.0.0",
         "colorette": "^2.0.20",
+        "compression": "^1.8.1",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
         "dotenv-flow": "^4.1.0",

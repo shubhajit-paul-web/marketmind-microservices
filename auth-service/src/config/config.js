@@ -24,6 +24,7 @@ const _config = {
         HOST: process.env.REDIS_HOST,
         PASSWORD: process.env.REDIS_PASSWORD,
     },
+    RABBIT_URL: process.env.RABBIT_URL,
 };
 
 let config;

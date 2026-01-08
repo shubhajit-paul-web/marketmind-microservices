@@ -7,6 +7,7 @@ import { uploadFile } from "./storage.service.js";
 import redis from "../db/redis.js";
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
+import broker from "../broker/broker.js";
 
 /**
  * Authentication Service
@@ -53,6 +54,15 @@ class AuthService {
             },
             profilePicture: uploadedProfilePicture?.url,
         });
+
+        await Promise.all([
+            broker.publishToQueue("AUTH_NOTIFICATION.USER_CREATED", {
+                fullName: createdUser.fullName,
+                email: createdUser.email,
+                phoneNumber: createdUser.phoneNumber,
+            }),
+            broker.publishToQueue("AUTH_SELLER_DASHBOARD.USER_CREATED", createdUser),
+        ]);
 
         return createdUser;
     }
@@ -143,7 +153,15 @@ class AuthService {
             );
         }
 
-        return await UserDAO.changePassword(userId, newPassword);
+        const updatedUser = await UserDAO.changePassword(userId, newPassword);
+
+        await broker.publishToQueue("AUTH_NOTIFICATION.PASSWORD_CHANGED", {
+            fullName: updatedUser.fullName,
+            email: updatedUser.email,
+            phoneNumber: updatedUser.phoneNumber,
+        });
+
+        return updatedUser;
     }
 
     /**

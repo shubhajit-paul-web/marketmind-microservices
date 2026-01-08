@@ -2,6 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import config from "./config/config.js";
+import compression from "compression";
 import errorHandler from "./middlewares/error.middleware.js";
 import { StatusCodes } from "http-status-codes";
 import responseMessages from "./constants/responseMessages.js";
@@ -29,6 +30,7 @@ app.use(
         credentials: true,
     })
 );
+app.use(compression());
 
 // Routes import
 import healthCheckRoutes from "./routes/healthcheck.routes.js";
