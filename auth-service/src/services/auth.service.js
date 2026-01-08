@@ -58,6 +58,7 @@ class AuthService {
         await Promise.all([
             broker.publishToQueue("AUTH_NOTIFICATION.USER_CREATED", {
                 fullName: createdUser.fullName,
+                username: createdUser.username,
                 email: createdUser.email,
                 phoneNumber: createdUser.phoneNumber,
             }),
@@ -157,6 +158,7 @@ class AuthService {
 
         await broker.publishToQueue("AUTH_NOTIFICATION.PASSWORD_CHANGED", {
             fullName: updatedUser.fullName,
+            username: updatedUser.username,
             email: updatedUser.email,
             phoneNumber: updatedUser.phoneNumber,
         });
