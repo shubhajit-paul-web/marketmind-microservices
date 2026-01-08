@@ -15,6 +15,7 @@ const _config = {
         REFRESH_TOKEN: process.env.OAUTH_REFRESH_TOKEN,
         EMAIL_USER: process.env.EMAIL_USER,
     },
+    RABBIT_URL: process.env.RABBIT_URL,
 };
 
 export default Object.freeze(_config);

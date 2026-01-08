@@ -1,6 +1,7 @@
 import app from "./src/app.js";
 import _config from "./src/config/config.js";
 import logger from "./src/loggers/winston.logger.js";
+import broker from "./src/broker/broker.js";
 
 // Handle uncaught exceptions
 process.on("uncaughtException", (error) => {
@@ -48,27 +49,33 @@ function gracefulShutdown(server, signal) {
     }, 15000).unref();
 }
 
-try {
-    // Start the server
-    const server = app.listen(_config.PORT, () => {
-        logger.info("Server is running", {
+// Start the server and connect to RabbitMQ
+(async () => {
+    try {
+        // Connect to RabbitMQ
+        await broker.connectToRabbit();
+
+        // Start the server
+        const server = app.listen(_config.PORT, () => {
+            logger.info("Server is running", {
+                meta: {
+                    PORT: _config.PORT,
+                    SERVER_URL: _config.SERVER_URL,
+                    ENVIRONMENT: _config.NODE_ENV,
+                },
+            });
+        });
+
+        // Handle graceful shutdowns
+        process.on("SIGINT", () => gracefulShutdown(server, "SIGINT"));
+        process.on("SIGTERM", () => gracefulShutdown(server, "SIGTERM"));
+    } catch (error) {
+        logger.error("Error while starting the server", {
             meta: {
-                PORT: _config.PORT,
-                SERVER_URL: _config.SERVER_URL,
-                ENVIRONMENT: _config.NODE_ENV,
+                message: error.message,
             },
         });
-    });
 
-    // Handle graceful shutdowns
-    process.on("SIGINT", () => gracefulShutdown(server, "SIGINT"));
-    process.on("SIGTERM", () => gracefulShutdown(server, "SIGTERM"));
-} catch (error) {
-    logger.error("Error while starting the server", {
-        meta: {
-            message: error.message,
-        },
-    });
-
-    setTimeout(() => process.exit(1), 1000);
-}
+        setTimeout(() => process.exit(1), 1000);
+    }
+})();
