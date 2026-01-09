@@ -1,5 +1,6 @@
 import broker from "./broker.js";
 import { sendEmail } from "../services/email.service.js";
+import formatISOString from "../utils/formatISOString.js";
 
 function setListeners() {
     broker.subscribeToQueue("AUTH_NOTIFICATION.USER_CREATED", async (data) => {
@@ -103,6 +104,185 @@ function setListeners() {
         sendEmail({
             to: data.email,
             subject: "Your order has been cancelled",
+            html: emailTemplate,
+        });
+    });
+
+    broker.subscribeToQueue("ORDER_NOTIFICATION.ORDER_DELIVERED", async (data) => {
+        const customerDetails = data?.customerDetails;
+        const dateAndTime = new Date(data?.timestamp)
+            ?.toLocaleString("en-IN", {
+                dateStyle: "medium",
+                timeStyle: "short",
+            })
+            ?.replace(",", " at");
+
+        const emailTemplate = `
+        <div style="margin:0; padding:0; background-color:#f4f6f8; font-family:Arial, Helvetica, sans-serif;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f8; padding:30px 0;">
+    <tr>
+      <td align="center">
+        <!-- Main Container -->
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:8px; padding:30px; color:#333333;">
+          
+          <!-- Greeting -->
+          <tr>
+            <td style="font-size:16px; line-height:1.6;">
+              Dear <strong>${customerDetails?.fullName?.firstName}</strong>,
+              <br><br>
+
+              We are pleased to inform you that your order
+              <strong style="color:#2f80ed;">#${data?.orderId}</strong>
+              has been successfully delivered.
+            </td>
+          </tr>
+
+          <!-- Divider -->
+          <tr>
+            <td style="padding:20px 0;">
+              <hr style="border:none; border-top:1px solid #e6e6e6;">
+            </td>
+          </tr>
+
+          <!-- Delivery Details -->
+          <tr>
+            <td>
+              <h3 style="margin:0 0 10px; font-size:18px; color:#111;">
+                Delivery Details
+              </h3>
+
+              <table cellpadding="6" cellspacing="0" style="font-size:15px;">
+                <tr>
+                  <td style="color:#666;">Order ID:</td>
+                  <td><strong>#${data?.orderId}</strong></td>
+                </tr>
+                <tr>
+                  <td style="color:#666;">Delivered On:</td>
+                  <td><strong>${dateAndTime}</strong></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Message -->
+          <tr>
+            <td style="padding-top:20px; font-size:15px; line-height:1.6; color:#444;">
+              We hope the order meets your expectations. If you have any questions,
+              concerns, or require further assistance, please do not hesitate to
+              contact our support team.
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="padding-top:30px; font-size:14px; color:#555;">
+              Sincerely,<br><br>
+
+              <strong style="font-size:16px; color:#111;">MarketMind</strong><br>
+              Customer Support Team<br><br>
+
+              <a href="mailto:support.marketmind@gmail.com" style="color:#2f80ed; text-decoration:none;">
+                support.marketmind@gmail.com
+              </a>
+              &nbsp;|&nbsp;
+              <a href="tel:+919874561230" style="color:#2f80ed; text-decoration:none;">
+                +91 98745 61230
+              </a>
+            </td>
+          </tr>
+        </table>
+        <!-- End Main Container -->
+      </td>
+    </tr>
+  </table>
+</div>
+        `;
+
+        sendEmail({
+            to: customerDetails?.email,
+            subject: `Order Delivered Successfully – Order #${data?.orderId}`,
+            html: emailTemplate,
+        });
+    });
+
+    broker.subscribeToQueue("PAYMENT_NOTIFICATION.PAYMENT_SUCCESSFUL", async (data) => {
+        const user = data?.user;
+
+        const emailTemplate = `
+  <div style="margin:0; padding:0; background-color:#f4f6f8; font-family: Arial, Helvetica, sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f8; padding:20px;">
+    <tr>
+      <td align="center">
+        <!-- Email Container -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; background-color:#ffffff; border-radius:8px; overflow:hidden;">
+          
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#1a73e8; padding:20px; text-align:center;">
+              <h1 style="color:#ffffff; margin:0; font-size:22px;">
+                Payment Successful
+              </h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:30px; color:#333333; font-size:14px; line-height:1.6;">
+              <p style="margin-top:0;">
+                Dear ${user?.fullName?.firstName ?? "Customer"},
+              </p>
+
+              <p>
+                We’re happy to let you know that your payment has been
+                <strong>successfully completed</strong>.
+              </p>
+
+              <!-- Payment Details Box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f9fafb; border:1px solid #e5e7eb; border-radius:6px; margin:20px 0;">
+                <tr>
+                  <td style="padding:15px;">
+                    <p style="margin:6px 0;"><strong>Order ID:</strong> #${data?.orderId}</p>
+                    <p style="margin:6px 0;"><strong>Amount Paid:</strong> ${data?.paymentInfo?.price?.amount} ${data?.paymentInfo?.price?.currency}</p>
+                    <p style="margin:6px 0;"><strong>Razorpay Order ID:</strong> ${data?.paymentInfo?.razorpayOrderId}</p>
+                    <p style="margin:6px 0;"><strong>Payment ID:</strong> ${data?.paymentInfo?.paymentId}</p>
+                    <p style="margin:6px 0;"><strong>Date & Time:</strong> ${formatISOString(data?.timestamp)}</p>
+                  </td>
+                </tr>
+              </table>
+
+              <p>Your order is now being processed. No further action is required from your side.</p>
+
+              <p>
+                If you have any questions or need assistance, please contact us at
+                <a href="mailto:support.marketmind@gmail.com" style="color:#1a73e8; text-decoration:none;">
+                  support.marketmind@gmail.com
+                </a>.
+              </p>
+              <p style="margin-bottom:0;">Thank you for choosing us.</p>
+              <p style="margin-top:10px;">
+                Warm regards,<br />
+                <strong>MarketMind</strong>
+              </p>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#f1f3f4; padding:15px; text-align:center; font-size:12px; color:#666666;">
+              © 2026 MarketMind. All rights reserved.
+            </td>
+          </tr>
+        </table>
+        <!-- End Email Container -->
+      </td>
+    </tr>
+  </table>
+</div>
+        `;
+
+        sendEmail({
+            to: user?.email,
+            subject: `Payment Successful – Order #${data?.orderId}`,
             html: emailTemplate,
         });
     });

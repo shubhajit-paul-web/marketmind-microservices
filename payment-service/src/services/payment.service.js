@@ -8,6 +8,7 @@ import errorCodes from "../constants/errorCodes.js";
 import logger from "../loggers/winston.logger.js";
 import PaymentDAO from "../dao/payment.dao.js";
 import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils.js";
+import broker from "../broker/broker.js";
 
 const razorpay = new Razorpay({
     key_id: _config.RAZORPAY.API_KEY,
@@ -79,7 +80,7 @@ class PaymentService {
      * @param {Object} requestBody - Payment verification data from Razorpay (razorpayOrderId, paymentId, signature)
      * @returns {Promise<Object>} Updated payment object with completed status
      */
-    async verifyPayment(userId, requestBody) {
+    async verifyPayment(accessToken, userId, requestBody) {
         const { razorpayOrderId, paymentId, signature } = requestBody;
 
         // Validate payment signature using Razorpay's verification utility
@@ -121,6 +122,35 @@ class PaymentService {
                 errorCodes.NOT_FOUND
             );
         }
+
+        let userProfile = {};
+
+        try {
+            // Fetch user details
+            userProfile = await axios.get(`${_config.API.AUTH_SERVICE}/me`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            userProfile = userProfile?.data?.data;
+        } catch (error) {
+            logger.error("User profile fetched faild", { meta: error });
+        }
+
+        broker.publishToQueue("PAYMENT_NOTIFICATION.PAYMENT_SUCCESSFUL", {
+            orderId: payment?.orderId,
+            user: {
+                fullName: userProfile?.fullName,
+                email: userProfile?.email,
+            },
+            paymentInfo: {
+                price: payment?.price,
+                razorpayOrderId,
+                paymentId,
+            },
+            timestamp: payment?.createdAt,
+        });
 
         return payment;
     }

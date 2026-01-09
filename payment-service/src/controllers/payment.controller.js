@@ -34,7 +34,11 @@ class PaymentController {
      * @access Private
      */
     verifyPayment = asyncHandler(async (req, res) => {
-        const updatedPayment = await PaymentService.verifyPayment(req.user?._id, req.body || {});
+        const updatedPayment = await PaymentService.verifyPayment(
+            req.accessToken,
+            req.user?._id,
+            req.body || {}
+        );
 
         return res
             .status(StatusCodes.OK)

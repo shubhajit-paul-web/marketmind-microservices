@@ -18,11 +18,13 @@ const _config = {
     },
     API: {
         ORDER_SERVICE: process.env.ORDER_SERVICE_API,
+        AUTH_SERVICE: process.env.AUTH_SERVICE_API,
     },
     RAZORPAY: {
         API_KEY: process.env.RAZORPAY_API_KEY,
         KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
     },
+    RABBIT_URL: process.env.RABBIT_URL,
 };
 
 export default Object.freeze(_config);

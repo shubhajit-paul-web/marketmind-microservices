@@ -12,9 +12,12 @@
   "author": "Shubhajit Paul",
   "license": "ISC",
   "description": "",
+  "type": "module",
   "dependencies": {
+    "amqplib": "^0.10.9",
     "axios": "^1.13.2",
     "colorette": "^2.0.20",
+    "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "cross-env": "^10.1.0",
