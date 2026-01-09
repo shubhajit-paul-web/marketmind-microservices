@@ -347,7 +347,18 @@ class OrderService {
             });
         }
 
-        return await OrderDAO.updateOrderStatusById(orderId, status);
+        const updatedOrder = await OrderDAO.updateOrderStatusById(orderId, status);
+
+        if (updatedOrder.status === "DELIVERED") {
+            broker.publishToQueue("ORDER_NOTIFICATION.ORDER_DELIVERED", {
+                orderId: updatedOrder?._id,
+                customerDetails: updatedOrder?.customerDetails,
+                shippingAddress: updatedOrder?.shippingAddress,
+                timestamp: Date.now(),
+            });
+        }
+
+        return updatedOrder;
     }
 }
 
