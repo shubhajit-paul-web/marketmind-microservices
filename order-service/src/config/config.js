@@ -21,6 +21,7 @@ const _config = {
         PRODUCT_SERVICE: process.env.PRODUCT_SERVICE_API,
         AUTH_SERVICE: process.env.AUTH_SERVICE_API,
     },
+    RABBIT_URL: process.env.RABBIT_URL,
 };
 
 export default Object.freeze(_config);

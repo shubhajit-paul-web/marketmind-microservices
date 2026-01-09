@@ -7,6 +7,7 @@ import { StatusCodes } from "http-status-codes";
 import errorCodes from "../constants/errorCodes.js";
 import OrderDAO from "../dao/order.dao.js";
 import logger from "../loggers/winston.logger.js";
+import broker from "../broker/broker.js";
 
 /**
  * Order Service
@@ -126,6 +127,13 @@ class OrderService {
             },
         });
 
+        broker.publishToQueue("ORDER_NOTIFICATION.ORDER_CREATED", {
+            orderId: createdOrder._id,
+            customerDetails: createdOrder.customerDetails,
+            totalPrice: createdOrder.totalPrice,
+            shippingAddress: createdOrder.shippingAddress,
+        });
+
         return createdOrder;
     }
 
@@ -233,7 +241,15 @@ class OrderService {
             );
         }
 
-        return await OrderDAO.updateOrderStatusById(orderId, "CANCELLED");
+        const cancelledOrder = await OrderDAO.updateOrderStatusById(orderId, "CANCELLED");
+
+        broker.publishToQueue("ORDER_NOTIFICATION.ORDER_CANCELLED", {
+            orderId: cancelledOrder._id,
+            fullName: cancelledOrder.fullName,
+            email: cancelledOrder.customerDetails?.email,
+        });
+
+        return cancelledOrder;
     }
 
     /**

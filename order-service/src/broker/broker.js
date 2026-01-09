@@ -23,32 +23,20 @@ async function connectToRabbit() {
 }
 
 /**
- * Subscribes to a RabbitMQ queue and processes incoming messages.
+ * Publishes a message to a RabbitMQ queue.
  *
- * @param {string} queueName - The name of the queue to subscribe to
- * @param {Function} callback - Async function to handle each message. Receives the parsed message data
+ * @param {string} queueName - The name of the queue to publish the message to
+ * @param {Object} [data={}] - The message data to publish. Will be serialized to JSON
  * @returns {Promise<void>}
  */
-async function subscribeToQueue(queueName, callback) {
+async function publishToQueue(queueName, data = {}) {
     if (!connection || !channel) await connectToRabbit();
 
     await channel.assertQueue(queueName, {
         durable: true,
     });
 
-    channel.consume(queueName, async (message) => {
-        if (message) {
-            try {
-                const data = JSON.parse(message?.content?.toString());
-                await callback(data);
-                channel.ack(message);
-            } catch (error) {
-                logger.error("RabbitMQ: Failed to process message from queue", {
-                    meta: error,
-                });
-            }
-        }
-    });
+    channel.sendToQueue(queueName, Buffer.from(JSON.stringify(data)));
 }
 
-export default { connectToRabbit, subscribeToQueue };
+export default { connectToRabbit, publishToQueue };
