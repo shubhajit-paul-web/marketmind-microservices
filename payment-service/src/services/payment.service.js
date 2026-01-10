@@ -117,11 +117,10 @@ class PaymentService {
                 email: userProfile?.email,
             },
             paymentInfo: {
-                price: payment?.price,
                 razorpayOrderId,
                 paymentId,
             },
-            timestamp: payment?.createdAt,
+            timestamp: Date.now(),
         };
 
         if (!isValid) {
@@ -156,10 +155,13 @@ class PaymentService {
             );
         }
 
+        paymentMessage.paymentInfo.price = payment?.price;
+
         await Promise.all([
             broker.publishToQueue("PAYMENT_NOTIFICATION.PAYMENT_SUCCESSFUL", {
-                orderId: payment?.orderId,
                 ...paymentMessage,
+                orderId: payment?.orderId,
+                timestamp: payment?.createdAt,
             }),
             broker.publishToQueue("PAYMENT_SELLER_DASHBOARD.PAYMENT_SUCCESSFUL", payment),
         ]);

@@ -1,6 +1,7 @@
 import broker from "./broker.js";
 import { sendEmail } from "../services/email.service.js";
 import formatISOString from "../utils/formatISOString.js";
+import formatTimestamps from "../utils/formatTimestamps.js";
 
 function setListeners() {
     broker.subscribeToQueue("AUTH_NOTIFICATION.USER_CREATED", async (data) => {
@@ -110,12 +111,7 @@ function setListeners() {
 
     broker.subscribeToQueue("ORDER_NOTIFICATION.ORDER_DELIVERED", async (data) => {
         const customerDetails = data?.customerDetails;
-        const dateAndTime = new Date(data?.timestamp)
-            ?.toLocaleString("en-IN", {
-                dateStyle: "medium",
-                timeStyle: "short",
-            })
-            ?.replace(",", " at");
+        const dateAndTime = formatTimestamps(data?.timestamp);
 
         const emailTemplate = `
         <div style="margin:0; padding:0; background-color:#f4f6f8; font-family:Arial, Helvetica, sans-serif;">
@@ -283,6 +279,32 @@ function setListeners() {
         sendEmail({
             to: user?.email,
             subject: `Payment Successful – Order #${data?.orderId}`,
+            html: emailTemplate,
+        });
+    });
+
+    broker.subscribeToQueue("PAYMENT_NOTIFICATION.PAYMENT_FAILD", async (data) => {
+        const user = data.user;
+
+        const emailTemplate = `
+            Hi ${user?.fullName?.firstName}, <br><br>
+
+            Your recent payment attempt has failed. <br><br>
+
+            <b>Details:</b>
+            <ul>
+              <li>Payment ID: ${data?.paymentInfo?.paymentId}</li>
+              <li>Date & Time: ${formatTimestamps(data?.timestamp)}</li>
+            </ul> <br>
+            No payment was completed. Please retry the payment to continue your service.
+            <br><br>
+            Regards,<br>
+            MarketMind
+        `;
+
+        sendEmail({
+            to: user?.email,
+            subject: "Payment Failed",
             html: emailTemplate,
         });
     });
