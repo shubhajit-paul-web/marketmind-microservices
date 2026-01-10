@@ -6,6 +6,7 @@ import responseMessages from "../constants/responseMessages.js";
 import errorCodes from "../constants/errorCodes.js";
 import formatUploadedImages from "../utils/formatUploadedImages.js";
 import { MAX_PRODUCT_IMAGES } from "../constants/constants.js";
+import broker from "../broker/broker.js";
 
 /**
  * Product Service
@@ -49,7 +50,11 @@ class ProductService {
             productData.images = formatUploadedImages(uploadedImages);
         }
 
-        return await ProductDAO.createProduct(sellerId, productData);
+        const createProduct = await ProductDAO.createProduct(sellerId, productData);
+
+        await broker.publishToQueue("PRODUCT_SELLER_DASHBOARD.PRODUCT_CREATED", createProduct);
+
+        return createProduct;
     }
 
     /**
@@ -108,6 +113,8 @@ class ProductService {
             );
         }
 
+        await broker.publishToQueue("PRODUCT_SELLER_DASHBOARD.PRODUCT_UPDATED", updatedProduct);
+
         // Return the updated product
         return updatedProduct;
     }
@@ -124,6 +131,8 @@ class ProductService {
         if (deletedProduct?.images?.length !== 0) {
             deletedProduct.images?.forEach((image) => deleteFile(image?.id));
         }
+
+        await broker.publishToQueue("PRODUCT_SELLER_DASHBOARD.PRODUCT_DELETED", deletedProduct);
 
         return deletedProduct;
     }
@@ -388,7 +397,14 @@ class ProductService {
     async decreaseProductStocks(productId, stock) {
         const product = await this.getProduct(productId);
 
-        return await ProductDAO.decreaseProductStocks(productId, product.stock - stock);
+        const updatedProduct = await ProductDAO.decreaseProductStocks(
+            productId,
+            product.stock - stock
+        );
+
+        await broker.publishToQueue("PRODUCT_SELLER_DASHBOARD.DECREASE_STOCKS", updatedProduct);
+
+        return updatedProduct;
     }
 }
 

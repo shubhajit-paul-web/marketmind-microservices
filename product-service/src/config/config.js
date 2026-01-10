@@ -21,6 +21,7 @@ const _config = {
         PORT: process.env.REDIS_PORT,
         PASSWORD: process.env.REDIS_PASSWORD,
     },
+    RABBIT_URL: process.env.RABBIT_URL,
 };
 
 export default Object.freeze(_config);
