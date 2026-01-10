@@ -1,0 +1,31 @@
+{
+  "name": "seller-dashboard-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development npx nodemon server.js",
+    "start": "cross-env NODE_ENV=production node server.js"
+  },
+  "keywords": [],
+  "author": "Shubhajit Paul",
+  "license": "ISC",
+  "description": "Seller dashboard service",
+  "dependencies": {
+    "amqplib": "^0.10.9",
+    "colorette": "^2.0.20",
+    "compression": "^1.8.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "cross-env": "^10.1.0",
+    "dotenv-flow": "^4.1.0",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.1",
+    "helmet": "^8.1.0",
+    "http-status-codes": "^2.3.0",
+    "ioredis": "^5.9.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.1.2",
+    "morgan": "^1.10.1",
+    "winston": "^3.19.0"
+  }
+}
