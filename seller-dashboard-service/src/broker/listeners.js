@@ -2,6 +2,7 @@ import broker from "./broker.js";
 import logger from "../loggers/winston.logger.js";
 import Order from "../models/order.model.js";
 import Product from "../models/product.model.js";
+import Payment from "../models/payment.model.js";
 
 function setListeners() {
     // Orders Service listeners
@@ -59,6 +60,23 @@ function setListeners() {
             await Product.findByIdAndUpdate(data._id, { stock: data.stock });
         } catch (error) {
             logger.error("ERROR: Product stock updates failed", { meta: error });
+        }
+    });
+
+    // Payment Service listeners
+    broker.subscribeToQueue("PAYMENT_SELLER_DASHBOARD.PAYMENT_INITIATED", async (data) => {
+        try {
+            await Payment.create(data);
+        } catch (error) {
+            logger.error("ERROR: Payment document creation failed", { meta: error });
+        }
+    });
+
+    broker.subscribeToQueue("PAYMENT_SELLER_DASHBOARD.PAYMENT_SUCCESSFUL", async (data) => {
+        try {
+            await Payment.findByIdAndUpdate(data._id, data);
+        } catch (error) {
+            logger.error("ERROR: Payment document updates failed", { meta: error });
         }
     });
 }

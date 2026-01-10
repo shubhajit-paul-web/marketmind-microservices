@@ -62,6 +62,8 @@ class PaymentService {
                 price,
             });
 
+            await broker.publishToQueue("PAYMENT_SELLER_DASHBOARD.PAYMENT_INITIATED", payment);
+
             return payment;
         } catch (error) {
             logger.error(`Razorpay order creation Error: ${error.message}`);
@@ -83,6 +85,21 @@ class PaymentService {
     async verifyPayment(accessToken, userId, requestBody) {
         const { razorpayOrderId, paymentId, signature } = requestBody;
 
+        let userProfile = {};
+
+        try {
+            // Fetch user details
+            userProfile = await axios.get(`${_config.API.AUTH_SERVICE}/me`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            userProfile = userProfile?.data?.data;
+        } catch (error) {
+            logger.error("User profile fetched faild", { meta: error });
+        }
+
         // Validate payment signature using Razorpay's verification utility
         const isValid = validatePaymentVerification(
             {
@@ -93,7 +110,23 @@ class PaymentService {
             _config.RAZORPAY.KEY_SECRET
         );
 
+        // Payment Message to send to the RabbitMQ
+        const paymentMessage = {
+            user: {
+                fullName: userProfile?.fullName,
+                email: userProfile?.email,
+            },
+            paymentInfo: {
+                price: payment?.price,
+                razorpayOrderId,
+                paymentId,
+            },
+            timestamp: payment?.createdAt,
+        };
+
         if (!isValid) {
+            broker.publishToQueue("PAYMENT_NOTIFICATION.PAYMENT_FAILD", paymentMessage);
+
             throw new ApiError(
                 StatusCodes.BAD_REQUEST,
                 responseMessages.INVALID_SIGNATURE,
@@ -123,34 +156,13 @@ class PaymentService {
             );
         }
 
-        let userProfile = {};
-
-        try {
-            // Fetch user details
-            userProfile = await axios.get(`${_config.API.AUTH_SERVICE}/me`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            });
-
-            userProfile = userProfile?.data?.data;
-        } catch (error) {
-            logger.error("User profile fetched faild", { meta: error });
-        }
-
-        broker.publishToQueue("PAYMENT_NOTIFICATION.PAYMENT_SUCCESSFUL", {
-            orderId: payment?.orderId,
-            user: {
-                fullName: userProfile?.fullName,
-                email: userProfile?.email,
-            },
-            paymentInfo: {
-                price: payment?.price,
-                razorpayOrderId,
-                paymentId,
-            },
-            timestamp: payment?.createdAt,
-        });
+        await Promise.all([
+            broker.publishToQueue("PAYMENT_NOTIFICATION.PAYMENT_SUCCESSFUL", {
+                orderId: payment?.orderId,
+                ...paymentMessage,
+            }),
+            broker.publishToQueue("PAYMENT_SELLER_DASHBOARD.PAYMENT_SUCCESSFUL", payment),
+        ]);
 
         return payment;
     }
