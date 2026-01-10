@@ -23,8 +23,8 @@ class OrderDAO {
      * @param {string} [sortType=""] - Sort direction ("asc" or "desc")
      * @returns {Promise<Array>} Array of order documents
      */
-    async getAllOrders(userId, skip = 1, limit = 10, sortBy = "", sortType = "") {
-        return Order.find({ userId })
+    async getAllOrders(filter = {}, skip = 1, limit = 10, sortBy = "", sortType = "") {
+        return Order.find(filter)
             .skip(skip)
             .limit(limit)
             .sort({ [sortBy]: sortType === "desc" ? -1 : 1 })

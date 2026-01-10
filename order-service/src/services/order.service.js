@@ -127,12 +127,16 @@ class OrderService {
             },
         });
 
-        broker.publishToQueue("ORDER_NOTIFICATION.ORDER_CREATED", {
-            orderId: createdOrder._id,
-            customerDetails: createdOrder.customerDetails,
-            totalPrice: createdOrder.totalPrice,
-            shippingAddress: createdOrder.shippingAddress,
-        });
+        // Publish order creation events to notification and seller dashboard services
+        await Promise.all([
+            broker.publishToQueue("ORDER_NOTIFICATION.ORDER_CREATED", {
+                orderId: createdOrder._id,
+                customerDetails: createdOrder.customerDetails,
+                totalPrice: createdOrder.totalPrice,
+                shippingAddress: createdOrder.shippingAddress,
+            }),
+            broker.publishToQueue("ORDER_SELLER_DASHBOARD.ORDER_CREATED", createdOrder),
+        ]);
 
         return createdOrder;
     }
@@ -153,10 +157,14 @@ class OrderService {
 
         if (sortBy === "totalAmount") sortBy = "totalPrice.amount";
 
+        const filter = { userId };
+
+        if (query.status) filter.status = query.status?.toUpperCase();
+
         // Fetch paginated orders and total count concurrently
         const [orders, totalOrders] = await Promise.all([
-            OrderDAO.getAllOrders(userId, skip, limit, sortBy, sortType),
-            OrderDAO.countOrders({ userId }),
+            OrderDAO.getAllOrders(filter, skip, limit, sortBy, sortType),
+            OrderDAO.countOrders(filter),
         ]);
 
         const totalPages = Math.ceil(totalOrders / limit);
@@ -243,11 +251,14 @@ class OrderService {
 
         const cancelledOrder = await OrderDAO.updateOrderStatusById(orderId, "CANCELLED");
 
-        broker.publishToQueue("ORDER_NOTIFICATION.ORDER_CANCELLED", {
-            orderId: cancelledOrder._id,
-            fullName: cancelledOrder.fullName,
-            email: cancelledOrder.customerDetails?.email,
-        });
+        await Promise.all([
+            broker.publishToQueue("ORDER_NOTIFICATION.ORDER_CANCELLED", {
+                orderId: cancelledOrder._id,
+                fullName: cancelledOrder.fullName,
+                email: cancelledOrder.customerDetails?.email,
+            }),
+            broker.publishToQueue("ORDER_SELLER_DASHBOARD.ORDER_CANCELLED", cancelledOrder),
+        ]);
 
         return cancelledOrder;
     }
@@ -348,6 +359,8 @@ class OrderService {
         }
 
         const updatedOrder = await OrderDAO.updateOrderStatusById(orderId, status);
+
+        await broker.publishToQueue("ORDER_SELLER_DASHBOARD.ORDER_STATUS_UPDATED", updatedOrder);
 
         if (updatedOrder.status === "DELIVERED") {
             broker.publishToQueue("ORDER_NOTIFICATION.ORDER_DELIVERED", {

@@ -50,7 +50,7 @@ router.patch(
 // (Private) PATCH /api/v1/orders/:orderId/status
 router.patch(
     "/:orderId/status",
-    createAuthMiddleware(["order_manager"]),
+    createAuthMiddleware(["order_manager", "seller"]),
     orderIdValidator,
     updateOrderStatusValidator,
     OrderController.updateOrderStatus

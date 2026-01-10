@@ -108,6 +108,15 @@ export const getAllOrdersValidator = [
         .isIn(["asc", "desc"])
         .withMessage("sortType must be either asc or desc")
         .default("desc"),
+    query("status")
+        .optional()
+        .isString()
+        .trim()
+        .toUpperCase()
+        .isIn(["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"])
+        .withMessage(
+            "Order status must be one of: pending, confirmed, shipped, delivered or cancelled"
+        ),
 
     respondWithValidationErrors,
 ];

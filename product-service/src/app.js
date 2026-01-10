@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import morganLogger from "./loggers/morgan.logger.js";
 import cors from "cors";
 import config from "./config/config.js";
+import compression from "compression";
 import errorHandler from "./middlewares/error.middleware.js";
 import ApiError from "./utils/ApiError.js";
 import errorCodes from "./constants/errorCodes.js";
@@ -29,6 +30,7 @@ app.use(
         credentials: true,
     })
 );
+app.use(compression());
 
 // Routes import
 import healthcheckRoutes from "./routes/healthcheck.routes.js";

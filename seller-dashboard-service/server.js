@@ -3,6 +3,7 @@ import connectDB from "./src/db/db.js";
 import logger from "./src/loggers/winston.logger.js";
 import config from "./src/config/config.js";
 import broker from "./src/broker/broker.js";
+import setListeners from "./src/broker/listeners.js";
 
 // Handle uncaught exceptions
 process.on("uncaughtException", (error) => {
@@ -58,6 +59,9 @@ function gracefulShutdown(server, signal) {
 
         // Connect to RabbitMQ
         await broker.connectToRabbit();
+
+        // Set RabbitMQ listeners
+        setListeners();
 
         if (!isConnected) return;
 
