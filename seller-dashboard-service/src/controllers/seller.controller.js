@@ -12,6 +12,14 @@ class SellerController {
             .status(StatusCodes.OK)
             .json(ApiResponse.success(responseMessages.METRICS_FETCHED_SUCCESS, metrics));
     });
+
+    getOrders = asyncHandler(async (req, res) => {
+        const orders = await SellerService.getOrders(req.user?._id);
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(responseMessages.ORDERS_FETCHED_SUCCESS, orders));
+    });
 }
 
 export default new SellerController();

@@ -15,4 +15,6 @@ export default {
 
     // Seller Dashboard Specific
     METRICS_FETCHED_SUCCESS: "Metrics fetched successfully",
+    ORDERS_FETCHED_SUCCESS: "Orders fetched successfully",
+    ORDERS_NOT_FOUND: "Orders not found",
 };

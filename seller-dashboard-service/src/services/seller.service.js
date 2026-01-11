@@ -1,5 +1,10 @@
 import Product from "../models/product.model.js";
 import Order from "../models/order.model.js";
+import getUnitAmount from "../utils/getUnitAmount.js";
+import ApiError from "../utils/ApiError.js";
+import { StatusCodes } from "http-status-codes";
+import responseMessages from "../constants/responseMessages.js";
+import errorCodes from "../constants/errorCodes.js";
 
 class SellerService {
     /**
@@ -14,7 +19,7 @@ class SellerService {
             .select("name category stock price")
             .lean();
 
-        // If the seller has no products, there’s nothing to calculate
+        // No products => nothing to calculate
         if (!sellerProducts?.length) {
             return {
                 totalSales: 0,
@@ -23,7 +28,7 @@ class SellerService {
             };
         }
 
-        // Keep a list of product ids for the order query
+        // We'll use these ids to find matching orders
         const sellerProductObjectIds = sellerProducts.map((product) => product._id);
 
         // Quick lookups while we loop order items:
@@ -48,18 +53,11 @@ class SellerService {
             .select("items")
             .lean();
 
-        // Small helper: safely read the unit price from an order item (prefer discountPrice if it exists)
-        const getUnitAmount = (price) => {
-            const amount = price?.discountPrice ?? price?.amount;
-            const num = Number(amount ?? 0);
-            return Number.isFinite(num) ? num : 0;
-        };
-
         // 3) Walk through every order item and sum up totals
         let totalSales = 0;
         let totalRevenue = 0;
 
-        // Map: productId -> { sold, revenue }
+        // productId -> { sold, revenue }
         const statsByProductId = {};
 
         orders.forEach((order) => {
@@ -91,7 +89,7 @@ class SellerService {
                 const stats = statsByProductId[productId];
                 const product = productById[productId];
 
-                // If a product was deleted after an order was placed, still return the numbers
+                // If a product got deleted later, still return the numbers
                 return {
                     ...(product ?? { _id: productId }),
                     sold: stats?.sold ?? 0,
@@ -102,6 +100,71 @@ class SellerService {
             .slice(0, 10); // Only send back the top 10
 
         return { totalSales, totalRevenue, topProducts };
+    }
+
+    async getOrders(sellerId) {
+        // Get this seller's products
+        const sellerProducts = await Product.find({ seller: sellerId })
+            .select("name category price")
+            .lean();
+
+        // Keep product ids as strings for easy matching
+        const sellerProductObjectIds = sellerProducts.map((product) => product?._id.toString());
+
+        // Get orders that contain any of these products
+        const orders = await Order.find({
+            "items.productId": sellerProductObjectIds,
+        })
+            .select("-_id -totalPrice -userId -__v")
+            .lean();
+
+        if (!orders.length) {
+            throw new ApiError(
+                StatusCodes.NOT_FOUND,
+                responseMessages.ORDERS_NOT_FOUND,
+                errorCodes.NOT_FOUND
+            );
+        }
+
+        // Map productId -> product details (quick lookup)
+        const sellerProductsMap = {};
+
+        for (const product of sellerProducts) {
+            sellerProductsMap[product._id] = product;
+        }
+
+        // Flatten orders into a list of items (product info + order info)
+        const orderItems = [];
+
+        orders.forEach((order) => {
+            order.items.forEach((item) => {
+                const productId = item.productId.toString();
+
+                if (sellerProductObjectIds.includes(productId)) {
+                    const product = sellerProductsMap[productId];
+
+                    // Keep orderDetails clean (we already return the matching item separately)
+                    delete order.items;
+
+                    const totalAmount = getUnitAmount(product.price) * (item.quantity ?? 0);
+
+                    orderItems.push({
+                        productDetails: {
+                            ...product,
+                            quantity: item.quantity ?? 0,
+                            price: {
+                                amount: getUnitAmount(product.price),
+                                totalAmount,
+                                currency: product.price?.currency ?? "INR",
+                            },
+                        },
+                        orderDetails: order,
+                    });
+                }
+            });
+        });
+
+        return orderItems;
     }
 }
 
