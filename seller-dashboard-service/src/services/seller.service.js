@@ -1,10 +1,6 @@
 import Product from "../models/product.model.js";
 import Order from "../models/order.model.js";
 import getUnitAmount from "../utils/getUnitAmount.js";
-import ApiError from "../utils/ApiError.js";
-import { StatusCodes } from "http-status-codes";
-import responseMessages from "../constants/responseMessages.js";
-import errorCodes from "../constants/errorCodes.js";
 
 class SellerService {
     /**
@@ -102,7 +98,16 @@ class SellerService {
         return { totalSales, totalRevenue, topProducts };
     }
 
-    async getOrders(sellerId) {
+    async getOrders(sellerId, query) {
+        // Extract pagination and filter options from the query
+        const page = parseInt(query.page || 1);
+        const limit = parseInt(query.limit || 10);
+        const sortType = query.sortType || "desc";
+        const sortBy = query.sortBy || "createdAt";
+        const status = query.status;
+
+        const skip = (page - 1) * limit;
+
         // Get this seller's products
         const sellerProducts = await Product.find({ seller: sellerId })
             .select("name category price")
@@ -111,20 +116,25 @@ class SellerService {
         // Keep product ids as strings for easy matching
         const sellerProductObjectIds = sellerProducts.map((product) => product?._id.toString());
 
-        // Get orders that contain any of these products
-        const orders = await Order.find({
+        const orderFilter = {
             "items.productId": sellerProductObjectIds,
-        })
-            .select("-_id -totalPrice -userId -__v")
-            .lean();
+        };
 
-        if (!orders.length) {
-            throw new ApiError(
-                StatusCodes.NOT_FOUND,
-                responseMessages.ORDERS_NOT_FOUND,
-                errorCodes.NOT_FOUND
-            );
-        }
+        if (status) orderFilter.status = status.toUpperCase();
+
+        // Fetch both the orders and the total count at the same time
+        const [orders, totalOrders] = await Promise.all([
+            Order.find(orderFilter)
+                .select("-_id -totalPrice -userId -__v")
+                .skip(skip)
+                .limit(limit)
+                .sort({ [sortBy]: sortType === "desc" ? -1 : 1 })
+                .lean(),
+            Order.countDocuments(orderFilter),
+        ]);
+
+        // If no orders found, return empty result
+        if (!orders.length) return [];
 
         // Map productId -> product details (quick lookup)
         const sellerProductsMap = {};
@@ -133,21 +143,23 @@ class SellerService {
             sellerProductsMap[product._id] = product;
         }
 
-        // Flatten orders into a list of items (product info + order info)
+        // Create a flat list of order items with both product and order details
         const orderItems = [];
 
+        // Loop through each order and each item within the order
         orders.forEach((order) => {
             order.items.forEach((item) => {
                 const productId = item.productId.toString();
 
+                // Only include items that belong to this seller
                 if (sellerProductObjectIds.includes(productId)) {
                     const product = sellerProductsMap[productId];
 
-                    // Keep orderDetails clean (we already return the matching item separately)
                     delete order.items;
 
                     const totalAmount = getUnitAmount(product.price) * (item.quantity ?? 0);
 
+                    // Add this item with all its details to our results
                     orderItems.push({
                         productDetails: {
                             ...product,
@@ -164,7 +176,26 @@ class SellerService {
             });
         });
 
-        return orderItems;
+        const totalPages = Math.ceil(totalOrders / limit);
+
+        // TODO: Refactor pagination to be seller-item based instead of order-based.
+        // Seller dashboard should paginate only the items belonging to this seller
+        // across all orders.
+
+        return {
+            orderItems,
+            pagination: {
+                page,
+                limit,
+                totalOrders,
+                totalPages,
+                ordersCount: orderItems.length,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1,
+                nextPage: page < totalPages ? page + 1 : null,
+                prevPage: page > 1 ? page - 1 : null,
+            },
+        };
     }
 }
 

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import createAuthMiddleware from "../middlewares/auth.middleware.js";
 import SellerController from "../controllers/seller.controller.js";
+import { getAllOrdersValidator } from "../validators/seller.validator.js";
 
 const router = Router();
 
@@ -10,6 +11,6 @@ router.use(createAuthMiddleware(["seller"]));
 router.get("/metrics", SellerController.getMetrics);
 
 // (Private) GET /api/v1/seller/dashboard/orders
-router.get("/orders", SellerController.getOrders);
+router.get("/orders", getAllOrdersValidator, SellerController.getOrders);
 
 export default router;
