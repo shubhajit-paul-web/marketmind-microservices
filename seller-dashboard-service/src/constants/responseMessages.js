@@ -13,14 +13,6 @@ export default {
     TOKEN_BLACKLISTED: "Token has been invalidated, please login again",
     INSUFFICIENT_PERMISSIONS: "You don't have permission to access this resource",
 
-    // Order specific
-    ORDER_NOT_FOUND: "Order not found",
-
-    // Payment specific
-    PAYMENT_CREATION_FAILED: "Failed to create payment order, try again later.",
-    PAYMENT_INITIATED_SUCCESS: "Payment initiated successfully",
-    INVALID_SIGNATURE: "Invalid signature",
-    PAYMENT_NOT_FOUND: "Payment not found",
-    PAYMENT_INFO_FETCHED_SUCCESS: "Payment info fetched successfully",
-    PAYMENT_SUCCESS: "Payment verified successfully",
+    // Seller Dashboard Specific
+    METRICS_FETCHED_SUCCESS: "Metrics fetched successfully",
 };

@@ -88,7 +88,8 @@ class OrderService {
                 );
             }
 
-            totalPriceAmount += product?.price?.amount * cartItem?.quantity;
+            totalPriceAmount +=
+                (product?.price?.discountPrice ?? product?.price?.amount) * cartItem?.quantity;
 
             return {
                 productId: product._id,

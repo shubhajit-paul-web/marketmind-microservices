@@ -34,9 +34,11 @@ app.use(compression());
 
 // Routes import
 import healthcheckRoutes from "./routes/healthcheck.routes.js";
+import sellerDashboardRoutes from "./routes/seller.routes.js";
 
 // Routes declaration
 app.use("/api/v1/health", healthcheckRoutes);
+app.use("/api/v1/seller/dashboard", sellerDashboardRoutes);
 
 // 404 handler
 app.use(async (req, res, next) => {
