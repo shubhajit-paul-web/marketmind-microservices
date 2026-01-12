@@ -41,9 +41,9 @@ class SellerService {
         }
 
         // 2) Fetch orders that contain at least one of the seller's products (ignore cancelled orders)
-        const qualifyingStatuses = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED"];
+        // const qualifyingStatuses = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED"];
         const orders = await Order.find({
-            status: { $in: qualifyingStatuses },
+            status: { $nin: "CANCELLED" },
             "items.productId": { $in: sellerProductObjectIds },
         })
             .select("items")
