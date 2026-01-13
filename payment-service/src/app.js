@@ -1,4 +1,5 @@
 import express from "express";
+import rateLimiter from "./middlewares/rateLimiter.middleware.js";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import morganLogger from "./loggers/morgan.logger.js";
@@ -13,6 +14,7 @@ import { StatusCodes } from "http-status-codes";
 const app = express();
 
 // Middlewares
+app.use(rateLimiter.generalLimiter);
 app.use(helmet());
 if (config.NODE_ENV === "development") {
     app.use(morganLogger);
