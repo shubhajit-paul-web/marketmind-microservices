@@ -9,7 +9,7 @@ const router = Router();
 // (Private) POST /api/v1/payments/create/:orderId
 router.post(
     "/create/:orderId",
-    rateLimiter.createPaymentLimiter,
+    rateLimiter.createLimiter(2, 10, "Initiate payment"),
     createAuthMiddleware(["user"]),
     orderIdValidator,
     PaymentController.createPayment
@@ -18,7 +18,7 @@ router.post(
 // (Private) POST /api/v1/payments/verify
 router.post(
     "/verify",
-    rateLimiter.verifyPaymentLimiter,
+    rateLimiter.createLimiter(1, 5, "Verify payment"),
     createAuthMiddleware(["user"]),
     verifyPaymentValidator,
     PaymentController.verifyPayment
