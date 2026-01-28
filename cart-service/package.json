@@ -1,7 +1,7 @@
 {
     "name": "cart-service",
     "version": "1.0.0",
-    "main": "index.js",
+    "main": "server.js",
     "scripts": {
         "dev": "cross-env NODE_ENV=development npx nodemon server.js",
         "start": "cross-env NODE_ENV=production node server.js",
@@ -10,7 +10,7 @@
     },
     "type": "module",
     "keywords": [],
-    "author": "",
+    "author": "Shubhajit Paul",
     "license": "ISC",
     "description": "",
     "dependencies": {
