@@ -136,6 +136,22 @@ class AuthService {
         return { accessToken, refreshToken };
     }
 
+    async generateOTP(email) {
+        const isUserExists = await UserDAO.isUserExists(null, email);
+
+        if (!isUserExists) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "User not found", errorCodes.USER_NOT_FOUND);
+        }
+
+        const OTP = Math.floor(Math.random() * 6666) + 1000;
+        const TTL = 60; // 1m
+
+        return await Promise.all([
+            redis.set(`OTP:${email}`, OTP, "EX", TTL),
+            broker.publishToQueue("AUTH_NOTIFICATION.OTP_GENERATED", [email, OTP]),
+        ]);
+    }
+
     /**
      * Validates the old password and updates it to a new one
      * @param {string} userId - The ID of the user

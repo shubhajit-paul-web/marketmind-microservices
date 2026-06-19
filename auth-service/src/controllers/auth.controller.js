@@ -70,6 +70,14 @@ class AuthController {
             .json(ApiResponse.success(responseMessages.LOGOUT_SUCCESS));
     });
 
+    generateOTP = asyncHandler(async (req, res) => {
+        await AuthService.generateOTP(req.body?.email);
+
+        return res
+            .status(StatusCodes.OK)
+            .json(ApiResponse.success(`OTP sended successfully to ${req.body?.email}`));
+    });
+
     /**
      * Changes the password for the currently logged-in user
      * @route PATCH /api/v1/auth/password

@@ -3,6 +3,7 @@ import {
     registerUserValidator,
     loginUserValidator,
     changePasswordValidator,
+    generateOTPValidator,
 } from "../validators/auth.validators.js";
 import upload from "../middlewares/multer.middleware.js";
 import AuthController from "../controllers/auth.controller.js";
@@ -23,6 +24,9 @@ router.post("/login", loginUserValidator, AuthController.login);
 
 // POST /api/v1/auth/logout
 router.post("/logout", authUser, AuthController.logout);
+
+// POST /api/v1/auth/otp
+router.post("/otp", generateOTPValidator, AuthController.generateOTP);
 
 // PATCH /api/v1/auth/password
 router.patch("/password", authUser, changePasswordValidator, AuthController.changePassword);

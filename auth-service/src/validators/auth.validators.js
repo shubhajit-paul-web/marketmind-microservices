@@ -95,3 +95,14 @@ export const changePasswordValidator = [
     // Middleware to handle validation errors and send formatted response
     respondWithValidationErrors,
 ];
+
+export const generateOTPValidator = [
+    body("email")
+        .notEmpty()
+        .withMessage("Email is required")
+        .trim()
+        .isEmail()
+        .withMessage("Please provide a valid email id"),
+
+    respondWithValidationErrors,
+];

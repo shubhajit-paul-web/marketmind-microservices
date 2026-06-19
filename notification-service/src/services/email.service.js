@@ -17,6 +17,7 @@ const transporter = nodemailer.createTransport({
 transporter.verify((error) => {
     if (error) {
         logger.error("Error connecting to email server:", { meta: error });
+        console.log(error);
 
         setTimeout(() => process.exit(1), 1000);
     } else {
